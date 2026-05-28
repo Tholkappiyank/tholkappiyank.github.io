@@ -82,7 +82,7 @@ const Projects = {
             CarouselWidth: 100,
             ShowSlider: false
 		},
-	    MagicFight: {
+		MagicFight: {
 			ID: "MagicFight",
             Name: "Prototypes/Hyper Casual Game",
             SmallDescription: "Unity3D Project, C#, 3D",
