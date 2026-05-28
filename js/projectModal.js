@@ -83,11 +83,14 @@ function SetModalParams(id){
         elem= document.getElementById("modal-videoiframe");
         if(ProjectDetail.EmbedVideoLinkID){
             $(elem).show();
-            var baseUrl = ProjectDetail.Shorts
-                ? 'https://www.youtube.com/shorts/'
-                : 'https://www.youtube.com/embed/';
-            var params = ProjectDetail.Shorts ? '' : '/?mute=1';
-            elem.setAttribute('src', baseUrl + ProjectDetail.EmbedVideoLinkID + params);
+            elem.setAttribute('src', 'https://www.youtube.com/embed/' + ProjectDetail.EmbedVideoLinkID + '/?mute=1');
+            if(ProjectDetail.Shorts){
+                elem.setAttribute('width', '315');
+                elem.setAttribute('height', '560');
+            } else {
+                elem.setAttribute('width', '560');
+                elem.setAttribute('height', '315');
+            }
             elem.setAttribute('onload',"hideLoader()");
         }
         else{
