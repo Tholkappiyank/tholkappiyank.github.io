@@ -9,7 +9,7 @@ const Projects = {
             EmbedVideoLinkID: "",
             NoOfProjectImages: 1,
             CarouselWidth: 100,
-            ShowSlider: true
+            ShowSlider: false
         },
         WorkInProgress: {
             ID: "WorkInProgress",
@@ -18,7 +18,7 @@ const Projects = {
             LargeDescription: "Have you heard my Under Construction joke?<br>It's not done yet",
             NoOfProjectImages: 1,
             CarouselWidth: 100,
-            ShowSlider: true
+            ShowSlider: false
         },
 		SunAndWind: {
             ID: "SunAndWind",
@@ -29,7 +29,7 @@ const Projects = {
             EmbedVideoLinkID: "Psvj9kgcXtE",
             NoOfProjectImages: 8,
             CarouselWidth: 100,
-            ShowSlider: true
+            ShowSlider: false
         },
 		Platformer2D: {
             ID: "Platformer2D",
@@ -40,7 +40,7 @@ const Projects = {
             EmbedVideoLinkID: "gO-BlDvBPuQ",
             NoOfProjectImages: 9,
             CarouselWidth: 100,
-            ShowSlider: true
+            ShowSlider: false
         },	
 		JungleBoy: {
 	    ID: "JungleBoy",
@@ -51,7 +51,7 @@ const Projects = {
             EmbedVideoLinkID: "dPW6sTDfoGg",
             NoOfProjectImages: 7,
             CarouselWidth: 97,
-            ShowSlider: true
+            ShowSlider: false
 		},
 		RollABall: {
 			ID: "RollABall",
@@ -62,7 +62,7 @@ const Projects = {
             EmbedVideoLinkID: "",
             NoOfProjectImages: 8,
             CarouselWidth: 100,
-            ShowSlider: true
+            ShowSlider: false
 		},
 		MagicWall: {
 			ID: "MagicWall",
@@ -73,9 +73,9 @@ const Projects = {
             EmbedVideoLinkID: "",
             NoOfProjectImages: 4,
             CarouselWidth: 100,
-            ShowSlider: true
+            ShowSlider: false
 		},
-		MagicFight: {
+	    MagicFight: {
 			ID: "MagicFight",
             Name: "Prototypes/Hyper Casual Game",
             SmallDescription: "Unity3D Project, C#, 3D",
@@ -84,7 +84,7 @@ const Projects = {
             EmbedVideoLinkID: "",
             NoOfProjectImages: 1,
             CarouselWidth: 100,
-            ShowSlider: true
+            ShowSlider: false
         },
         MusicalBall3D: {
             ID: "MusicalBall3D",
@@ -95,7 +95,7 @@ const Projects = {
             EmbedVideoLinkID: "",
             NoOfProjectImages: 4,
             CarouselWidth: 75,
-            ShowSlider: true
+            ShowSlider: false
         },
         BreakBreaker3D: {
             ID: "BreakBreaker3D",
@@ -106,7 +106,7 @@ const Projects = {
             EmbedVideoLinkID: "",
             NoOfProjectImages: 5,
             CarouselWidth: 75,
-            ShowSlider: true
+            ShowSlider: false
         },
         PillowFightMaster: {
             ID: "PillowFightMaster",
@@ -117,7 +117,7 @@ const Projects = {
             EmbedVideoLinkID: "uCteOgpposU",
             NoOfProjectImages: 10,
             CarouselWidth: 100,
-            ShowSlider: true
+            ShowSlider: false
         }
     }
 };
