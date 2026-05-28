@@ -49,8 +49,8 @@ const Projects = {
             LargeDescription: '<b>PC Platform - Game </b> <br><br> • Recreation of the Rayman Origin Game to understand the Game mechanics and 2D level design features on XNA, C# for PC platform. <br>• A College project to understand how to move, jump. <br> • Menu System <br> • Terrain System  <br> • Collision Detection <br>  • Jumping <br>  • Points',
             DownloadLink: "",
             EmbedVideoLinkID: "o4G4n7d9Ez4",
-            NoOfProjectImages: 6,
-            CarouselWidth: 100,
+            NoOfProjectImages: 7,
+            CarouselWidth: 97,
             ShowSlider: true
 		},
 		RollABall: {
