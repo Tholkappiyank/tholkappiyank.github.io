@@ -103,7 +103,7 @@ const Projects = {
             SmallDescription: "Unity3D, C#, Hyper Casual",
             LargeDescription: "<b>Placeholder</b> <br><br> Details coming soon.",
             DownloadLink: "",
-            EmbedVideoLinkID: "",
+            EmbedVideoLinkID: "shorts/_7TmcWXpH-I",
             NoOfProjectImages: 5,
             CarouselWidth: 75,
             ShowSlider: false
