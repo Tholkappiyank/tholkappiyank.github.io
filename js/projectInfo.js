@@ -112,9 +112,7 @@ const Projects = {
             ID: "PillowFightMaster",
             Name: "Hyper Casual / Pillow Fight Master",
             SmallDescription: "Unity3D, C#, Hyper Casual",
-            LargeDescription: "<b>Placeholder</b> <br><br> Details coming soon.",
-            DownloadLink: "",
-            EmbedVideoLinkID: "uCteOgpposU",
+            LargeDescription: "<b>Pillow Fight Master</b> <br><br> • Turn-based duel on a log — face your opponent and stay balanced <br> • Tap to attack — a hit metre determines your strike power. Time your strikes to knock your opponent off balance <br> • Each hit shifts the balance — knock your opponent off to win <br> • Relaxing visuals, funny physics, and easy one-tap controls <br> • Perfect for quick, casual fun",
             NoOfProjectImages: 10,
             CarouselWidth: 100,
             ShowSlider: false
