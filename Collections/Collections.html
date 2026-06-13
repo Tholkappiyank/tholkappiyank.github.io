@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TubeVault — Your YouTube Collections</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0F0F14;
+    --surface: #1A1A24;
+    --surface-hover: #252535;
+    --surface-raised: #2D2D40;
+    --border: #2A2A3E;
+    --border-subtle: #1F1F2E;
+    --text: #F0F0FF;
+    --text-muted: #7A7A9A;
+    --text-dim: #4A4A6A;
+    --red: #FF3040;
+    --indigo: #5C6BC0;
+    --indigo-bright: #7986CB;
+    --indigo-glow: rgba(92,107,192,0.15);
+    --green: #4CAF7D;
+    --amber: #FFA726;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Inter', sans-serif;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  html, body { height: 100%; }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 20px;
+    height: 52px;
+    background: #0A0A10;
+    border-bottom: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+    z-index: 100;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .logo-icon {
+    width: 26px; height: 26px;
+    background: var(--red);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .logo-icon svg { width: 14px; height: 14px; fill: white; }
+  .search-bar {
+    flex: 1;
+    max-width: 480px;
+    position: relative;
+  }
+  .search-bar input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 13px;
+    padding: 6px 12px 6px 34px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-bar input:focus { border-color: var(--indigo); }
+  .search-bar input::placeholder { color: var(--text-dim); }
+  .search-bar .search-icon {
+    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    color: var(--text-dim);
+    pointer-events: none;
+  }
+  .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px;
+    font-family: var(--sans); font-size: 13px; font-weight: 500;
+    border-radius: var(--radius-sm);
+    border: none; cursor: pointer;
+    transition: background 0.15s, opacity 0.15s;
+  }
+  .btn-primary { background: var(--indigo); color: white; }
+  .btn-primary:hover { background: var(--indigo-bright); }
+  .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: var(--surface); color: var(--text); }
+  .btn-icon {
+    background: transparent; border: none;
+    color: var(--text-muted); cursor: pointer;
+    padding: 6px; border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, color 0.15s;
+  }
+  .btn-icon:hover { background: var(--surface); color: var(--text); }
+
+  /* ── LAYOUT ── */
+  .app-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 220px;
+    background: #0A0A10;
+    border-right: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    padding: 12px 0;
+    flex-shrink: 0;
+    overflow-y: auto;
+  }
+  .sidebar-section { padding: 0 8px 8px; }
+  .sidebar-label {
+    font-size: 10px; font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 4px 8px 8px;
+    font-family: var(--mono);
+  }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-muted);
+    transition: background 0.15s, color 0.15s;
+    border: none; background: transparent; width: 100%; text-align: left;
+    position: relative;
+  }
+  .sidebar-item:hover { background: var(--surface); color: var(--text); }
+  .sidebar-item.active { background: var(--indigo-glow); color: var(--indigo-bright); }
+  .sidebar-item .count {
+    margin-left: auto;
+    font-size: 10px;
+    font-family: var(--mono);
+    color: var(--text-dim);
+    background: var(--surface-raised);
+    padding: 1px 6px;
+    border-radius: 20px;
+  }
+  .sidebar-item.active .count { background: rgba(92,107,192,0.25); color: var(--indigo-bright); }
+  .collection-dot {
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .sidebar-divider {
+    height: 1px;
+    background: var(--border-subtle);
+    margin: 8px 16px;
+  }
+  .add-collection-btn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text-dim);
+    width: 100%;
+    border: 1px dashed var(--border);
+    background: transparent;
+    transition: all 0.15s;
+    font-family: var(--sans);
+  }
+  .add-collection-btn:hover { color: var(--indigo-bright); border-color: var(--indigo); }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-title {
+    font-size: 18px; font-weight: 600;
+    color: var(--text);
+  }
+  .section-count {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    background: var(--surface);
+    padding: 2px 8px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+  }
+  .section-header-right {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .view-toggle {
+    display: flex; gap: 2px;
+    background: var(--surface);
+    padding: 3px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+  }
+  .view-btn {
+    background: transparent; border: none;
+    color: var(--text-dim); cursor: pointer;
+    padding: 4px 7px; border-radius: 4px;
+    transition: all 0.15s;
+    display: flex; align-items: center;
+  }
+  .view-btn.active { background: var(--surface-raised); color: var(--text); }
+  .view-btn:hover:not(.active) { color: var(--text-muted); }
+
+  /* ── ADD URL BAR ── */
+  .add-url-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    display: flex; gap: 10px; align-items: center;
+    transition: border-color 0.2s;
+  }
+  .add-url-bar:focus-within { border-color: var(--indigo); }
+  .add-url-bar input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    outline: none;
+  }
+  .add-url-bar input::placeholder { color: var(--text-dim); }
+
+  /* ── CARDS GRID ── */
+  .cards-grid-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+  }
+  .cards-grid.list-view {
+    grid-template-columns: 1fr;
+  }
+
+  /* ── VIDEO CARD ── */
+  .video-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.15s;
+    cursor: default;
+    position: relative;
+  }
+  .video-card:hover { border-color: var(--indigo); transform: translateY(-1px); }
+  .video-card.list-view {
+    display: flex; flex-direction: row;
+  }
+
+  .card-thumb {
+    position: relative;
+    aspect-ratio: 16/9;
+    background: var(--bg);
+    overflow: hidden;
+  }
+  .list-view .card-thumb {
+    width: 200px;
+    aspect-ratio: unset;
+    height: 120px;
+    flex-shrink: 0;
+  }
+  .card-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.3s;
+  }
+  .card-thumb-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg);
+    color: var(--text-dim);
+  }
+  .card-duration {
+    position: absolute; bottom: 6px; right: 6px;
+    background: rgba(0,0,0,0.82);
+    color: white;
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  .card-play-overlay {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0);
+    transition: background 0.2s;
+  }
+  .card-thumb:hover .card-play-overlay { background: rgba(0,0,0,0.45); }
+  .play-btn {
+    width: 40px; height: 40px;
+    background: var(--red);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    transform: scale(0.7);
+    transition: opacity 0.2s, transform 0.2s;
+    text-decoration: none;
+  }
+  .card-thumb:hover .play-btn { opacity: 1; transform: scale(1); }
+  .play-btn svg { width: 16px; height: 16px; fill: white; margin-left: 2px; }
+
+  .card-body {
+    padding: 12px 14px;
+    display: flex; flex-direction: column; gap: 6px;
+    flex: 1;
+    min-width: 0;
+  }
+  .card-collection-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 10px;
+    font-family: var(--mono);
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .tag-dot { width: 6px; height: 6px; border-radius: 1px; flex-shrink: 0; }
+  .card-title {
+    font-size: 13px; font-weight: 500;
+    color: var(--text);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-channel {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .card-note {
+    font-size: 11px;
+    color: var(--text-muted);
+    background: var(--surface-raised);
+    border-left: 2px solid var(--indigo);
+    padding: 5px 8px;
+    border-radius: 0 4px 4px 0;
+    font-style: italic;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-meta {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 2px;
+  }
+  .card-date {
+    font-size: 10px;
+    font-family: var(--mono);
+    color: var(--text-dim);
+    margin-left: auto;
+  }
+  .card-actions {
+    display: flex; gap: 2px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .video-card:hover .card-actions { opacity: 1; }
+  .card-action-btn {
+    background: transparent; border: none;
+    color: var(--text-dim); cursor: pointer;
+    padding: 3px 5px; border-radius: 4px;
+    font-size: 11px;
+    transition: background 0.15s, color 0.15s;
+    display: flex; align-items: center;
+  }
+  .card-action-btn:hover { background: var(--surface-raised); color: var(--text); }
+  .card-action-btn.danger:hover { background: rgba(255,48,64,0.15); color: var(--red); }
+
+  /* ── NOTE EDIT AREA ── */
+  .note-edit {
+    width: 100%;
+    background: var(--surface-raised);
+    border: 1px solid var(--indigo);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 12px;
+    padding: 6px 8px;
+    resize: none;
+    outline: none;
+    line-height: 1.4;
+    display: none;
+  }
+  .note-edit.visible { display: block; }
+
+  /* ── GROUP SECTION ── */
+  .group-section { display: flex; flex-direction: column; gap: 10px; }
+  .group-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 0;
+    cursor: pointer;
+    user-select: none;
+  }
+  .group-header:hover .group-title { color: var(--text); }
+  .group-chevron {
+    color: var(--text-dim);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+    display: flex; align-items: center;
+  }
+  .group-chevron.collapsed { transform: rotate(-90deg); }
+  .group-title {
+    font-size: 13px; font-weight: 600;
+    color: var(--text-muted);
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    transition: color 0.15s;
+  }
+  .group-count {
+    font-size: 10px;
+    font-family: var(--mono);
+    color: var(--text-dim);
+    background: var(--surface-raised);
+    padding: 1px 7px;
+    border-radius: 20px;
+  }
+  .group-header-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border-subtle);
+  }
+  .group-header-actions {
+    display: flex; gap: 4px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .group-header:hover .group-header-actions { opacity: 1; }
+  .group-action-btn {
+    background: transparent; border: none;
+    color: var(--text-dim); cursor: pointer;
+    padding: 2px 5px; border-radius: 4px;
+    font-size: 10px; font-family: var(--mono);
+    display: flex; align-items: center; gap: 3px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .group-action-btn:hover { background: var(--surface-raised); color: var(--text); }
+  .group-action-btn.danger:hover { background: rgba(255,48,64,0.1); color: var(--red); }
+  .group-body { display: flex; flex-direction: column; gap: 10px; }
+  .group-body.collapsed { display: none; }
+  .group-body .cards-grid { margin: 0; }
+  .add-group-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 0 2px;
+  }
+  .add-group-input {
+    background: var(--surface);
+    border: 1px solid var(--indigo);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 10px;
+    outline: none;
+    flex: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .add-group-input::placeholder { color: var(--text-dim); text-transform: none; letter-spacing: 0; }
+  .ungrouped-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 4px 0;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .ungrouped-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-subtle);
+  }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 64px 32px;
+    text-align: center;
+    color: var(--text-dim);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    grid-column: 1 / -1;
+  }
+  .empty-state svg { opacity: 0.3; }
+  .empty-state p { font-size: 13px; max-width: 260px; line-height: 1.5; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    width: 420px;
+    max-width: 90vw;
+    display: flex; flex-direction: column; gap: 18px;
+    transform: translateY(10px);
+    transition: transform 0.2s;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-title {
+    font-size: 16px; font-weight: 600;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .modal-close {
+    margin-left: auto;
+    background: transparent; border: none;
+    color: var(--text-muted); cursor: pointer;
+    padding: 4px; border-radius: 4px;
+    font-size: 18px; line-height: 1;
+    transition: color 0.15s;
+  }
+  .modal-close:hover { color: var(--text); }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+  .field input, .field select, .field textarea {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 13px;
+    padding: 8px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--indigo); }
+  .field input::placeholder, .field textarea::placeholder { color: var(--text-dim); }
+  .field select option { background: var(--surface); }
+  .field textarea { resize: vertical; min-height: 72px; line-height: 1.5; }
+  .color-picker-row {
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .color-chip {
+    width: 24px; height: 24px;
+    border-radius: 4px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .color-chip.selected { border-color: white; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--surface-raised);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 16px;
+    font-size: 13px; color: var(--text);
+    z-index: 999;
+    display: flex; align-items: center; gap: 8px;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.25s;
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+  /* ── DRAG OVER ── */
+  .video-card.drag-over { border-color: var(--indigo); background: var(--surface-raised); }
+
+  /* ── NEW COLLECTION INLINE ── */
+  .new-collection-input {
+    background: var(--surface);
+    border: 1px solid var(--indigo);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 13px;
+    padding: 6px 10px;
+    outline: none;
+    width: 100%;
+    margin: 4px 8px;
+    width: calc(100% - 16px);
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.27 8.27 0 004.84 1.55V6.79a4.85 4.85 0 01-1.07-.1z"/></svg>
+    </div>
+    TubeVault
+  </div>
+  <div class="search-bar">
+    <span class="search-icon">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    </span>
+    <input type="text" placeholder="Search videos, channels, notes…" id="searchInput" oninput="handleSearch()">
+  </div>
+  <div class="topbar-actions">
+    <button class="btn btn-ghost" onclick="openImportModal()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Import
+    </button>
+    <button class="btn btn-primary" onclick="openAddModal()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add Video
+    </button>
+  </div>
+</div>
+
+<!-- APP BODY -->
+<div class="app-body">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Library</div>
+      <button class="sidebar-item active" onclick="filterByCollection('all', this)">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+        All Videos
+        <span class="count" id="count-all">0</span>
+      </button>
+      <button class="sidebar-item" onclick="filterByCollection('recent', this)">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Recently Added
+        <span class="count" id="count-recent">0</span>
+      </button>
+      <button class="sidebar-item" onclick="filterByCollection('watched', this)">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        Watched
+        <span class="count" id="count-watched">0</span>
+      </button>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Collections</div>
+      <div id="collectionsList"></div>
+      <div style="padding: 0 0 0 0; margin-top: 4px;">
+        <button class="add-collection-btn" onclick="startNewCollection()">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New collection
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <!-- Quick add bar -->
+    <div class="add-url-bar">
+      <svg width="16" height="16" fill="none" stroke="var(--text-dim)" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+      <input type="text" id="quickAddInput" placeholder="Paste a YouTube URL and press Enter to save…" onkeydown="if(event.key==='Enter') quickAdd()">
+      <button class="btn btn-primary" onclick="quickAdd()" style="flex-shrink:0;">Save</button>
+    </div>
+
+    <!-- Section header -->
+    <div class="section-header">
+      <span class="section-title" id="sectionTitle">All Videos</span>
+      <span class="section-count" id="sectionCount">0 videos</span>
+      <div class="section-header-right">
+        <div class="view-toggle">
+          <button class="view-btn active" id="gridBtn" onclick="setView('grid')" title="Grid view">
+            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          </button>
+          <button class="view-btn" id="listBtn" onclick="setView('list')" title="List view">
+            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="2"/><rect x="3" y="11" width="18" height="2"/><rect x="3" y="18" width="18" height="2"/></svg>
+          </button>
+        </div>
+        <button class="btn-icon" onclick="exportData()" title="Export as JSON">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.29"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="cards-grid-container" id="cardsGrid"></div>
+  </div>
+</div>
+
+<!-- ADD VIDEO MODAL -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <div class="modal-title">
+      <svg width="18" height="18" fill="none" stroke="var(--indigo-bright)" stroke-width="2" viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.4a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>
+      Add YouTube Video
+      <button class="modal-close" onclick="closeModal('addModal')">×</button>
+    </div>
+    <div class="field">
+      <label>YouTube URL *</label>
+      <input type="url" id="addUrl" placeholder="https://youtube.com/watch?v=..." oninput="previewUrl()">
+    </div>
+    <div class="field">
+      <label>Title (auto-detected or custom)</label>
+      <input type="text" id="addTitle" placeholder="Video title">
+    </div>
+    <div class="field">
+      <label>Collection</label>
+      <select id="addCollection" onchange="refreshGroupSelect('addCollection','addGroup')">
+        <option value="">— No collection —</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Group / Topic <span style="color:var(--text-dim);font-weight:400;">(optional sub-section)</span></label>
+      <div style="display:flex;gap:8px;">
+        <select id="addGroup" style="flex:1;">
+          <option value="">— No group —</option>
+        </select>
+        <input type="text" id="addGroupNew" placeholder="Or type new group…" style="flex:1;">
+      </div>
+    </div>
+    <div class="field">
+      <label>Note</label>
+      <textarea id="addNote" placeholder="Your thoughts, timestamps, why you saved this…"></textarea>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
+      <button class="btn btn-ghost" onclick="closeModal('addModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveVideo()">Save to Vault</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEW COLLECTION MODAL -->
+<div class="modal-overlay" id="collectionModal">
+  <div class="modal" style="width:360px;">
+    <div class="modal-title">
+      New Collection
+      <button class="modal-close" onclick="closeModal('collectionModal')">×</button>
+    </div>
+    <div class="field">
+      <label>Collection name</label>
+      <input type="text" id="collectionName" placeholder="e.g. Unity Tutorials, Game Design…">
+    </div>
+    <div class="field">
+      <label>Color</label>
+      <div class="color-picker-row" id="colorPicker"></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
+      <button class="btn btn-ghost" onclick="closeModal('collectionModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCollection()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMPORT MODAL -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal">
+    <div class="modal-title">
+      Import URLs
+      <button class="modal-close" onclick="closeModal('importModal')">×</button>
+    </div>
+    <div class="field">
+      <label>Paste YouTube URLs (one per line)</label>
+      <textarea id="importText" placeholder="https://youtube.com/watch?v=abc&#10;https://youtu.be/xyz&#10;…" style="min-height:120px;"></textarea>
+    </div>
+    <div class="field">
+      <label>Add to collection (optional)</label>
+      <select id="importCollection" onchange="refreshGroupSelect('importCollection','importGroup')">
+        <option value="">— No collection —</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Group / Topic <span style="color:var(--text-dim);font-weight:400;">(optional)</span></label>
+      <div style="display:flex;gap:8px;">
+        <select id="importGroup" style="flex:1;"><option value="">— No group —</option></select>
+        <input type="text" id="importGroupNew" placeholder="Or type new group…" style="flex:1;">
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
+      <button class="btn btn-ghost" onclick="closeModal('importModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="importUrls()">Import All</button>
+    </div>
+  </div>
+</div>
+
+<!-- MOVE TO GROUP MODAL -->
+<div class="modal-overlay" id="moveGroupModal">
+  <div class="modal" style="width:380px;">
+    <div class="modal-title">
+      <svg width="16" height="16" fill="none" stroke="var(--indigo-bright)" stroke-width="2" viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+      Move to Group
+      <button class="modal-close" onclick="closeModal('moveGroupModal')">×</button>
+    </div>
+    <div style="font-size:12px;color:var(--text-muted);background:var(--surface-raised);padding:8px 12px;border-radius:6px;border-left:2px solid var(--indigo);" id="moveGroupVideoTitle"></div>
+    <div class="field">
+      <label>Choose existing group</label>
+      <select id="moveGroupSelect">
+        <option value="">— No group (ungrouped) —</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Or create a new group</label>
+      <input type="text" id="moveGroupNewInput" placeholder="Type new group name…">
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
+      <button class="btn btn-ghost" onclick="closeModal('moveGroupModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveMoveGroup()">Move</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ──────────────────────────────────────────────
+// STATE
+// ──────────────────────────────────────────────
+const COLLECTION_COLORS = [
+  '#5C6BC0','#EF5350','#26A69A','#FFA726',
+  '#66BB6A','#AB47BC','#29B6F6','#FF7043',
+  '#78909C','#EC407A'
+];
+
+let state = JSON.parse(localStorage.getItem('tubevault') || 'null') || {
+  videos: [],
+  collections: [
+    { id: 'unity', name: 'Unity Tutorials', color: '#5C6BC0' },
+    { id: 'gamedesign', name: 'Game Design', color: '#26A69A' },
+    { id: 'music', name: 'Music', color: '#EC407A' },
+  ],
+  selectedColor: COLLECTION_COLORS[0],
+};
+
+let currentFilter = 'all';
+let currentView = 'grid';
+let searchQuery = '';
+
+function save() {
+  localStorage.setItem('tubevault', JSON.stringify(state));
+}
+
+// ──────────────────────────────────────────────
+// YOUTUBE HELPERS
+// ──────────────────────────────────────────────
+function extractVideoId(url) {
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes('youtu.be')) return u.pathname.slice(1).split('?')[0];
+    if (u.hostname.includes('youtube.com')) {
+      if (u.pathname.startsWith('/shorts/')) return u.pathname.split('/')[2];
+      return u.searchParams.get('v');
+    }
+  } catch {}
+  // fallback regex
+  const m = url.match(/(?:v=|youtu\.be\/|shorts\/)([A-Za-z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+
+function getThumbnail(videoId) {
+  return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+}
+
+function getWatchUrl(videoId) {
+  return `https://www.youtube.com/watch?v=${videoId}`;
+}
+
+function isYouTubeUrl(url) {
+  return url && (url.includes('youtube.com') || url.includes('youtu.be'));
+}
+
+function generateId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+}
+
+function formatDate(ts) {
+  const d = new Date(ts);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+// ──────────────────────────────────────────────
+// RENDER SIDEBAR
+// ──────────────────────────────────────────────
+function renderSidebar() {
+  const list = document.getElementById('collectionsList');
+  list.innerHTML = '';
+  
+  state.collections.forEach(col => {
+    const count = state.videos.filter(v => v.collection === col.id).length;
+    const btn = document.createElement('button');
+    btn.className = 'sidebar-item';
+    if (currentFilter === col.id) btn.classList.add('active');
+    btn.innerHTML = `
+      <span class="collection-dot" style="background:${col.color}"></span>
+      ${col.name}
+      <span class="count">${count}</span>
+    `;
+    btn.onclick = () => filterByCollection(col.id, btn);
+    list.appendChild(btn);
+  });
+
+  document.getElementById('count-all').textContent = state.videos.length;
+  const now = Date.now();
+  document.getElementById('count-recent').textContent = state.videos.filter(v => now - v.added < 7*24*3600*1000).length;
+  document.getElementById('count-watched').textContent = state.videos.filter(v => v.watched).length;
+
+  // Populate collection selects
+  ['addCollection', 'importCollection'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const val = sel.value;
+    sel.innerHTML = '<option value="">— No collection —</option>';
+    state.collections.forEach(col => {
+      sel.innerHTML += `<option value="${col.id}">${col.name}</option>`;
+    });
+    if (val) sel.value = val;
+  });
+}
+
+function getGroupsForCollection(colId) {
+  if (!colId) return [];
+  return [...new Set(
+    state.videos
+      .filter(v => v.collection === colId && v.group && v.group.trim())
+      .map(v => v.group.trim())
+  )].sort();
+}
+
+function refreshGroupSelect(collectionSelectId, groupSelectId) {
+  const colId = document.getElementById(collectionSelectId)?.value;
+  const sel = document.getElementById(groupSelectId);
+  if (!sel) return;
+  const groups = getGroupsForCollection(colId);
+  sel.innerHTML = '<option value="">— No group —</option>';
+  groups.forEach(g => { sel.innerHTML += `<option value="${g}">${g}</option>`; });
+}
+
+// ──────────────────────────────────────────────
+// RENDER CARDS (GROUPED)
+// ──────────────────────────────────────────────
+function getFilteredVideos() {
+  let vids = [...state.videos];
+  const now = Date.now();
+
+  if (currentFilter === 'all') { /* all */ }
+  else if (currentFilter === 'recent') { vids = vids.filter(v => now - v.added < 7*24*3600*1000); }
+  else if (currentFilter === 'watched') { vids = vids.filter(v => v.watched); }
+  else { vids = vids.filter(v => v.collection === currentFilter); }
+
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    vids = vids.filter(v =>
+      (v.title||'').toLowerCase().includes(q) ||
+      (v.channel||'').toLowerCase().includes(q) ||
+      (v.note||'').toLowerCase().includes(q) ||
+      (v.group||'').toLowerCase().includes(q) ||
+      (v.url||'').toLowerCase().includes(q)
+    );
+  }
+
+  return vids.sort((a, b) => b.added - a.added);
+}
+
+function renderCards() {
+  const grid = document.getElementById('cardsGrid');
+  const vids = getFilteredVideos();
+
+  grid.className = 'cards-grid-container';
+
+  document.getElementById('sectionCount').textContent = `${vids.length} video${vids.length !== 1 ? 's' : ''}`;
+
+  if (vids.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.4a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/>
+          <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/>
+        </svg>
+        <p>No videos here yet. Paste a YouTube URL above or click <strong>Add Video</strong> to get started.</p>
+      </div>`;
+    return;
+  }
+
+  // Build grouped structure
+  // For a specific collection view: group by video.group
+  // For all/recent/watched: group by collection first, then by group within
+  let html = '';
+
+  if (currentFilter !== 'all' && currentFilter !== 'recent' && currentFilter !== 'watched') {
+    // Single collection view — group by video.group
+    const col = state.collections.find(c => c.id === currentFilter);
+    const colColor = col ? col.color : 'var(--indigo)';
+    html += renderGroupedByTitle(vids, currentFilter, colColor);
+  } else {
+    // Multi-collection view — group by collection, then by title within
+    const colIds = [...new Set(vids.map(v => v.collection || '__none__'))];
+    colIds.forEach(colId => {
+      const colVids = vids.filter(v => (v.collection || '__none__') === colId);
+      if (!colVids.length) return;
+      const col = state.collections.find(c => c.id === colId);
+      const colName = col ? col.name : 'Uncollected';
+      const colColor = col ? col.color : 'var(--text-dim)';
+      html += `<div class="group-section" style="margin-bottom:28px;">`;
+      html += `<div class="group-header" onclick="toggleGroup('col-${colId}')">
+        <span class="group-chevron" id="chev-col-${colId}">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+        <span class="collection-dot" style="background:${colColor};width:9px;height:9px;border-radius:2px;flex-shrink:0;"></span>
+        <span class="group-title" style="color:${colColor};">${colName}</span>
+        <span class="group-count">${colVids.length}</span>
+        <div class="group-header-line"></div>
+      </div>`;
+      html += `<div class="group-body" id="group-col-${colId}">`;
+      html += renderGroupedByTitle(colVids, colId, colColor, true);
+      html += `</div></div>`;
+    });
+  }
+
+  grid.innerHTML = html;
+}
+
+function renderGroupedByTitle(vids, colId, colColor, nested = false) {
+  // Separate grouped vs ungrouped
+  const grouped = {};
+  const ungrouped = [];
+
+  vids.forEach(v => {
+    const g = (v.group || '').trim();
+    if (g) {
+      if (!grouped[g]) grouped[g] = [];
+      grouped[g].push(v);
+    } else {
+      ungrouped.push(v);
+    }
+  });
+
+  const groupNames = Object.keys(grouped).sort();
+  let html = '';
+
+  groupNames.forEach(gName => {
+    const gVids = grouped[gName];
+    const gKey = `${colId}__${gName}`.replace(/[^a-z0-9_]/gi, '_');
+    html += `<div class="group-section">
+      <div class="group-header" onclick="toggleGroup('${gKey}')">
+        <span class="group-chevron" id="chev-${gKey}">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+        <span class="group-title">${escHtml(gName)}</span>
+        <span class="group-count">${gVids.length}</span>
+        <div class="group-header-line"></div>
+        <div class="group-header-actions" onclick="event.stopPropagation()">
+          <button class="group-action-btn" onclick="renameGroupPrompt('${escAttr(colId)}','${escAttr(gName)}')" title="Rename group">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Rename
+          </button>
+          <button class="group-action-btn danger" onclick="deleteGroupPrompt('${escAttr(colId)}','${escAttr(gName)}')" title="Delete group">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+            Delete
+          </button>
+        </div>
+      </div>
+      <div class="group-body" id="group-${gKey}">
+        <div class="cards-grid${currentView === 'list' ? ' list-view' : ''}">
+          ${gVids.map(v => renderCard(v)).join('')}
+        </div>
+      </div>
+    </div>`;
+  });
+
+  // Ungrouped videos
+  if (ungrouped.length > 0) {
+    if (groupNames.length > 0) {
+      html += `<div class="ungrouped-label">Ungrouped</div>`;
+    }
+    html += `<div class="cards-grid${currentView === 'list' ? ' list-view' : ''}">
+      ${ungrouped.map(v => renderCard(v)).join('')}
+    </div>`;
+  }
+
+  // Add new group button (only in single-collection view)
+  if (!nested) {
+    html += `<div class="add-group-row" id="addGroupRow-${colId}">
+      <button class="add-collection-btn" style="width:auto;padding:5px 12px;" onclick="showAddGroupInput('${escAttr(colId)}')">
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        New group
+      </button>
+    </div>
+    <div id="newGroupInputRow-${colId}" style="display:none;padding:4px 0;">
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input class="add-group-input" id="newGroupInput-${colId}" placeholder="Group name (e.g. Physics, AI, Shaders…)"
+          onkeydown="if(event.key==='Enter') confirmNewGroup('${escAttr(colId)}'); if(event.key==='Escape') hideAddGroupInput('${escAttr(colId)}')">
+        <button class="btn btn-primary" style="padding:5px 12px;font-size:12px;" onclick="confirmNewGroup('${escAttr(colId)}')">Add</button>
+        <button class="btn btn-ghost" style="padding:5px 10px;font-size:12px;" onclick="hideAddGroupInput('${escAttr(colId)}')">Cancel</button>
+      </div>
+    </div>`;
+  }
+
+  return html;
+}
+
+function renderCard(v) {
+  const col = state.collections.find(c => c.id === v.collection);
+  // In single-collection view, don't show the collection tag — group header handles it
+  const showColTag = currentFilter === 'all' || currentFilter === 'recent' || currentFilter === 'watched';
+  const colTag = (showColTag && col) ? `<span class="card-collection-tag"><span class="tag-dot" style="background:${col.color}"></span>${col.name}</span>` : '';
+  const noteHtml = v.note ? `<div class="card-note" id="note-text-${v.id}">${escHtml(v.note)}</div>` : '';
+  const watchedStyle = v.watched ? 'opacity:0.6;' : '';
+
+  return `
+<div class="video-card${currentView === 'list' ? ' list-view' : ''}" id="card-${v.id}" style="${watchedStyle}">
+  <div class="card-thumb">
+    <img src="${getThumbnail(v.videoId)}" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="card-thumb-placeholder" style="display:none;">
+      <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" opacity="0.3">
+        <path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.4a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/>
+        <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/>
+      </svg>
+    </div>
+    <div class="card-play-overlay">
+      <a href="${getWatchUrl(v.videoId)}" target="_blank" class="play-btn" onclick="markWatched('${v.id}')">
+        <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </a>
+    </div>
+  </div>
+  <div class="card-body">
+    ${colTag}
+    <div class="card-title">${escHtml(v.title || 'Untitled Video')}</div>
+    ${v.channel ? `<div class="card-channel">${escHtml(v.channel)}</div>` : ''}
+    ${noteHtml}
+    <textarea class="note-edit" id="note-edit-${v.id}" rows="2" placeholder="Add a note…" onblur="saveNote('${v.id}', this.value)">${escHtml(v.note||'')}</textarea>
+    <div class="card-meta">
+      <div class="card-actions">
+        <button class="card-action-btn" onclick="openMoveGroupModal('${v.id}')" title="Move to group">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+        </button>
+        <button class="card-action-btn" onclick="toggleNote('${v.id}')" title="Edit note">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+        <button class="card-action-btn" onclick="copyUrl('${v.url}')" title="Copy URL">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        </button>
+        <button class="card-action-btn" onclick="toggleWatched('${v.id}')" title="${v.watched ? 'Mark unwatched' : 'Mark watched'}">
+          <svg width="12" height="12" fill="${v.watched ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+        <button class="card-action-btn danger" onclick="deleteVideo('${v.id}')" title="Remove">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+        </button>
+      </div>
+      <span class="card-date">${formatDate(v.added)}</span>
+    </div>
+  </div>
+</div>`;
+}
+
+// ──────────────────────────────────────────────
+// GROUP INTERACTIONS
+// ──────────────────────────────────────────────
+function toggleGroup(key) {
+  const body = document.getElementById(`group-${key}`);
+  const chev = document.getElementById(`chev-${key}`);
+  if (!body) return;
+  body.classList.toggle('collapsed');
+  chev?.classList.toggle('collapsed');
+}
+
+function showAddGroupInput(colId) {
+  document.getElementById(`addGroupRow-${colId}`).style.display = 'none';
+  const row = document.getElementById(`newGroupInputRow-${colId}`);
+  row.style.display = 'block';
+  document.getElementById(`newGroupInput-${colId}`)?.focus();
+}
+
+function hideAddGroupInput(colId) {
+  document.getElementById(`addGroupRow-${colId}`).style.display = 'flex';
+  const row = document.getElementById(`newGroupInputRow-${colId}`);
+  row.style.display = 'none';
+  if (document.getElementById(`newGroupInput-${colId}`))
+    document.getElementById(`newGroupInput-${colId}`).value = '';
+}
+
+function confirmNewGroup(colId) {
+  const input = document.getElementById(`newGroupInput-${colId}`);
+  const name = input?.value.trim();
+  if (!name) { showToast('⚠️ Enter a group name'); return; }
+  // Group is just a label — no video assigned yet; just re-render with the knowledge it exists
+  // We store "pending groups" in state so they show even with 0 videos
+  if (!state.pendingGroups) state.pendingGroups = {};
+  if (!state.pendingGroups[colId]) state.pendingGroups[colId] = [];
+  if (!state.pendingGroups[colId].includes(name)) state.pendingGroups[colId].push(name);
+  save();
+  hideAddGroupInput(colId);
+  renderCards();
+  showToast(`✓ Group "${name}" created`);
+}
+
+function renameGroupPrompt(colId, oldName) {
+  const newName = prompt(`Rename group "${oldName}" to:`, oldName);
+  if (!newName || newName.trim() === oldName) return;
+  state.videos.forEach(v => {
+    if (v.collection === colId && v.group === oldName) v.group = newName.trim();
+  });
+  if (state.pendingGroups?.[colId]) {
+    const idx = state.pendingGroups[colId].indexOf(oldName);
+    if (idx >= 0) state.pendingGroups[colId][idx] = newName.trim();
+  }
+  save(); renderCards(); refreshGroupSelect('addCollection','addGroup');
+  showToast(`✓ Renamed to "${newName.trim()}"`);
+}
+
+function deleteGroupPrompt(colId, groupName) {
+  const count = state.videos.filter(v => v.collection === colId && v.group === groupName).length;
+  const msg = count > 0
+    ? `Delete group "${groupName}"? Its ${count} video(s) will become ungrouped.`
+    : `Delete empty group "${groupName}"?`;
+  if (!confirm(msg)) return;
+  state.videos.forEach(v => { if (v.collection === colId && v.group === groupName) v.group = ''; });
+  if (state.pendingGroups?.[colId]) {
+    state.pendingGroups[colId] = state.pendingGroups[colId].filter(g => g !== groupName);
+  }
+  save(); renderCards();
+  showToast(`Group "${groupName}" deleted`);
+}
+
+// Move-to-group modal
+let moveGroupVideoId = null;
+function openMoveGroupModal(videoId) {
+  moveGroupVideoId = videoId;
+  const v = state.videos.find(v => v.id === videoId);
+  if (!v) return;
+  const colId = v.collection;
+  const groups = getGroupsForCollection(colId);
+  const pending = state.pendingGroups?.[colId] || [];
+  const allGroups = [...new Set([...groups, ...pending])].sort();
+
+  const sel = document.getElementById('moveGroupSelect');
+  sel.innerHTML = '<option value="">— No group (ungrouped) —</option>';
+  allGroups.forEach(g => {
+    sel.innerHTML += `<option value="${g}"${g === v.group ? ' selected' : ''}>${g}</option>`;
+  });
+  document.getElementById('moveGroupNewInput').value = '';
+  document.getElementById('moveGroupVideoTitle').textContent = v.title || 'Untitled';
+  openModal('moveGroupModal');
+}
+
+function saveMoveGroup() {
+  const v = state.videos.find(v => v.id === moveGroupVideoId);
+  if (!v) return;
+  const newGroupInput = document.getElementById('moveGroupNewInput').value.trim();
+  const selected = document.getElementById('moveGroupSelect').value;
+  const finalGroup = newGroupInput || selected;
+  v.group = finalGroup;
+  if (finalGroup && v.collection) {
+    if (!state.pendingGroups) state.pendingGroups = {};
+    if (!state.pendingGroups[v.collection]) state.pendingGroups[v.collection] = [];
+    if (!state.pendingGroups[v.collection].includes(finalGroup))
+      state.pendingGroups[v.collection].push(finalGroup);
+  }
+  save(); closeModal('moveGroupModal'); renderCards();
+  showToast(`✓ Moved to ${finalGroup ? `"${finalGroup}"` : 'ungrouped'}`);
+}
+
+function escHtml(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escAttr(str) {
+  return String(str||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
+}
+
+// ──────────────────────────────────────────────
+// ACTIONS
+// ──────────────────────────────────────────────
+function filterByCollection(id, btn) {
+  currentFilter = id;
+  document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const titles = { all: 'All Videos', recent: 'Recently Added', watched: 'Watched' };
+  if (titles[id]) {
+    document.getElementById('sectionTitle').textContent = titles[id];
+  } else {
+    const col = state.collections.find(c => c.id === id);
+    document.getElementById('sectionTitle').textContent = col ? col.name : 'Collection';
+  }
+  renderCards();
+}
+
+function setView(v) {
+  currentView = v;
+  document.getElementById('gridBtn').classList.toggle('active', v === 'grid');
+  document.getElementById('listBtn').classList.toggle('active', v === 'list');
+  renderCards();
+}
+
+function handleSearch() {
+  searchQuery = document.getElementById('searchInput').value;
+  renderCards();
+}
+
+async function quickAdd() {
+  const input = document.getElementById('quickAddInput');
+  const url = input.value.trim();
+  if (!url || !isYouTubeUrl(url)) {
+    showToast('⚠️ Please paste a valid YouTube URL');
+    return;
+  }
+  const videoId = extractVideoId(url);
+  if (!videoId) { showToast('⚠️ Could not extract video ID'); return; }
+  
+  addVideo({ url, videoId, title: '', channel: '', note: '', collection: '', added: Date.now(), watched: false, id: generateId() });
+  input.value = '';
+  showToast('✓ Video saved to vault');
+}
+
+function addVideo(video) {
+  state.videos.unshift(video);
+  save();
+  renderSidebar();
+  renderCards();
+}
+
+function deleteVideo(id) {
+  state.videos = state.videos.filter(v => v.id !== id);
+  save();
+  renderSidebar();
+  renderCards();
+  showToast('Removed from vault');
+}
+
+function toggleWatched(id) {
+  const v = state.videos.find(v => v.id === id);
+  if (v) { v.watched = !v.watched; save(); renderSidebar(); renderCards(); }
+}
+
+function markWatched(id) {
+  const v = state.videos.find(v => v.id === id);
+  if (v && !v.watched) { v.watched = true; save(); renderSidebar(); }
+}
+
+function toggleNote(id) {
+  const ta = document.getElementById(`note-edit-${id}`);
+  const nt = document.getElementById(`note-text-${id}`);
+  if (ta) {
+    const visible = ta.classList.contains('visible');
+    ta.classList.toggle('visible', !visible);
+    if (!visible) { ta.focus(); if(nt) nt.style.display='none'; }
+    else if(nt) nt.style.display='';
+  }
+}
+
+function saveNote(id, value) {
+  const v = state.videos.find(v => v.id === id);
+  if (v) {
+    v.note = value.trim();
+    save();
+    renderCards();
+  }
+}
+
+function copyUrl(url) {
+  navigator.clipboard.writeText(url).then(() => showToast('✓ URL copied to clipboard'));
+}
+
+// ──────────────────────────────────────────────
+// ADD MODAL
+// ──────────────────────────────────────────────
+function openAddModal() {
+  document.getElementById('addUrl').value = '';
+  document.getElementById('addTitle').value = '';
+  document.getElementById('addNote').value = '';
+  document.getElementById('addGroupNew').value = '';
+  // Pre-select current collection if viewing one
+  const colSel = document.getElementById('addCollection');
+  if (currentFilter !== 'all' && currentFilter !== 'recent' && currentFilter !== 'watched') {
+    colSel.value = currentFilter;
+    refreshGroupSelect('addCollection', 'addGroup');
+  } else {
+    colSel.value = '';
+    document.getElementById('addGroup').innerHTML = '<option value="">— No group —</option>';
+  }
+  openModal('addModal');
+}
+
+function previewUrl() {
+  const url = document.getElementById('addUrl').value.trim();
+  const videoId = extractVideoId(url);
+  if (videoId) {
+    const titleInput = document.getElementById('addTitle');
+    if (!titleInput.value) titleInput.placeholder = `YouTube video (${videoId})`;
+  }
+}
+
+function saveVideo() {
+  const url = document.getElementById('addUrl').value.trim();
+  if (!url || !isYouTubeUrl(url)) { showToast('⚠️ Enter a valid YouTube URL'); return; }
+  const videoId = extractVideoId(url);
+  if (!videoId) { showToast('⚠️ Could not parse video ID'); return; }
+
+  const colId = document.getElementById('addCollection').value;
+  const groupNew = document.getElementById('addGroupNew').value.trim();
+  const groupSel = document.getElementById('addGroup').value;
+  const group = groupNew || groupSel;
+
+  // Register group as pending if new
+  if (group && colId) {
+    if (!state.pendingGroups) state.pendingGroups = {};
+    if (!state.pendingGroups[colId]) state.pendingGroups[colId] = [];
+    if (!state.pendingGroups[colId].includes(group)) state.pendingGroups[colId].push(group);
+  }
+
+  addVideo({
+    id: generateId(),
+    url, videoId,
+    title: document.getElementById('addTitle').value.trim() || `YouTube Video`,
+    channel: '',
+    note: document.getElementById('addNote').value.trim(),
+    collection: colId,
+    group,
+    added: Date.now(),
+    watched: false,
+  });
+  closeModal('addModal');
+  showToast('✓ Saved to vault');
+}
+
+// ──────────────────────────────────────────────
+// COLLECTION MODAL
+// ──────────────────────────────────────────────
+function openCollectionModal() {
+  document.getElementById('collectionName').value = '';
+  state.selectedColor = COLLECTION_COLORS[Math.floor(Math.random() * COLLECTION_COLORS.length)];
+  renderColorPicker();
+  openModal('collectionModal');
+}
+
+function startNewCollection() {
+  openCollectionModal();
+}
+
+function renderColorPicker() {
+  const cp = document.getElementById('colorPicker');
+  cp.innerHTML = COLLECTION_COLORS.map(c => `
+    <div class="color-chip ${c === state.selectedColor ? 'selected' : ''}"
+      style="background:${c}"
+      onclick="selectColor('${c}')"></div>
+  `).join('');
+}
+
+function selectColor(c) {
+  state.selectedColor = c;
+  renderColorPicker();
+}
+
+function saveCollection() {
+  const name = document.getElementById('collectionName').value.trim();
+  if (!name) { showToast('⚠️ Enter a collection name'); return; }
+  state.collections.push({ id: generateId(), name, color: state.selectedColor });
+  save();
+  closeModal('collectionModal');
+  renderSidebar();
+  showToast(`✓ "${name}" created`);
+}
+
+// ──────────────────────────────────────────────
+// IMPORT MODAL
+// ──────────────────────────────────────────────
+function openImportModal() {
+  document.getElementById('importText').value = '';
+  openModal('importModal');
+}
+
+function importUrls() {
+  const text = document.getElementById('importText').value;
+  const collection = document.getElementById('importCollection').value;
+  const groupNew = document.getElementById('importGroupNew').value.trim();
+  const groupSel = document.getElementById('importGroup').value;
+  const group = groupNew || groupSel;
+
+  if (group && collection) {
+    if (!state.pendingGroups) state.pendingGroups = {};
+    if (!state.pendingGroups[collection]) state.pendingGroups[collection] = [];
+    if (!state.pendingGroups[collection].includes(group)) state.pendingGroups[collection].push(group);
+  }
+
+  const lines = text.split('\n').map(l => l.trim()).filter(l => isYouTubeUrl(l));
+  let count = 0;
+  lines.forEach(url => {
+    const videoId = extractVideoId(url);
+    if (videoId) {
+      state.videos.unshift({ id: generateId(), url, videoId, title: '', channel: '', note: '', collection, group, added: Date.now(), watched: false });
+      count++;
+    }
+  });
+  if (count) {
+    save(); renderSidebar(); renderCards();
+    closeModal('importModal');
+    showToast(`✓ Imported ${count} video${count !== 1 ? 's' : ''}${group ? ` into "${group}"` : ''}`);
+  } else {
+    showToast('⚠️ No valid YouTube URLs found');
+  }
+}
+
+// ──────────────────────────────────────────────
+// EXPORT
+// ──────────────────────────────────────────────
+function exportData() {
+  const data = JSON.stringify(state, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'tubevault-export.json';
+  a.click();
+  showToast('✓ Exported as JSON');
+}
+
+// ──────────────────────────────────────────────
+// MODAL HELPERS
+// ──────────────────────────────────────────────
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+
+// ──────────────────────────────────────────────
+// TOAST
+// ──────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ──────────────────────────────────────────────
+// SEED DATA (first load)
+// ──────────────────────────────────────────────
+function seedData() {
+  if (state.videos.length === 0) {
+    const seeds = [
+      { url: 'https://www.youtube.com/watch?v=XtQMytORBmM', videoId: 'XtQMytORBmM', title: 'Unity Character Controller from Scratch', channel: 'Brackeys', collection: 'unity', group: 'Character Movement', note: 'Great foundation for the platformer project. Check timestamp 12:30 for slope handling.' },
+      { url: 'https://www.youtube.com/watch?v=vFWnv9aRhT8', videoId: 'vFWnv9aRhT8', title: 'Unity Mobile Performance Deep Dive', channel: 'Unity', collection: 'unity', group: 'Performance', note: '' },
+      { url: 'https://www.youtube.com/watch?v=bFOAipGJGA0', videoId: 'bFOAipGJGA0', title: 'Unity Physics — Rigidbody & Colliders', channel: 'Unity', collection: 'unity', group: 'Physics', note: 'Revisit for slope controller refactor' },
+      { url: 'https://www.youtube.com/watch?v=K0fbBFKuMoE', videoId: 'K0fbBFKuMoE', title: 'Game Feel — How to Make Games Fun', channel: 'Extra Credits', collection: 'gamedesign', group: 'Polish', note: 'Must revisit for juice/polish pass' },
+      { url: 'https://www.youtube.com/watch?v=9tFSyMdnuQk', videoId: '9tFSyMdnuQk', title: 'Level Design Patterns for Platformers', channel: 'GMTK', collection: 'gamedesign', group: 'Level Design', note: '' },
+    ];
+    seeds.forEach(s => state.videos.push({ id: generateId(), ...s, added: Date.now() - Math.random()*5*24*3600*1000, watched: false }));
+    save();
+  }
+}
+
+// ──────────────────────────────────────────────
+// INIT
+// ──────────────────────────────────────────────
+seedData();
+renderSidebar();
+renderCards();
+</script>
+</body>
+</html>
