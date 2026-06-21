@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
-// Exported from TubeVault on 21/06/2026, 04:34:31
+// Exported from TubeVault on 21/6/2026, 8:46:32 pm
 //
 // STRUCTURE — easy to browse/edit in any JSON editor:
 //   DEFAULT_COLLECTIONS
@@ -125,32 +125,6 @@ const DEFAULT_COLLECTIONS = [
           title: 'Unity Physics — Rigidbody & Colliders',
           channel: 'Unity',
           note: 'Revisit for slope controller refactor'
-        },
-      ]
-    },
-    ungrouped: []
-  },
-  {
-    id: 'gamedesign',
-    name: 'Game Design',
-    color: '#26A69A',
-    groups: {
-      'Polish': [
-        {
-          url: 'https://www.youtube.com/watch?v=K0fbBFKuMoE',
-          videoId: 'K0fbBFKuMoE',
-          title: 'Game Feel — How to Make Games Fun',
-          channel: 'Extra Credits',
-          note: 'Must revisit for juice/polish pass'
-        },
-      ],
-      'Level Design': [
-        {
-          url: 'https://www.youtube.com/watch?v=9tFSyMdnuQk',
-          videoId: '9tFSyMdnuQk',
-          title: 'Level Design Patterns for Platformers',
-          channel: 'GMTK',
-          note: ''
         },
       ]
     },

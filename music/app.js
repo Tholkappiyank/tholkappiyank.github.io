@@ -257,7 +257,12 @@ function renderPlaylistsSidebar() {
   list.innerHTML = '';
   state.playlists.forEach(pl => {
     const isActive = currentFilter === `playlist:${pl.id}`;
-    const count = pl.videoIds ? pl.videoIds.length : 0;
+    
+    // Before
+    //const count = pl.videoIds ? pl.videoIds.length : 0;
+    // After
+    const count = pl.videoIds ? pl.videoIds.filter(id => state.videos.find(v => v.id === id)).length : 0;
+
     const btn = document.createElement('button');
     btn.className = 'sidebar-item' + (isActive ? ' active' : '');
     const dotColor = pl.color || '#78909C';
@@ -434,18 +439,15 @@ function deleteCollection(e, colId) {
   if (!col) return;
   const count = state.videos.filter(v => v.collection === colId).length;
   const msg = count > 0
-    ? `Delete "${col.name}"? Its ${count} video(s) will become uncollected.`
-    : `Delete empty collection "${col.name}"?`;
-  if (!confirm(msg)) return;
-
-  // Unassign videos
-  state.videos.forEach(v => { if (v.collection === colId) v.collection = ''; });
-  state.collections = state.collections.filter(c => c.id !== colId);
-  if (currentFilter === colId) currentFilter = 'all';
-  save();
-  renderSidebar();
-  renderCards();
-  showToast(`"${col.name}" deleted`);
+    ? `"${col.name}" and its ${count} video${count !== 1 ? 's' : ''} will be permanently deleted.`
+    : `"${col.name}" will be permanently deleted.`;
+  showConfirm('Delete Collection', msg, 'Delete', () => {
+    state.videos = state.videos.filter(v => v.collection !== colId);
+    state.collections = state.collections.filter(c => c.id !== colId);
+    if (currentFilter === colId) currentFilter = 'all';
+    save(); renderSidebar(); renderCards();
+    showToast(`✓ "${col.name}" deleted`);
+  });
 }
 
 function getGroupsForCollection(colId) {
@@ -815,15 +817,16 @@ function renameGroupPrompt(colId, oldName) {
 function deleteGroupPrompt(colId, groupName) {
   const count = state.videos.filter(v => v.collection === colId && v.group === groupName).length;
   const msg = count > 0
-    ? `Delete group "${groupName}"? Its ${count} video(s) will become ungrouped.`
-    : `Delete empty group "${groupName}"?`;
-  if (!confirm(msg)) return;
-  state.videos.forEach(v => { if (v.collection === colId && v.group === groupName) v.group = ''; });
-  if (state.pendingGroups?.[colId]) {
-    state.pendingGroups[colId] = state.pendingGroups[colId].filter(g => g !== groupName);
-  }
-  save(); renderCards();
-  showToast(`Group "${groupName}" deleted`);
+    ? `"${groupName}" and its ${count} video${count !== 1 ? 's' : ''} will be permanently deleted.`
+    : `"${groupName}" will be permanently deleted.`;
+  showConfirm('Delete Group', msg, 'Delete', () => {
+    state.videos = state.videos.filter(v => !(v.collection === colId && v.group === groupName));
+    if (state.pendingGroups?.[colId]) {
+      state.pendingGroups[colId] = state.pendingGroups[colId].filter(g => g !== groupName);
+    }
+    save(); renderSidebar(); renderCards();
+    showToast(`✓ Group "${groupName}" deleted`);
+  });
 }
 
 // Move-to-group modal
@@ -1058,21 +1061,30 @@ function toggleNote(id) {
 
 function saveNote(id, value) {
   const v = state.videos.find(v => v.id === id);
-  if (v) {
-    v.note = value.trim();
-    save();
-    // Update the note text display in-place without re-rendering
-    const nt = document.getElementById('note-text-' + id);
-    if (nt) {
-      nt.textContent = v.note;
-      nt.style.display = v.note ? '' : 'none';
+  if (!v) return;
+  v.note = value.trim();
+  save();
+
+  const ta = document.getElementById('note-edit-' + id);
+  let nt = document.getElementById('note-text-' + id);
+
+  if (v.note) {
+    if (!nt) {
+      // Create the note-text element and insert it before the textarea
+      nt = document.createElement('div');
+      nt.className = 'card-note';
+      nt.id = 'note-text-' + id;
+      if (ta) ta.parentNode.insertBefore(nt, ta);
     }
-    const ta = document.getElementById('note-edit-' + id);
-    if (ta) {
-      ta.classList.remove('visible');
-      if (nt) nt.style.display = v.note ? '' : 'none';
-    }
+    nt.textContent = v.note;
+    nt.style.display = '';
+  } else if (nt) {
+    // Empty note — hide the display element
+    nt.style.display = 'none';
   }
+
+  // Hide the textarea
+  if (ta) ta.classList.remove('visible');
 }
 
 function copyUrl(url) {
@@ -1326,13 +1338,18 @@ function clearPlaylist(id) {
 }
 
 function deletePlaylist(id) {
-  state.playlists = state.playlists.filter(p => p.id !== id);
-  // If currently viewing the deleted playlist, go back to All
-  if (currentFilter === `playlist:${id}`) {
-    filterByCollection('all', document.querySelector('.sidebar-item'));
-  }
-  save(); renderSidebar(); renderCards();
-  showToast('✓ Playlist removed');
+  const pl = state.playlists.find(p => p.id === id);
+  if (!pl) return;
+  showConfirm('Delete Playlist',
+    `"${pl.name}" will be permanently deleted. Videos will not be affected.`,
+    'Delete', () => {
+    state.playlists = state.playlists.filter(p => p.id !== id);
+    if (currentFilter === `playlist:${id}`) {
+      filterByCollection('all', document.querySelector('.sidebar-item'));
+    }
+    save(); renderSidebar(); renderCards();
+    showToast(`✓ "${pl.name}" deleted`);
+  });
 }
 
 function addVideoToPlaylist(videoId, playlistId) {
@@ -2008,6 +2025,30 @@ document.addEventListener('click', (e) => {
 });
 
 // ──────────────────────────────────────────────
+// CONFIRM MODAL
+// ──────────────────────────────────────────────
+let _confirmCallback = null;
+
+function showConfirm(title, message, okLabel, callback) {
+  document.getElementById('confirmTitle').textContent = title;
+  document.getElementById('confirmMessage').textContent = message;
+  document.getElementById('confirmOkBtn').textContent = okLabel || 'Delete';
+  _confirmCallback = callback;
+  openModal('confirmModal');
+}
+
+function confirmOk() {
+  const cb = _confirmCallback;
+  closeConfirmModal();
+  if (cb) { cb(); }
+}
+
+function closeConfirmModal() {
+  closeModal('confirmModal');
+  _confirmCallback = null;
+}
+
+// ──────────────────────────────────────────────
 // MODAL HELPERS
 // ──────────────────────────────────────────────
 function openModal(id) {
@@ -2044,7 +2085,6 @@ function seedData() {
   if (state.videos.length === 0) {
     let baseTime = Date.now();
     DEFAULT_COLLECTIONS.forEach(col => {
-      // Videos inside named groups
       Object.entries(col.groups || {}).forEach(([groupName, videos]) => {
         videos.forEach(v => {
           state.videos.push({
@@ -2057,7 +2097,6 @@ function seedData() {
           });
         });
       });
-      // Videos directly in the collection (no sub-group)
       (col.ungrouped || []).forEach(v => {
         state.videos.push({
           id: generateId(),
@@ -2069,7 +2108,6 @@ function seedData() {
         });
       });
     });
-    // Apply watched history from watched.js
     if (typeof WATCHED_VIDEO_IDS !== 'undefined' && WATCHED_VIDEO_IDS.length) {
       state.videos.forEach(v => {
         if (WATCHED_VIDEO_IDS.includes(v.videoId)) {
@@ -2078,8 +2116,26 @@ function seedData() {
         }
       });
     }
+    remapPlaylistIds();
     save();
   }
+}
+
+function remapPlaylistIds() {
+  const ytIdMap = {};
+  state.videos.forEach(v => { if (v.videoId) ytIdMap[v.videoId] = v.id; });
+  state.playlists.forEach(pl => {
+    const def = (typeof DEFAULT_PLAYLISTS !== 'undefined') && DEFAULT_PLAYLISTS.find(p => p.id === pl.id);
+    if (def && def.videos && def.videos.length) {
+      const mapped = def.videos.map(dv => ytIdMap[dv.videoId]).filter(Boolean);
+      if (mapped.length) { pl.videoIds = mapped; return; }
+    }
+    const valid = pl.videoIds.filter(id => state.videos.find(v => v.id === id));
+    if (!valid.length && pl.videoIds.length) {
+      const byYt = state.videos.filter(v => v.videoId && pl.videoIds.includes(v.videoId));
+      if (byYt.length) pl.videoIds = byYt.map(v => v.id);
+    }
+  });
 }
 
 // ──────────────────────────────────────────────
@@ -2214,7 +2270,17 @@ let pvState = {
   mode: 'sequential', // 'sequential' | 'random'
   order: [],          // video IDs in play order
   index: 0,
+  autoplay: true,     // auto-advance to next video when current ends
 };
+
+// YouTube IFrame API player instance
+let ytPlayer = null;
+let ytReady = false;
+
+// Called by YouTube IFrame API when loaded
+function onYouTubeIframeAPIReady() {
+  ytReady = true;
+}
 
 function openPlaylistView(plId) {
   const pl = state.playlists.find(p => p.id === plId);
@@ -2288,23 +2354,85 @@ function pvPlayIndex(i) {
   pvState.index = i;
   const vidId = pvState.order[i];
   const v = state.videos.find(v => v.id === vidId);
-  if (!v) { pvPlayIndex(i + 1); return; }
+  if (!v) { if (i + 1 < pvState.order.length) pvPlayIndex(i + 1); return; }
 
-  // Set iframe src
-  const iframe = document.getElementById('pvIframe');
-  iframe.src = `https://www.youtube.com/embed/${v.videoId}?autoplay=1&rel=0`;
-
-  // Mark watched
   markWatched(v.id);
 
-  // Update active track highlight
+  const container = document.getElementById('pvIframeContainer');
+
+  if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
+    try {
+      ytPlayer.loadVideoById(v.videoId);
+    } catch(e) {
+      ytPlayer = null;
+      pvPlayIndex(i);
+      return;
+    }
+  } else if (ytReady && window.YT && window.YT.Player) {
+    if (container) container.innerHTML = '<div id="ytPlayerEl" style="width:100%;height:100%;"></div>';
+    ytPlayer = new window.YT.Player('ytPlayerEl', {
+      width: '100%',
+      height: '100%',
+      videoId: v.videoId,
+      playerVars: { autoplay: 1, rel: 0, modestbranding: 1 },
+      events: {
+        onReady: function() {
+          try { ytPlayer.playVideo(); } catch(e) {}
+        },
+        onStateChange: onYtPlayerStateChange,
+      }
+    });
+  } else {
+    if (container) container.innerHTML =
+      `<iframe src="https://www.youtube.com/embed/${v.videoId}?autoplay=1&rel=0&enablejsapi=1"
+       style="width:100%;height:100%;border:none;position:absolute;inset:0;" allowfullscreen
+       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
+    if (!ytReady) {
+      const checkInterval = setInterval(() => {
+        if (ytReady && window.YT && window.YT.Player) {
+          clearInterval(checkInterval);
+          if (container) container.innerHTML = '<div id="ytPlayerEl" style="width:100%;height:100%;"></div>';
+          ytPlayer = new window.YT.Player('ytPlayerEl', {
+            width: '100%',
+            height: '100%',
+            videoId: v.videoId,
+            playerVars: { autoplay: 1, rel: 0, modestbranding: 1 },
+            events: {
+              onReady: function() {
+                try { ytPlayer.playVideo(); } catch(e) {}
+              },
+              onStateChange: onYtPlayerStateChange,
+            }
+          });
+        }
+      }, 500);
+      setTimeout(() => clearInterval(checkInterval), 15000);
+    }
+  }
+
   document.querySelectorAll('.pv-track').forEach((el, idx) => {
     el.classList.toggle('active', idx === i);
   });
 
-  // Scroll active track into view
   const activeTrack = document.getElementById('pvt-' + i);
   if (activeTrack) activeTrack.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function onYtPlayerStateChange(event) {
+  // YT.PlayerState.ENDED = 0
+  if (event.data === 0 && pvState.autoplay) {
+    const next = pvState.index + 1;
+    if (next < pvState.order.length) {
+      pvPlayIndex(next);
+    }
+  }
+}
+
+function pvToggleAutoplay() {
+  pvState.autoplay = !pvState.autoplay;
+  const btn = document.getElementById('pvAutoBtn');
+  if (btn) btn.classList.toggle('active', pvState.autoplay);
+  showToast(pvState.autoplay ? '✓ Auto-play on' : 'Auto-play off');
 }
 
 function pvSetMode(mode) {
@@ -2321,9 +2449,13 @@ function closePvView(restoreAll) {
   document.getElementById('playlistView').style.display = 'none';
   document.getElementById('mainView').style.display = '';
   document.getElementById('sidebar').style.display = '';
-  // Blank the iframe to stop video playback
-  const iframe = document.getElementById('pvIframe');
-  if (iframe) iframe.src = '';
+  // Stop and destroy the YouTube player
+  if (ytPlayer && typeof ytPlayer.stopVideo === 'function') {
+    try { ytPlayer.stopVideo(); ytPlayer.destroy(); } catch(e) {}
+    ytPlayer = null;
+  }
+  const container = document.getElementById('pvIframeContainer');
+  if (container) container.innerHTML = '';
   pvState.plId = null;
 
   if (restoreAll === false) return; // called from filterByCollection, don't change filter

@@ -98,6 +98,8 @@
   .btn-primary:hover { background: var(--indigo-bright); }
   .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
   .btn-ghost:hover { background: var(--surface); color: var(--text); }
+  .btn-danger { background: var(--red); color: white; border: none; }
+  .btn-danger:hover { background: #ff4d4d; }
   .btn-icon {
     background: transparent; border: none;
     color: var(--text-muted); cursor: pointer;
@@ -1267,3 +1269,10 @@
     transition: color 0.15s;
   }
   .export-location-clear:hover { color: var(--text); }
+
+  /* Autoplay label in playlist header */
+  .pv-autoplay-label {
+    font-size: 9px; font-family: var(--mono);
+    color: var(--text-dim); text-transform: uppercase;
+    letter-spacing: 0.05em; margin-top: 1px;
+  }
