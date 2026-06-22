@@ -251,22 +251,29 @@ function renderSidebar() {
   renderQuickAddLocation();
 }
 
+let plDragSrcIndex = null;
+
 function renderPlaylistsSidebar() {
   const list = document.getElementById('playlistsList');
   if (!list) return;
   list.innerHTML = '';
-  state.playlists.forEach(pl => {
+  state.playlists.forEach((pl, index) => {
     const isActive = currentFilter === `playlist:${pl.id}`;
-    
-    // Before
-    //const count = pl.videoIds ? pl.videoIds.length : 0;
-    // After
     const count = pl.videoIds ? pl.videoIds.filter(id => state.videos.find(v => v.id === id)).length : 0;
 
     const btn = document.createElement('button');
-    btn.className = 'sidebar-item' + (isActive ? ' active' : '');
+    btn.className = 'sidebar-item draggable' + (isActive ? ' active' : '');
+    btn.dataset.index = index;
+    btn.draggable = true;
     const dotColor = pl.color || '#78909C';
     btn.innerHTML = `
+      <span class="drag-handle" title="Drag to reorder">
+        <svg width="12" height="10" viewBox="0 0 12 10" fill="currentColor">
+          <rect x="0" y="0" width="12" height="1.5" rx="1"/>
+          <rect x="0" y="4" width="12" height="1.5" rx="1"/>
+          <rect x="0" y="8" width="12" height="1.5" rx="1"/>
+        </svg>
+      </span>
       <span class="collection-dot" style="background:${dotColor}"></span>
       <span class="col-name">${escHtml(pl.name)}</span>
       <span class="count${count ? '' : ' count-empty'}">${count}</span>
@@ -281,12 +288,83 @@ function renderPlaylistsSidebar() {
           <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
         </button>
       </span>`;
-    btn.onclick = (e) => {
-      // If rename UI is active inside this button, ignore the click
+
+    btn.addEventListener('click', (e) => {
+      if (btn.classList.contains('was-dragging')) {
+        btn.classList.remove('was-dragging');
+        return;
+      }
       if (btn.querySelector('.col-rename-input')) return;
       filterByCollection(`playlist:${pl.id}`, btn);
-    };
+    });
+
+    btn.addEventListener('dragstart', (e) => {
+      plDragSrcIndex = index;
+      btn.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', index);
+      setTimeout(() => btn.classList.add('dragging'), 0);
+    });
+
+    btn.addEventListener('dragend', () => {
+      btn.classList.remove('dragging');
+      btn.classList.add('was-dragging');
+      clearDropIndicators();
+    });
+
+    btn.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      const targetIndex = parseInt(btn.dataset.index);
+      if (plDragSrcIndex === null || plDragSrcIndex === targetIndex) return;
+      clearDropIndicators();
+      const rect = btn.getBoundingClientRect();
+      const midY = rect.top + rect.height / 2;
+      if (e.clientY < midY) {
+        btn.classList.add('drag-over-top');
+      } else {
+        btn.classList.add('drag-over-bottom');
+      }
+    });
+
+    btn.addEventListener('dragleave', () => {
+      btn.classList.remove('drag-over-top', 'drag-over-bottom');
+    });
+
+    btn.addEventListener('drop', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      clearDropIndicators();
+      const targetIndex = parseInt(btn.dataset.index);
+      if (plDragSrcIndex === null || plDragSrcIndex === targetIndex) return;
+
+      const rect = btn.getBoundingClientRect();
+      const midY = rect.top + rect.height / 2;
+      let insertAt = e.clientY < midY ? targetIndex : targetIndex + 1;
+
+      const moved = state.playlists.splice(plDragSrcIndex, 1)[0];
+      if (insertAt > plDragSrcIndex) insertAt--;
+      state.playlists.splice(insertAt, 0, moved);
+
+      plDragSrcIndex = null;
+      save();
+      renderSidebar();
+      showToast(`↕ "${moved.name}" reordered`);
+    });
+
     list.appendChild(btn);
+  });
+
+  list.addEventListener('dragover', (e) => e.preventDefault());
+  list.addEventListener('drop', (e) => {
+    if (plDragSrcIndex === null) return;
+    const moved = state.playlists.splice(plDragSrcIndex, 1)[0];
+    state.playlists.push(moved);
+    plDragSrcIndex = null;
+    clearDropIndicators();
+    save();
+    renderSidebar();
+    showToast(`↕ "${moved.name}" moved to bottom`);
   });
 }
 
@@ -1625,12 +1703,35 @@ async function saveToFolderOrDownload(filename, text, mimeType) {
 // ──────────────────────────────────────────────
 // EXPORT
 // ──────────────────────────────────────────────
+let _exportCallback = null;
+
+function showExportConfirm(title, message, details, callback) {
+  document.getElementById('exportConfirmTitle').textContent = title;
+  document.getElementById('exportConfirmMessage').textContent = message;
+  document.getElementById('exportConfirmDetails').textContent = details;
+  _exportCallback = callback;
+  openModal('exportConfirmModal');
+}
+
+function confirmExport() {
+  const cb = _exportCallback;
+  closeModal('exportConfirmModal');
+  if (cb) { cb(); }
+}
+
 function exportData() {
-  const data = JSON.stringify(state, null, 2);
-  saveToFolderOrDownload('tubevault-export.json', data, 'application/json').then(saved => {
-    showToast(saved ? '✓ Saved tubevault-export.json to folder' : '✓ Exported as JSON');
-  });
   closeExportMenu();
+  showExportConfirm(
+    'Export JSON',
+    'Export all your data as a JSON file.',
+    'File: tubevault-export.json',
+    () => {
+      const data = JSON.stringify(state, null, 2);
+      saveToFolderOrDownload('tubevault-export.json', data, 'application/json').then(saved => {
+        showToast(saved ? '✓ Saved tubevault-export.json to folder' : '✓ Exported as JSON');
+      });
+    }
+  );
 }
 
 // Exports the current collections + videos as a ready-to-paste
@@ -1766,10 +1867,17 @@ ${colorsBlock}
 ${collectionsBlock}
 `;
 
-  saveToFolderOrDownload('collections.js', fileContents, 'text/javascript').then(saved => {
-    showToast(saved ? '✓ Saved collections.js to folder' : '✓ Exported as collections.js');
-  });
   closeExportMenu();
+  showExportConfirm(
+    'Export Collections',
+    'Export your collections and videos as a JavaScript file.',
+    'File: collections.js\nContains: ' + state.collections.length + ' collection(s), ' + state.videos.length + ' video(s)',
+    () => {
+      saveToFolderOrDownload('collections.js', fileContents, 'text/javascript').then(saved => {
+        showToast(saved ? '✓ Saved collections.js to folder' : '✓ Exported as collections.js');
+      });
+    }
+  );
 }
 
 // Splits an array into chunks of a given size (used for formatting COLLECTION_COLORS)
@@ -1821,12 +1929,19 @@ function exportWatchedJs() {
   '];\n';
 
   const n = watchedVideoIds.length;
-  saveToFolderOrDownload('watched.js', fileContents, 'text/javascript').then(saved => {
-    const dest = saved ? 'to folder' : 'as watched.js';
-    if (n === 0) showToast('\u26a0\ufe0f No watched videos — exported empty watched.js');
-    else showToast('\u2713 Saved ' + n + ' watched video' + (n !== 1 ? 's' : '') + ' ' + dest);
-  });
   closeExportMenu();
+  showExportConfirm(
+    'Export Watched',
+    'Export your watched video history as a JavaScript file.',
+    'File: watched.js\nContains: ' + n + ' watched video(s)',
+    () => {
+      saveToFolderOrDownload('watched.js', fileContents, 'text/javascript').then(saved => {
+        const dest = saved ? 'to folder' : 'as watched.js';
+        if (n === 0) showToast('\u26a0\ufe0f No watched videos — exported empty watched.js');
+        else showToast('\u2713 Saved ' + n + ' watched video' + (n !== 1 ? 's' : '') + ' ' + dest);
+      });
+    }
+  );
 }
 
 function exportPlaylistJs() {
@@ -1876,21 +1991,37 @@ function exportPlaylistJs() {
 
   const fileContents = header + '\n' + blocks.join(',\n') + '\n];\n';
   const n = state.playlists.length;
-  saveToFolderOrDownload('playlist.js', fileContents, 'text/javascript').then(saved => {
-    showToast('\u2713 ' + (saved ? 'Saved' : 'Exported') + ' ' + n + ' playlist' + (n !== 1 ? 's' : '') + ' ' + (saved ? 'to folder' : 'as playlist.js'));
-  });
+  const totalVideos = state.playlists.reduce((sum, pl) => sum + pl.videoIds.length, 0);
+  const playlistDetails = state.playlists.map(pl => '• ' + pl.name + ' (' + pl.videoIds.length + ' videos)').join('\n');
   closeExportMenu();
+  showExportConfirm(
+    'Export Playlists',
+    'Export your playlists as a JavaScript file.',
+    'File: playlist.js\n\nPlaylists: ' + n + '\nTotal videos: ' + totalVideos + '\n\n' + playlistDetails,
+    () => {
+      saveToFolderOrDownload('playlist.js', fileContents, 'text/javascript').then(saved => {
+        showToast('\u2713 ' + (saved ? 'Saved' : 'Exported') + ' ' + n + ' playlist' + (n !== 1 ? 's' : '') + ' ' + (saved ? 'to folder' : 'as playlist.js'));
+      });
+    }
+  );
 }
 
 function exportAllJs() {
   closeExportMenu();
-  exportCollectionsJs();
-  setTimeout(function() { exportPlaylistJs(); }, 300);
-  setTimeout(function() { exportWatchedJs(); }, 600);
-  setTimeout(function() {
-    const dest = exportFolderHandle ? 'to folder' : 'as downloads';
-    showToast('\u2713 Exported collections.js, playlist.js & watched.js ' + dest);
-  }, 700);
+  showExportConfirm(
+    'Export All JS Files',
+    'Export all configuration files as JavaScript.',
+    'Files: collections.js, playlist.js, watched.js',
+    () => {
+      exportCollectionsJs();
+      setTimeout(function() { exportPlaylistJs(); }, 300);
+      setTimeout(function() { exportWatchedJs(); }, 600);
+      setTimeout(function() {
+        const dest = exportFolderHandle ? 'to folder' : 'as downloads';
+        showToast('\u2713 Exported collections.js, playlist.js & watched.js ' + dest);
+      }, 700);
+    }
+  );
 }
 
 // ──────────────────────────────────────────────
@@ -1995,18 +2126,6 @@ function selectLocation(colId, group) {
 // ──────────────────────────────────────────────
 // EXPORT ALL JS
 // ──────────────────────────────────────────────
-function exportAllJs() {
-  closeExportMenu();
-  // Fire all three JS exports in sequence with small delays
-  // so browsers don't block multiple simultaneous downloads
-  exportCollectionsJs();
-  setTimeout(function() { exportPlaylistJs(); }, 300);
-  setTimeout(function() { exportWatchedJs(); }, 600);
-  // Short delay then toast
-  setTimeout(function() {
-    showToast('✓ Exported collections.js, playlist.js & watched.js');
-  }, 700);
-}
 
 function toggleExportMenu() {
   const menu = document.getElementById('exportMenu');
