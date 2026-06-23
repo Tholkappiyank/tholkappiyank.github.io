@@ -36,6 +36,7 @@ state.playlists.forEach((pl, i) => {
 let currentFilter = 'all';
 let currentView = 'grid';
 let searchQuery = '';
+let newGroupColId = null;
 
 function save() {
   localStorage.setItem('tholsstudio', JSON.stringify(state));
@@ -530,11 +531,14 @@ function deleteCollection(e, colId) {
 
 function getGroupsForCollection(colId) {
   if (!colId) return [];
-  return [...new Set(
+  const fromVideos = new Set(
     state.videos
       .filter(v => v.collection === colId && v.group && v.group.trim())
       .map(v => v.group.trim())
-  )].sort();
+  );
+  const fromPending = state.pendingGroups?.[colId] || [];
+  fromPending.forEach(g => fromVideos.add(g));
+  return [...fromVideos].sort();
 }
 
 function refreshGroupSelect(collectionSelectId, groupSelectId) {
@@ -673,6 +677,13 @@ function renderGroupedByTitle(vids, colId, colColor, nested = false, expanded = 
     }
   });
 
+  // Show empty pending groups so they appear even with 0 videos
+  if (!nested && state.pendingGroups?.[colId]) {
+    state.pendingGroups[colId].forEach(gName => {
+      if (!grouped[gName]) grouped[gName] = [];
+    });
+  }
+
   const groupNames = Object.keys(grouped).sort();
   let html = '';
 
@@ -746,18 +757,10 @@ function renderGroupedByTitle(vids, colId, colColor, nested = false, expanded = 
   // Add new group button (only in single-collection view)
   if (!nested) {
     html += `<div class="add-group-row" id="addGroupRow-${colId}">
-      <button class="add-collection-btn" style="width:auto;padding:5px 12px;" onclick="showAddGroupInput('${escAttr(colId)}')">
-        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <button class="add-collection-btn" onclick="openGroupModal('${escAttr(colId)}')">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         New group
       </button>
-    </div>
-    <div id="newGroupInputRow-${colId}" style="display:none;padding:4px 0;">
-      <div style="display:flex;gap:8px;align-items:center;">
-        <input class="add-group-input" id="newGroupInput-${colId}" placeholder="Group name (e.g. Physics, AI, Shaders…)"
-          onkeydown="if(event.key==='Enter') confirmNewGroup('${escAttr(colId)}'); if(event.key==='Escape') hideAddGroupInput('${escAttr(colId)}')">
-        <button class="btn btn-primary" style="padding:5px 12px;font-size:12px;" onclick="confirmNewGroup('${escAttr(colId)}')">Add</button>
-        <button class="btn btn-ghost" style="padding:5px 10px;font-size:12px;" onclick="hideAddGroupInput('${escAttr(colId)}')">Cancel</button>
-      </div>
     </div>`;
   }
 
@@ -848,32 +851,24 @@ function toggleGroup(key) {
   chev?.classList.toggle('collapsed');
 }
 
-function showAddGroupInput(colId) {
-  document.getElementById(`addGroupRow-${colId}`).style.display = 'none';
-  const row = document.getElementById(`newGroupInputRow-${colId}`);
-  row.style.display = 'block';
-  document.getElementById(`newGroupInput-${colId}`)?.focus();
+function openGroupModal(colId) {
+  newGroupColId = colId;
+  document.getElementById('groupName').value = '';
+  openModal('groupModal');
+  setTimeout(() => document.getElementById('groupName')?.focus(), 100);
 }
 
-function hideAddGroupInput(colId) {
-  document.getElementById(`addGroupRow-${colId}`).style.display = 'flex';
-  const row = document.getElementById(`newGroupInputRow-${colId}`);
-  row.style.display = 'none';
-  if (document.getElementById(`newGroupInput-${colId}`))
-    document.getElementById(`newGroupInput-${colId}`).value = '';
-}
-
-function confirmNewGroup(colId) {
-  const input = document.getElementById(`newGroupInput-${colId}`);
-  const name = input?.value.trim();
+function saveGroup() {
+  const name = document.getElementById('groupName').value.trim();
   if (!name) { showToast('⚠️ Enter a group name'); return; }
-  // Group is just a label — no video assigned yet; just re-render with the knowledge it exists
-  // We store "pending groups" in state so they show even with 0 videos
   if (!state.pendingGroups) state.pendingGroups = {};
-  if (!state.pendingGroups[colId]) state.pendingGroups[colId] = [];
-  if (!state.pendingGroups[colId].includes(name)) state.pendingGroups[colId].push(name);
+  if (!state.pendingGroups[newGroupColId]) state.pendingGroups[newGroupColId] = [];
+  if (state.pendingGroups[newGroupColId].includes(name)) {
+    showToast('⚠️ Group already exists'); return;
+  }
+  state.pendingGroups[newGroupColId].push(name);
   save();
-  hideAddGroupInput(colId);
+  closeModal('groupModal');
   renderCards();
   showToast(`✓ Group "${name}" created`);
 }
@@ -2433,6 +2428,8 @@ function pvBuildOrder(pl) {
   pvState.order = ids;
 }
 
+let pvDragSrcIndex = null;
+
 function pvRenderList() {
   const pl = state.playlists.find(p => p.id === pvState.plId);
   if (!pl) return;
@@ -2455,7 +2452,23 @@ function pvRenderList() {
     const path = col ? (v.group ? `${col.name} / ${v.group}` : col.name) : (v.group || '');
     const thumb = `https://img.youtube.com/vi/${v.videoId}/mqdefault.jpg`;
     const isActive = i === pvState.index;
-    return `<div class="pv-track${isActive ? ' active' : ''}" onclick="pvPlayIndex(${i})" id="pvt-${i}">
+    return `<div class="pv-track${isActive ? ' active' : ''}" onclick="pvTrackClick(event, ${i})" id="pvt-${i}" draggable="true" data-pv-index="${i}">
+      <span class="pv-track-drag-handle" title="Drag to reorder">
+        <svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor">
+          <rect x="0" y="0" width="1.5" height="1.5" rx="0.5"/>
+          <rect x="4" y="0" width="1.5" height="1.5" rx="0.5"/>
+          <rect x="8" y="0" width="1.5" height="1.5" rx="0.5"/>
+          <rect x="0" y="4" width="1.5" height="1.5" rx="0.5"/>
+          <rect x="4" y="4" width="1.5" height="1.5" rx="0.5"/>
+          <rect x="8" y="4" width="1.5" height="1.5" rx="0.5"/>
+          <rect x="0" y="8" width="1.5" height="1.5" rx="0.5"/>
+          <rect x="4" y="8" width="1.5" height="1.5" rx="0.5"/>
+          <rect x="8" y="8" width="1.5" height="1.5" rx="0.5"/>
+          <rect x="0" y="12" width="1.5" height="1.5" rx="0.5"/>
+          <rect x="4" y="12" width="1.5" height="1.5" rx="0.5"/>
+          <rect x="8" y="12" width="1.5" height="1.5" rx="0.5"/>
+        </svg>
+      </span>
       <span class="pv-track-num">${i + 1}</span>
       <span class="pv-track-play-icon">
         <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -2467,6 +2480,133 @@ function pvRenderList() {
       </div>
     </div>`;
   }).join('');
+
+  pvAttachTrackDrag();
+}
+
+function pvTrackClick(event, i) {
+  const track = event.currentTarget;
+  if (track.classList.contains('was-dragging')) {
+    track.classList.remove('was-dragging');
+    return;
+  }
+  pvPlayIndex(i);
+}
+
+function pvAttachTrackDrag() {
+  const tracks = document.getElementById('pvTracks');
+  if (!tracks) return;
+
+  function clearIndicators() {
+    tracks.querySelectorAll('.pv-track-drag-over-top, .pv-track-drag-over-bottom').forEach(t => t.classList.remove('pv-track-drag-over-top', 'pv-track-drag-over-bottom'));
+  }
+
+  tracks.querySelectorAll('.pv-track').forEach(el => {
+    el.addEventListener('dragstart', (e) => {
+      pvDragSrcIndex = parseInt(el.dataset.pvIndex);
+      el.classList.add('pv-track-dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', pvDragSrcIndex);
+    });
+
+    el.addEventListener('dragend', () => {
+      el.classList.remove('pv-track-dragging');
+      el.classList.add('was-dragging');
+      clearIndicators();
+    });
+
+    el.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      const targetIndex = parseInt(el.dataset.pvIndex);
+      if (pvDragSrcIndex === null || pvDragSrcIndex === targetIndex) return;
+      clearIndicators();
+      const rect = el.getBoundingClientRect();
+      const midY = rect.top + rect.height / 2;
+      if (e.clientY < midY) {
+        el.classList.add('pv-track-drag-over-top');
+      } else {
+        el.classList.add('pv-track-drag-over-bottom');
+      }
+    });
+
+    el.addEventListener('dragleave', () => {
+      el.classList.remove('pv-track-drag-over-top', 'pv-track-drag-over-bottom');
+    });
+
+    el.addEventListener('drop', (e) => {
+      e.preventDefault();
+      clearIndicators();
+      const targetIndex = parseInt(el.dataset.pvIndex);
+      if (pvDragSrcIndex === null || pvDragSrcIndex === targetIndex) return;
+
+      const rect = el.getBoundingClientRect();
+      const midY = rect.top + rect.height / 2;
+      let insertAt = e.clientY < midY ? targetIndex : targetIndex + 1;
+
+      const moved = pvState.order.splice(pvDragSrcIndex, 1)[0];
+      if (insertAt > pvDragSrcIndex) insertAt--;
+      pvState.order.splice(insertAt, 0, moved);
+
+      const oldPlaying = pvState.index;
+      if (pvDragSrcIndex === oldPlaying) {
+        pvState.index = insertAt;
+      } else if (pvDragSrcIndex < oldPlaying && insertAt >= oldPlaying) {
+        pvState.index--;
+      } else if (pvDragSrcIndex > oldPlaying && insertAt <= oldPlaying) {
+        pvState.index++;
+      }
+
+      pvDragSrcIndex = null;
+      pvSaveOrderToPlaylist();
+      pvRenderList();
+      showToast('✓ Playlist order saved');
+    });
+  });
+
+  // Allow drop on empty space at the bottom
+  tracks.addEventListener('dragover', (e) => e.preventDefault());
+  tracks.addEventListener('drop', (e) => {
+    if (pvDragSrcIndex === null) return;
+    clearIndicators();
+    const moved = pvState.order.splice(pvDragSrcIndex, 1)[0];
+    pvState.order.push(moved);
+    const oldPlaying = pvState.index;
+    if (pvDragSrcIndex === oldPlaying) pvState.index = pvState.order.length - 1;
+    else if (pvDragSrcIndex < oldPlaying) pvState.index--;
+    pvDragSrcIndex = null;
+    pvSaveOrderToPlaylist();
+    pvRenderList();
+    showToast('✓ Playlist order saved');
+  });
+}
+
+function pvSaveOrderToPlaylist() {
+  const pl = state.playlists.find(p => p.id === pvState.plId);
+  if (!pl) return;
+  pl.videoIds = [...pvState.order];
+  save();
+
+  const defPl = (typeof DEFAULT_PLAYLISTS !== 'undefined') && DEFAULT_PLAYLISTS.find(p => p.id === pl.id);
+  if (defPl) {
+    defPl.videoIds = [...pvState.order];
+    const orderedVideos = pvState.order.map(id => {
+      const v = state.videos.find(v => v.id === id);
+      if (!v) return null;
+      const col = state.collections.find(c => c.id === v.collection);
+      const path = col ? (v.group ? col.name + ' / ' + v.group : col.name) : '';
+      return {
+        url: v.url || '',
+        videoId: v.videoId || '',
+        ...(v.playlistId ? { playlistId: v.playlistId } : {}),
+        title: v.title || '',
+        channel: v.channel || '',
+        ...(path ? { collectionPath: path } : {}),
+        note: v.note || '',
+      };
+    }).filter(Boolean);
+    defPl.videos = orderedVideos;
+  }
 }
 
 function pvPlayIndex(i) {

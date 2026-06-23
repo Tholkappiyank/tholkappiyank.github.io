@@ -306,6 +306,26 @@
   </div>
 </div>
 
+<!-- NEW GROUP MODAL -->
+<div class="modal-overlay" id="groupModal">
+  <div class="modal" style="width:360px;">
+    <div class="modal-title">
+      <svg width="16" height="16" fill="none" stroke="var(--indigo-bright)" stroke-width="2" viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+      New Group
+      <button class="modal-close" onclick="closeModal('groupModal')">×</button>
+    </div>
+    <div class="field">
+      <label>Group name</label>
+      <input type="text" id="groupName" placeholder="e.g. Physics, AI, Shaders…"
+        onkeydown="if(event.key==='Enter') saveGroup()">
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
+      <button class="btn btn-ghost" onclick="closeModal('groupModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveGroup()">Create</button>
+    </div>
+  </div>
+</div>
+
 <!-- EXPORT CONFIRM MODAL -->
 <div class="modal-overlay" id="exportConfirmModal">
   <div class="modal" style="width:400px;">
