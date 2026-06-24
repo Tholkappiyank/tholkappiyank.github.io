@@ -1,0 +1,224 @@
+// --------------------------------------------------------------
+// PLAYLIST CONFIG
+// Exported from TubeVault on 6/24/2026, 10:07:13 AM
+//
+// Each playlist: id, name, color, videoIds, videos (full details)
+// To apply as defaults: replace playlist.js and clear localStorage.
+// --------------------------------------------------------------
+
+const DEFAULT_PLAYLISTS = [
+  {
+    id: 'mqq9bpw24iah',
+    name: 'Veena',
+    color: '#26A69A',
+    videoIds: ['mqq9awnrqx7y', 'mqq9awnrk6ft', 'mqq9awnr6x7i', 'mqq9awnrxsf1', 'mqq9awnrnya0', 'mqq9awnrr12x', 'mqq9awnrfufz', 'mqq9awnrka44', 'mqq9awnrequl', 'mqq9awnr7uet', 'mqq9awnrvs8l', 'mqq9awnrmbck', 'mqq9awnr415s', 'mqq9awnr8ksd', 'mqq9awnrglub', 'mqq9awnrgmw3', 'mqq9awnrt10t', 'mqq9awnr0lg1', 'mqq9awnrhg7l', 'mqq9awnrm7cs', 'mqq9awnrmejj', 'mqq9awnr5aft', 'mqq9awnrp2qz'],
+    videos: [
+    {
+      url: 'https://www.youtube.com/watch?v=vIDl1E26FpU&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=2',
+      videoId: 'vIDl1E26FpU',
+      playlistId: 'PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY',
+      title: 'Azhagu Aayiram',
+      channel: 'INRECO Tamil Film Evergreen Nostalgic Songs',
+      collectionPath: 'Music / Veena',
+      note: 'Veena by Veenai Srinidhi'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=5ATSSUZuZNY&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY',
+      videoId: '5ATSSUZuZNY',
+      playlistId: 'PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY',
+      title: 'Paruvame Puthiya Paadal Paadu',
+      channel: '',
+      collectionPath: 'Music / Veena',
+      note: 'Veena by Veenai Srinidhi'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=4jocU6ueaoM&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=4',
+      videoId: '4jocU6ueaoM',
+      playlistId: 'PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY',
+      title: 'Perai Sollava',
+      channel: 'INRECO Tamil Film Evergreen Nostalgic Songs',
+      collectionPath: 'Music / Veena',
+      note: 'Veena by Veenai Srinidhi'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=MTKBYTaMHvY&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=3',
+      videoId: 'MTKBYTaMHvY',
+      playlistId: 'PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY',
+      title: 'Germaniyin Senthen Malare',
+      channel: 'INRECO Tamil Film Evergreen Nostalgic Songs',
+      collectionPath: 'Music / Veena',
+      note: 'Veena by Veenai Srinidhi'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=hemrgMKNnPQ&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=5',
+      videoId: 'hemrgMKNnPQ',
+      playlistId: 'PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY',
+      title: 'Andhi mazhai pozhigirathu',
+      channel: 'Veena Ranjani Mahesh',
+      collectionPath: 'Music / Veena',
+      note: 'Veena by  Ranjani mahesh'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=WPk_ztNMlS4&list=RDxOGOb8NFgoM&index=4',
+      videoId: 'WPk_ztNMlS4',
+      playlistId: 'RDxOGOb8NFgoM',
+      title: 'Ithazhil Kathai Ezhuthum',
+      channel: 'Stringwings official',
+      collectionPath: 'Music / Veena',
+      note: 'Veena Cover Phaninarayana veena'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=aLSA8Su-3ag',
+      videoId: 'aLSA8Su-3ag',
+      title: 'Ponvaanam paneer',
+      channel: 'Veena Ranjani Mahesh',
+      collectionPath: 'Music / Veena',
+      note: 'Veena Cover by  Ranjani mahesh'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=xGzUq06oqIk&list=RDxOGOb8NFgoM&index=3',
+      videoId: 'xGzUq06oqIk',
+      playlistId: 'RDxOGOb8NFgoM',
+      title: 'Maalaiyil Yaro Manathodu Pesa | மாலையில் யாரோ மனதோடு பேச |',
+      channel: 'Veena-Meerakrishna',
+      collectionPath: 'Music / Veena',
+      note: 'Veena Cover by Veena Meerakrishna'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=URIGe3sZbQI&list=RDxOGOb8NFgoM&index=2',
+      videoId: 'URIGe3sZbQI',
+      playlistId: 'RDxOGOb8NFgoM',
+      title: 'Manasu Mayangum | Manasu palike | Sippikkul muthu| Swati Mutyam | Illayaraja hits | Veena cover |',
+      channel: 'Veena Ranjani Mahesh',
+      collectionPath: 'Music / Veena',
+      note: 'Veena Cover by Ranjani mahesh'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=xOGOb8NFgoM&list=RDxOGOb8NFgoM&start_radio=1',
+      videoId: 'xOGOb8NFgoM',
+      playlistId: 'RDxOGOb8NFgoM',
+      title: 'Ilamai Enum poongatru',
+      channel: 'Veena Ranjani Mahesh',
+      collectionPath: 'Music / Veena',
+      note: 'Veena cover by Ranjani Mahesh'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=YNmM2ylbpw0&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=22',
+      videoId: 'YNmM2ylbpw0',
+      playlistId: 'PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY',
+      title: 'EllieGoulding|  FiftyShadesOfGrey',
+      channel: 'Veena Srivani',
+      collectionPath: 'Music / Veena',
+      note: 'Veena cover by Srivani'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=csD8r48xxTc&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=20',
+      videoId: 'csD8r48xxTc',
+      playlistId: 'PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY',
+      title: 'Oliyile therivathu | Azhagi',
+      channel: 'Veena Ranjani Mahesh',
+      collectionPath: 'Music / Veena',
+      note: 'Veena Cover by Ranjani mahesh'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=Ms8-IZWSvvc&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=20',
+      videoId: 'Ms8-IZWSvvc',
+      playlistId: 'PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY',
+      title: 'Thalaiyai kuniyum thamaraiye | Veena cover | Illayaraja| oru odai nadhiyagirathu | Ranjani mahesh',
+      channel: 'Veena Ranjani Mahesh',
+      collectionPath: 'Music / Veena',
+      note: 'Veena Cover by Ranjani mahesh'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=z5G1cVSniA8&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=18',
+      videoId: 'z5G1cVSniA8',
+      playlistId: 'PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY',
+      title: 'Varathu vantha nayagan',
+      channel: 'Veena Ranjani Mahesh',
+      collectionPath: 'Music / Veena',
+      note: 'Veena cover by Ranjani mahesh'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=AVF0_29_vDA&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=9',
+      videoId: 'AVF0_29_vDA',
+      playlistId: 'PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY',
+      title: 'Kattu malli | காட்டுமல்லி |',
+      channel: 'Veena Ranjani Mahesh',
+      collectionPath: 'Music / Veena',
+      note: 'Veena by Ranjani mahesh'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=tIYnxMmP_UA&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=17',
+      videoId: 'tIYnxMmP_UA',
+      playlistId: 'PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY',
+      title: 'Ooru Sanam',
+      channel: 'Veena Ranjani Mahesh',
+      collectionPath: 'Music / Veena',
+      note: 'Veena by Ranjani mahesh'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=vq3amtfXZf4&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=8',
+      videoId: 'vq3amtfXZf4',
+      playlistId: 'PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY',
+      title: 'Vizhiyile',
+      channel: 'Voice Veena Twins ',
+      collectionPath: 'Music / Veena',
+      note: 'Veena by Ranjani mahesh'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=plxf9jrzaL8&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=15',
+      videoId: 'plxf9jrzaL8',
+      playlistId: 'PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY',
+      title: 'Pudhumai Pen | Kadhal Mayakkam |',
+      channel: 'Veena Ranjani Mahesh',
+      collectionPath: 'Music / Veena',
+      note: 'Veena by Ranjani mahesh'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=Bs3ehfffA5k&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=13',
+      videoId: 'Bs3ehfffA5k',
+      playlistId: 'PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY',
+      title: 'Oliyile Therivadhu | Azhagi',
+      channel: 'BandVisai',
+      collectionPath: 'Music / Veena',
+      note: 'Veena By Veenai Srinidhi'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=_XBHxWL18Mg&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=12',
+      videoId: '_XBHxWL18Mg',
+      playlistId: 'PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY',
+      title: '|KEERAVANI |  NINAVALLE KANAVILE',
+      channel: 'Stringwings official',
+      collectionPath: 'Music / Veena',
+      note: 'Veena by Phani narayana'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=wrqzXhA22D8&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=6',
+      videoId: 'wrqzXhA22D8',
+      playlistId: 'PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY',
+      title: 'Kadhal oviyam',
+      channel: 'Veena Ranjani Mahesh',
+      collectionPath: 'Music / Veena',
+      note: 'Veen by Rangani mahesh'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=fqKzSgJDqME&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=10',
+      videoId: 'fqKzSgJDqME',
+      playlistId: 'PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY',
+      title: 'Kannana kanne',
+      channel: 'Veena Srivani',
+      collectionPath: 'Music / Veena',
+      note: 'Veena by Veena Srivani'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=XBX2njcow8k&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=7',
+      videoId: 'XBX2njcow8k',
+      playlistId: 'PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY',
+      title: 'Kalyana Then Nila',
+      channel: 'Veena Ranjani Mahesh',
+      collectionPath: 'Music / Veena',
+      note: 'Veena by Ranjani mahesh'
+    }
+    ]
+  }
+];
