@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
-// Exported from TubeVault on 21/6/2026, 8:46:32 pm
+// Exported from TubeVault on 6/24/2026, 10:07:27 AM
 //
 // STRUCTURE — easy to browse/edit in any JSON editor:
 //   DEFAULT_COLLECTIONS
@@ -34,102 +34,6 @@ const COLLECTION_COLORS = [
 // - url, videoId, title, channel, note
 // - playlistId: optional — present if the original URL had a "?list=" param
 const DEFAULT_COLLECTIONS = [
-  {
-    id: 'unity',
-    name: 'Unity Tutorials',
-    color: '#5C6BC0',
-    groups: {
-      'Maths': [
-        {
-          url: 'https://www.youtube.com/watch?v=w2J_wG5oiNg',
-          videoId: 'w2J_wG5oiNg',
-          title: 'How to Calculate Direction in Unity -  A Unity Math Tutorial',
-          channel: 'gamedev:hq',
-          note: 'Direction'
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=fjOdtSu4Lm4&list=PLImQaTpSAdsArRFFj8bIfqMk2X7Vlf3XF&index=1',
-          videoId: 'fjOdtSu4Lm4',
-          playlistId: 'PLImQaTpSAdsArRFFj8bIfqMk2X7Vlf3XF',
-          title: 'YouTube Video',
-          channel: '',
-          note: 'Basic to start learn Unity3D as a beginner. Starting Point'
-        },
-      ],
-      'Animation Curves': [
-        {
-          url: 'https://www.youtube.com/watch?v=OPDl2uVaN_Q',
-          videoId: 'OPDl2uVaN_Q',
-          title: 'Projectile using Animation Curves',
-          channel: '',
-          note: '2D Projectiles using three animation curves 1. shape. 2. Speed'
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=roWiGo1Hpfk&t=55s',
-          videoId: 'roWiGo1Hpfk',
-          title: 'YouTube Video',
-          channel: '',
-          note: 'Animation Curves for 2D'
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=Nc9x0LfvJhI&t=321s',
-          videoId: 'Nc9x0LfvJhI',
-          title: 'The Power of Animation Curves',
-          channel: '',
-          note: 'Basics of Animation Curves'
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=ajn9iMUXZYI',
-          videoId: 'ajn9iMUXZYI',
-          title: 'Smoth Movement with Curves',
-          channel: '',
-          note: 'A Cool Way to Move Your Player with Animation Curves'
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=Tcvwh1tkyQw',
-          videoId: 'Tcvwh1tkyQw',
-          title: 'Curved Movement Patterns With Animation Curves',
-          channel: '',
-          note: 'Move a Kinematic Body with an Animation Curve |'
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=ddakS7BgHRI',
-          videoId: 'ddakS7BgHRI',
-          title: 'Moving Object Along a Parabola',
-          channel: '',
-          note: 'Moving Object Along A Parabola with path visualization'
-        },
-      ],
-      'C Sharp': [
-        {
-          url: 'https://www.youtube.com/watch?v=m0s3IUrWzVQ&t=151s',
-          videoId: 'm0s3IUrWzVQ',
-          title: 'YouTube Video',
-          channel: '',
-          note: 'How to Write High Quality Code that doesn\'t fall apart.'
-        },
-      ],
-      'Character Movement': [
-        {
-          url: 'https://www.youtube.com/watch?v=XtQMytORBmM',
-          videoId: 'XtQMytORBmM',
-          title: 'Unity Character Controller from Scratch',
-          channel: 'Brackeys',
-          note: 'Great foundation for the platformer project. Check timestamp 12:30 for slope handling.'
-        },
-      ],
-      'Physics': [
-        {
-          url: 'https://www.youtube.com/watch?v=bFOAipGJGA0',
-          videoId: 'bFOAipGJGA0',
-          title: 'Unity Physics — Rigidbody & Colliders',
-          channel: 'Unity',
-          note: 'Revisit for slope controller refactor'
-        },
-      ]
-    },
-    ungrouped: []
-  },
   {
     id: 'music',
     name: 'Music',
