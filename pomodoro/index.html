@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Flip Suite — Clock, Pomodoro, Stopwatch, Countdown & Alarm</title>
+  <link rel="stylesheet" href="fonts.css">
+  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="pomodoro.css">
+  <style>
+:root { --tool-scale: 1.5; }
+/* ── PAGE SWITCHING ────────────────────────────────── */
+.page-section { display: none; }
+.page-section.active { display: block; }
+
+/* ── LEFT DRAWER ───────────────────────────────────── */
+.drawer-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.45);
+  z-index: 300; opacity: 0; visibility: hidden;
+  transition: opacity .3s, visibility .3s;
+}
+.drawer-overlay.open { opacity: 1; visibility: visible; }
+.drawer {
+  position: fixed; top: 0; left: 0; bottom: 0;
+  width: min(300px,85vw); background: var(--surface-color);
+  z-index: 301; transform: translateX(-100%);
+  transition: transform .32s cubic-bezier(.4,0,.2,1);
+  display: flex; flex-direction: column; overflow: hidden;
+  border-right: .5px solid var(--divider-color);
+}
+.drawer.open { transform: translateX(0); }
+.drawer-hd {
+  height: 60px; display: flex; align-items: center;
+  justify-content: space-between; padding: 0 12px 0 20px;
+  border-bottom: .5px solid var(--divider-color); flex-shrink: 0;
+  background: var(--surface-color);
+}
+.drawer-hd-title { font-size: 1rem; font-weight: 700; color: var(--primary-text); }
+.drawer-body { flex: 1; overflow-y: auto; padding: 10px; }
+.drawer-section-lbl {
+  font-size: .7rem; font-weight: 600; color: var(--secondary-text-color);
+  text-transform: uppercase; letter-spacing: .08em; padding: 10px 10px 5px;
+}
+.drawer-item {
+  display: flex; align-items: center; gap: 12px; padding: 10px 12px;
+  border-radius: 10px; color: var(--text-color); font-size: .93rem; font-weight: 500;
+  transition: background .15s; cursor: pointer; border: none;
+  background: none; width: 100%; text-align: left;
+}
+.drawer-item .material-symbols-outlined { font-size: 19px; color: var(--secondary-text-color); }
+.drawer-item:hover { background: var(--ripple-color); }
+.drawer-item.active { background: rgba(10,132,255,.1); color: var(--accent-color); }
+.drawer-item.active .material-symbols-outlined { color: var(--accent-color); }
+.drawer-div { height: .5px; background: var(--divider-color); margin: 6px 0; }
+
+/* ── RIGHT PANEL ───────────────────────────────────── */
+.panel-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.38);
+  z-index: 249; opacity: 0; visibility: hidden;
+  transition: opacity .3s, visibility .3s;
+}
+.panel-overlay.open { opacity: 1; visibility: visible; }
+.panel {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: min(380px,92vw); background: var(--bg-color);
+  z-index: 250; transform: translateX(110%);
+  transition: transform .32s cubic-bezier(.4,0,.2,1);
+  display: flex; flex-direction: column; overflow: hidden;
+  border-left: .5px solid var(--divider-color);
+}
+.panel.open { transform: translateX(0); }
+.panel-hd {
+  height: 60px; display: flex; align-items: center;
+  justify-content: space-between; padding: 0 10px 0 20px;
+  border-bottom: .5px solid var(--divider-color); flex-shrink: 0;
+  background: var(--surface-color);
+}
+.panel-title { font-size: 1rem; font-weight: 700; color: var(--primary-text); }
+.panel-body { flex: 1; overflow-y: auto; padding: 20px; }
+.panel-body::-webkit-scrollbar { width: 4px; }
+.panel-body::-webkit-scrollbar-thumb { background: var(--divider-color); border-radius: 2px; }
+
+/* ── HELP PANEL CONTENT ────────────────────────────── */
+.help-sec { margin-bottom: 18px; }
+.help-sec h3 { font-size: .95rem; font-weight: 700; color: var(--primary-text); margin-bottom: 7px; }
+.help-sec p, .help-sec li {
+  font-size: .87rem; color: var(--secondary-text-color); line-height: 1.65; margin-bottom: 5px;
+}
+.help-sec ul { padding-left: 16px; list-style: disc; }
+.help-div { height: .5px; background: var(--divider-color); margin: 14px 0; }
+
+/* ── TOAST ─────────────────────────────────────────── */
+.toast-msg {
+  position: fixed; bottom: 110px; left: 50%; transform: translateX(-50%) translateY(12px);
+  background: var(--surface-color); border: 1px solid var(--divider-color);
+  border-radius: 12px; padding: 10px 18px; font-size: .87rem; font-weight: 600;
+  color: var(--text-color); box-shadow: 0 8px 24px var(--shadow-color);
+  z-index: 500; opacity: 0; transition: opacity .25s, transform .25s; pointer-events: none;
+}
+.toast-msg.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── CLOCK PAGE ────────────────────────────────────── */
+#page-clock { padding-bottom: 100px; }
+.clock-date {
+  font-size: clamp(.88rem,2.5vw,1rem); color: var(--secondary-text-color);
+  font-weight: 500; letter-spacing: .02em; margin-bottom: 16px;
+}
+.clock-flip-row {
+  display: flex; gap: clamp(10px,3vw,28px); perspective: 1000px;
+  width: fit-content; margin: 40px auto 0; align-items: center;
+}
+.clock-sep {
+  font-size: calc(80px * var(--clock-size) * var(--tool-scale)); font-weight: 700;
+  color: var(--secondary-text-color); line-height: 1; padding-bottom: 8px;
+  transition: font-size var(--transition-speed);
+}
+
+/* ── SHARED FLIP CARD SIZING ──────────────────────── */
+/* Clock: uses CSS var sizes from common.css --clock-size */
+.clock-card {
+  width: calc(180px * var(--clock-size) * var(--tool-scale));
+  height: calc(220px * var(--clock-size) * var(--tool-scale));
+  border-radius: var(--card-radius);
+}
+.clock-card .flip-text {
+  font-size: calc(100px * var(--clock-size) * var(--tool-scale));
+  line-height: calc(220px * var(--clock-size) * var(--tool-scale));
+}
+.clock-card .flip-bottom .flip-text,
+.clock-card .flip-panel-bottom .flip-text {
+  top: calc(-110px * var(--clock-size) * var(--tool-scale));
+}
+
+/* Stopwatch / Countdown / Alarm: slightly smaller */
+.tool-card {
+  width: calc(180px * var(--clock-size) * var(--tool-scale));
+  height: calc(220px * var(--clock-size) * var(--tool-scale));
+  border-radius: var(--card-radius);
+}
+.tool-card .flip-text {
+  font-size: calc(100px * var(--clock-size) * var(--tool-scale));
+  line-height: calc(220px * var(--clock-size) * var(--tool-scale));
+}
+.tool-card .flip-bottom .flip-text,
+.tool-card .flip-panel-bottom .flip-text {
+  top: calc(-110px * var(--clock-size) * var(--tool-scale));
+}
+
+/* ── TOOL PAGES LAYOUT ─────────────────────────────── */
+.tool-page-wrap {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 0; width: 100%; max-width: 700px; margin: 0 auto;
+}
+.tool-flip-row {
+  display: flex; gap: clamp(8px,2.5vw,22px); perspective: 1000px;
+  width: fit-content; margin: 40px auto 8px; align-items: center;
+}
+.tool-sep {
+  font-size: calc(72px * var(--clock-size) * var(--tool-scale)); font-weight: 700;
+  color: var(--secondary-text-color); line-height: 1; padding-bottom: 6px;
+  transition: font-size var(--transition-speed);
+}
+.tool-controls {
+  display: flex; gap: 15px; justify-content: center;
+  width: 100%; max-width: 450px; margin: 35px auto 0;
+}
+
+/* ── STOPWATCH ─────────────────────────────────────── */
+.sw-ms-display {
+  font-size: clamp(22px,6vw,36px); font-weight: 500;
+  color: var(--secondary-text-color); letter-spacing: .06em;
+  font-variant-numeric: tabular-nums; text-align: center;
+  margin-top: 30px; min-height: 1.4em;
+}
+.sw-laps-container {
+  width: 100%; max-width: 480px; margin: 16px auto 0;
+  padding: 0 16px; max-height: 240px; overflow-y: auto;
+}
+.sw-laps-container::-webkit-scrollbar { width: 4px; }
+.sw-laps-container::-webkit-scrollbar-thumb { background: var(--divider-color); border-radius: 2px; }
+.sw-laps-hdr {
+  display: flex; justify-content: space-between;
+  font-size: .72rem; color: var(--secondary-text-color);
+  font-weight: 600; text-transform: uppercase; letter-spacing: .06em;
+  padding: 0 4px 6px; border-bottom: .5px solid var(--divider-color);
+}
+.sw-lap-item {
+  display: flex; justify-content: space-between; padding: 8px 4px;
+  border-bottom: .5px solid var(--divider-color);
+  font-size: .9rem; font-variant-numeric: tabular-nums;
+  color: var(--text-color);
+}
+.sw-lap-item:first-child { color: var(--accent-color); font-weight: 600; }
+.sw-lap-num { color: var(--secondary-text-color); font-weight: 600; min-width: 50px; }
+.sw-lap-split { color: var(--secondary-text-color); }
+
+/* ── COUNTDOWN ─────────────────────────────────────── */
+.cd-set-wrap {
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px; margin: 24px auto 8px;
+}
+.cd-picker-group { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.cd-picker-group label { font-size: .7rem; color: var(--secondary-text-color); text-transform: uppercase; letter-spacing: .06em; }
+.cd-picker-group input {
+  width: clamp(56px,12vw,70px); height: clamp(44px,10vw,56px);
+  background: var(--surface-color-2); border: 1.5px solid var(--divider-color);
+  border-radius: 10px; text-align: center;
+  font-size: clamp(1.1rem,3.5vw,1.5rem); font-weight: 500; color: var(--text-color);
+  -moz-appearance: textfield;
+}
+.cd-picker-group input::-webkit-outer-spin-button,
+.cd-picker-group input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.cd-picker-group input:focus { outline: none; border-color: var(--accent-color); }
+.cd-colon {
+  font-size: clamp(1.3rem,3.5vw,1.8rem); font-weight: 700;
+  color: var(--secondary-text-color); padding-bottom: 14px;
+}
+.cd-progress-wrap {
+  width: clamp(200px,70vw,420px); height: 4px;
+  background: var(--surface-color-3); border-radius: 2px;
+  overflow: hidden; margin: 30px auto 0;
+}
+#cd-flip-row { margin-left: -100px; }
+.cd-progress-fill { height: 100%; background: var(--accent-color); transition: width 1s linear, background .3s; }
+.cd-done-msg {
+  font-size: 1rem; font-weight: 700; color: var(--success-color);
+  margin-top: 12px; text-align: center;
+  animation: fadeInUp .4s ease;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── ALARM PAGE ────────────────────────────────────── */
+.alarm-now-time {
+  font-size: clamp(48px,12vw,80px); font-weight: 300; letter-spacing: -.03em;
+  color: var(--primary-text); font-variant-numeric: tabular-nums;
+  margin: 20px 0 4px;
+}
+.alarm-now-date {
+  font-size: .88rem; color: var(--secondary-text-color); margin-bottom: 20px;
+}
+.alarm-add-row {
+  display: flex; gap: 8px; width: 100%; max-width: 440px;
+  padding: 0 16px; margin-bottom: 16px;
+}
+.alarm-time-in, .alarm-lbl-in {
+  height: 44px; background: var(--surface-color-2);
+  border: 1.5px solid var(--divider-color); border-radius: 10px;
+  padding: 0 14px; color: var(--text-color); font-size: .93rem;
+  transition: border-color .15s;
+}
+.alarm-time-in { flex: 1; }
+.alarm-time-in:focus, .alarm-lbl-in:focus { outline: none; border-color: var(--accent-color); }
+.alarm-lbl-in { width: 120px; }
+.alarm-add-btn-el {
+  width: 44px; height: 44px; border-radius: 10px;
+  background: var(--accent-color); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; border: none; cursor: pointer; transition: filter .15s;
+}
+.alarm-add-btn-el:hover { filter: brightness(1.1); }
+.alarm-add-btn-el .material-symbols-outlined { font-size: 22px; }
+.alarm-duration-row {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; max-width: 440px; padding: 0 16px; margin-bottom: 16px;
+  font-size: .9rem; color: var(--secondary-text-color);
+}
+.alarm-duration-row select {
+  flex: 1; height: 44px; background: var(--surface-color-2);
+  border: 1.5px solid var(--divider-color); border-radius: 10px;
+  padding: 0 14px; color: var(--text-color); font-size: .93rem;
+  appearance: none; cursor: pointer; transition: border-color .15s;
+}
+.alarm-duration-row select:focus { outline: none; border-color: var(--accent-color); }
+.alarm-list-wrap {
+  width: 100%; max-width: 440px; padding: 0 16px;
+  display: flex; flex-direction: column; gap: 8px;
+  overflow-y: auto; max-height: calc(100vh - 420px);
+}
+.alarm-item-el {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; background: var(--surface-color);
+  border: 1px solid var(--divider-color); border-radius: 12px;
+  transition: border-color .2s;
+}
+.alarm-item-el.ringing {
+  border-color: var(--danger-color);
+  animation: ring-flash 1s infinite;
+}
+@keyframes ring-flash {
+  0%,100% { background: var(--surface-color); }
+  50% { background: color-mix(in srgb, var(--danger-color) 10%, var(--surface-color)); }
+}
+.alarm-time-txt { font-size: 1.5rem; font-weight: 300; letter-spacing: -.02em; font-variant-numeric: tabular-nums; min-width: 80px; }
+.alarm-lbl-txt { font-size: .83rem; color: var(--secondary-text-color); flex: 1; }
+.alarm-del-btn {
+  width: 32px; height: 32px; border-radius: 50%; display: flex;
+  align-items: center; justify-content: center; border: none;
+  background: transparent; cursor: pointer; color: var(--secondary-text-color);
+  transition: color .15s, background .15s;
+}
+.alarm-del-btn:hover { color: var(--danger-color); background: color-mix(in srgb, var(--danger-color) 10%, transparent); }
+.alarm-del-btn .material-symbols-outlined { font-size: 17px; }
+.alarm-empty-msg { font-size: .88rem; color: var(--secondary-text-color); font-style: italic; text-align: center; padding: 20px 0; }
+
+/* ── TOOL BUTTONS ──────────────────────────────────── */
+.tool-btn {
+  width: 60px; height: 60px; border-radius: 50%; border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: transform .2s, filter .2s;
+  color: #fff; padding: 0; font-size: 1rem; font-weight: 600;
+  box-shadow: 0 2px 10px var(--shadow-color);
+}
+.tool-btn .material-symbols-outlined { font-size: 28px; font-variation-settings: 'wght' 400; }
+.tool-btn:active { transform: scale(.93); }
+.tool-btn-primary { background: var(--accent-color); box-shadow: 0 4px 14px rgba(10,132,255,.3); width: 70px; height: 70px; }
+.tool-btn-primary .material-symbols-outlined { font-size: 32px; }
+.tool-btn-primary.running { background: var(--warning-color); box-shadow: 0 4px 14px rgba(255,159,10,.3); }
+.tool-btn-primary:hover { filter: brightness(1.12); transform: scale(1.05); }
+.tool-btn-secondary {
+  background: var(--surface-color-3); color: var(--text-color);
+  border: 1px solid var(--divider-color);
+}
+.tool-btn-secondary:hover { background: var(--divider-color); transform: scale(1.05); }
+.tool-btn-success { background: var(--success-color); box-shadow: 0 4px 14px rgba(48,209,88,.3); width: 70px; height: 70px; }
+.tool-btn-success .material-symbols-outlined { font-size: 32px; }
+.tool-btn-success.running { background: var(--warning-color); box-shadow: 0 4px 14px rgba(255,159,10,.3); }
+.tool-btn-success:hover { filter: brightness(1.1); transform: scale(1.05); }
+
+/* ── SETTINGS GROUP OVERRIDES ──────────────────────── */
+.sg-label {
+  font-size: .78rem; font-weight: 600; color: var(--secondary-text-color);
+  text-transform: uppercase; letter-spacing: .06em;
+  margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--divider-color);
+}
+
+/* ── RESPONSIVE ────────────────────────────────────── */
+@media (max-width: 480px) {
+  .alarm-add-row { flex-wrap: wrap; }
+  .alarm-lbl-in { flex: 1; width: auto; }
+  .tool-controls { max-width: 300px; gap: 10px; }
+  .tool-btn { width: 44px; height: 44px; }
+  .tool-btn .material-symbols-outlined { font-size: 24px; }
+  .tool-btn-primary, .tool-btn-success { width: 44px; height: 44px; }
+  .tool-btn-primary .material-symbols-outlined,
+  .tool-btn-success .material-symbols-outlined { font-size: 24px; }
+}
+  </style>
+</head>
+<body data-theme="dark">
+<div class="app-container">
+
+<!-- ══ HEADER ════════════════════════════════════════ -->
+<header class="app-header-overlay" style="width:100%">
+  <div class="header-left">
+    <button id="menu-toggle" class="icon-button-overlay" aria-label="Open Menu">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+    <span id="header-title" style="font-size:1rem;font-weight:700;color:var(--primary-text);padding:0 6px">Clock</span>
+  </div>
+  <div class="header-right">
+    <button id="theme-toggle" class="icon-button-overlay" aria-label="Switch to Light Theme">
+      <span class="material-symbols-outlined">light_mode</span>
+    </button>
+    <button id="settings-toggle" class="icon-button-overlay" aria-label="Open Settings" style="display:none">
+      <span class="material-symbols-outlined">settings</span>
+    </button>
+    <button id="fullscreen-btn" class="icon-button-overlay" aria-label="Enter Fullscreen">
+      <span class="material-symbols-outlined">fullscreen</span>
+    </button>
+  </div>
+</header>
+
+<!-- ══ LEFT DRAWER ════════════════════════════════════ -->
+<div class="drawer-overlay" id="drawer-overlay"></div>
+<nav class="drawer" id="drawer">
+  <div class="drawer-hd">
+    <span class="drawer-hd-title">Flip Suite</span>
+    <button class="icon-button-overlay" id="drawer-close"><span class="material-symbols-outlined">close</span></button>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-section-lbl">Tools</div>
+    <button class="drawer-item active" data-page="clock"><span class="material-symbols-outlined">schedule</span>Clock</button>
+    <button class="drawer-item" data-page="pomodoro"><span class="material-symbols-outlined">hourglass_top</span>Pomodoro</button>
+    <button class="drawer-item" data-page="stopwatch"><span class="material-symbols-outlined">timer</span>Stopwatch</button>
+    <button class="drawer-item" data-page="countdown"><span class="material-symbols-outlined">event_upcoming</span>Countdown</button>
+    <button class="drawer-item" data-page="alarm"><span class="material-symbols-outlined">alarm</span>Alarm</button>
+    <div class="drawer-div"></div>
+    <div class="drawer-section-lbl">Pomodoro</div>
+    <button class="drawer-item" id="drawer-tasks-btn"><span class="material-symbols-outlined">settings</span>Tasks</button>
+    <button class="drawer-item" id="drawer-settings-btn"><span class="material-symbols-outlined">settings</span>Settings</button>
+    <div class="drawer-div"></div>
+    <button class="drawer-item" id="drawer-help-btn"><span class="material-symbols-outlined">settings</span>Help</button>
+  </div>
+</nav>
+
+<!-- ══ RIGHT PANEL OVERLAY ════════════════════════════ -->
+<div class="panel-overlay" id="panel-overlay"></div>
+
+<!-- SETTINGS PANEL -->
+<!-- id="settings-panel" used by pomodoro.js via window.toggleSettingsPanel -->
+<aside class="panel" id="settings-panel" role="dialog" aria-label="Pomodoro Settings">
+  <div class="panel-hd">
+    <span class="panel-title">Pomodoro Settings</span>
+    <button class="icon-button-overlay" id="close-settings"><span class="material-symbols-outlined">close</span></button>
+  </div>
+  <div class="panel-body">
+    <div class="setup-section" style="max-width:100%;padding:20px">
+      <div class="sg-label">Presets</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">
+        <button class="time-preset-btn active" data-preset="default">Classic 25-5-15</button>
+        <button class="time-preset-btn" data-preset="short">Short 15-3-9</button>
+        <button class="time-preset-btn" data-preset="long">Long 50-10-30</button>
+      </div>
+      <div class="sg-label">Durations (minutes)</div>
+      <div class="time-inputs-grid">
+        <div class="time-input-group">
+          <label for="pomodoro-work-time">Work Session</label>
+          <div class="time-input-row">
+            <input type="number" id="pomodoro-work-time" class="time-input" min="1" max="60" value="25">
+            <div class="time-buttons">
+              <button class="time-button" data-target="pomodoro-work-time" data-action="increase">+</button>
+              <button class="time-button" data-target="pomodoro-work-time" data-action="decrease">-</button>
+            </div>
+          </div>
+        </div>
+        <div class="time-input-group">
+          <label for="pomodoro-short-break">Short Break</label>
+          <div class="time-input-row">
+            <input type="number" id="pomodoro-short-break" class="time-input" min="1" max="30" value="5">
+            <div class="time-buttons">
+              <button class="time-button" data-target="pomodoro-short-break" data-action="increase">+</button>
+              <button class="time-button" data-target="pomodoro-short-break" data-action="decrease">-</button>
+            </div>
+          </div>
+        </div>
+        <div class="time-input-group">
+          <label for="pomodoro-long-break">Long Break</label>
+          <div class="time-input-row">
+            <input type="number" id="pomodoro-long-break" class="time-input" min="1" max="60" value="15">
+            <div class="time-buttons">
+              <button class="time-button" data-target="pomodoro-long-break" data-action="increase">+</button>
+              <button class="time-button" data-target="pomodoro-long-break" data-action="decrease">-</button>
+            </div>
+          </div>
+        </div>
+        <div class="time-input-group">
+          <label for="pomodoro-sessions">Sessions / Cycle</label>
+          <div class="time-input-row">
+            <input type="number" id="pomodoro-sessions" class="time-input" min="1" max="10" value="4">
+            <div class="time-buttons">
+              <button class="time-button" data-target="pomodoro-sessions" data-action="increase">+</button>
+              <button class="time-button" data-target="pomodoro-sessions" data-action="decrease">-</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="setup-section" style="max-width:100%;padding:20px;margin-top:14px">
+      <div class="sg-label">Sound</div>
+      <div class="switch-container"><span>Enable sound</span><label class="switch"><input type="checkbox" id="pomodoro-sound-toggle" checked><span class="slider"></span></label></div>
+      <select class="sound-selector" id="sound-selector" style="margin-top:10px;width:100%">
+        <option value="default">Bell (default)</option>
+        <option value="chime">Gentle chime</option>
+        <option value="digital">Digital beep</option>
+        <option value="melody">Short melody</option>
+      </select>
+      <button class="test-sound-btn" id="test-sound-btn" style="margin-top:10px"><span class="material-symbols-outlined">volume_up</span>Test sound</button>
+      <div class="volume-slider">
+        <div class="volume-slider-label"><span>Volume</span><span id="volume-value">80%</span></div>
+        <input type="range" id="volume-slider" min="0" max="100" value="80">
+      </div>
+    </div>
+    <div class="setup-section" style="max-width:100%;padding:20px;margin-top:14px">
+      <div class="sg-label">Behavior</div>
+      <div class="settings-options">
+        <div class="switch-container"><span>Auto-start breaks</span><label class="switch"><input type="checkbox" id="pomodoro-auto-breaks-toggle"><span class="slider"></span></label></div>
+        <div class="switch-container"><span>Auto-start work</span><label class="switch"><input type="checkbox" id="pomodoro-auto-work-toggle"><span class="slider"></span></label></div>
+        <div class="switch-container"><span>Auto-check task on complete</span><label class="switch"><input type="checkbox" id="pomodoro-auto-check-toggle"><span class="slider"></span></label></div>
+        <div class="switch-container"><span>Desktop notifications</span><label class="switch"><input type="checkbox" id="pomodoro-notification-toggle" checked><span class="slider"></span></label></div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- TASKS PANEL -->
+<aside class="panel" id="panel-tasks" role="dialog" aria-label="Tasks">
+  <div class="panel-hd">
+    <span class="panel-title">Tasks</span>
+    <button class="icon-button-overlay" id="close-tasks-panel"><span class="material-symbols-outlined">close</span></button>
+  </div>
+  <div class="panel-body">
+    <div class="tasks-input-container">
+      <input type="text" id="task-input" class="task-input" placeholder="Add a task…">
+      <button id="add-task-btn" class="task-add-btn" aria-label="Add task"><span class="material-symbols-outlined">add</span></button>
+    </div>
+    <div class="section-title" style="margin-top:12px">
+      <span>Tasks</span>
+      <div class="section-title-actions">
+        <button class="section-action-btn" id="clear-completed-btn">
+          <span class="material-symbols-outlined">cleaning_services</span>Clear done
+        </button>
+      </div>
+    </div>
+    <div class="tasks-list-container">
+      <ul id="tasks-list" class="tasks-list"></ul>
+      <p id="no-tasks-message" class="no-tasks-message">No tasks yet. Add one above.</p>
+    </div>
+  </div>
+</aside>
+
+<!-- HELP PANEL -->
+<aside class="panel" id="panel-help" role="dialog" aria-label="Help">
+  <div class="panel-hd">
+    <span class="panel-title">Help</span>
+    <button class="icon-button-overlay" id="close-help-panel"><span class="material-symbols-outlined">close</span></button>
+  </div>
+  <div class="panel-body">
+    <div class="help-sec">
+      <h3>🕐 Clock</h3>
+      <p>Shows the current local time as a live flip clock. Theme can be toggled between dark and light using the sun icon in the header.</p>
+    </div>
+    <div class="help-div"></div>
+    <div class="help-sec">
+      <h3>🍅 Pomodoro Timer</h3>
+      <p>Work in focused intervals separated by short breaks.</p>
+      <ul>
+        <li><strong>Work / Short Break / Long Break</strong> tabs at the top switch session type.</li>
+        <li>Press <strong>▶</strong> to start, <strong>⏸</strong> to pause, <strong>⏭</strong> to skip.</li>
+        <li>Dots below the clock show progress through the current cycle.</li>
+        <li>Open <strong>Settings</strong> (⚙) to change durations, sound, and auto-start behaviour.</li>
+        <li>Open <strong>Tasks</strong> (☑) to track to-dos alongside your sessions.</li>
+      </ul>
+    </div>
+    <div class="help-div"></div>
+    <div class="help-sec">
+      <h3>⏱ Stopwatch</h3>
+      <p>Tap <strong>Start</strong> to begin. Tap <strong>Lap</strong> to record a split. Tap <strong>Reset</strong> to clear.</p>
+    </div>
+    <div class="help-div"></div>
+    <div class="help-sec">
+      <h3>⏳ Countdown</h3>
+      <p>Set hours, minutes, and seconds then tap <strong>Start</strong>. A chime plays when time reaches zero. Tap <strong>Pause</strong> to hold, <strong>Reset</strong> to return to your set time.</p>
+    </div>
+    <div class="help-div"></div>
+    <div class="help-sec">
+      <h3>🔔 Alarm</h3>
+      <p>Enter a time and optional label then tap <strong>+</strong>. The alarm will trigger at that time with sound and a visual flash. Tap the trash icon to delete. Note: the page must remain open in your browser.</p>
+    </div>
+  </div>
+</aside>
+
+<!-- ══ MAIN ═══════════════════════════════════════════ -->
+<main id="main-content">
+
+<!-- ── CLOCK ─────────────────────────────────────── -->
+<div class="page-content-wrapper page-section active" id="page-clock">
+  <section class="page-container">
+    <div class="clock-date" id="clock-date">—</div>
+    <div class="clock-flip-row">
+      <!-- Hours -->
+      <div class="card clock-card" id="clk-h">
+        <div class="divider"></div>
+        <div class="flip-card-container">
+          <div class="flip-unit" id="clk-h-unit">
+            <div class="flip-top"><div class="flip-text" id="clk-h-top">00</div></div>
+            <div class="flip-bottom"><div class="flip-text" id="clk-h-bot">00</div></div>
+            <div class="flip-panel flip-panel-top" id="clk-h-ptop"><div class="flip-text" id="clk-h-ptop-txt">00</div></div>
+            <div class="flip-panel flip-panel-bottom" id="clk-h-pbot"><div class="flip-text" id="clk-h-pbot-txt">00</div></div>
+          </div>
+        </div>
+      </div>
+      <span class="clock-sep">:</span>
+      <!-- Minutes -->
+      <div class="card clock-card" id="clk-m">
+        <div class="divider"></div>
+        <div class="flip-card-container">
+          <div class="flip-unit" id="clk-m-unit">
+            <div class="flip-top"><div class="flip-text" id="clk-m-top">00</div></div>
+            <div class="flip-bottom"><div class="flip-text" id="clk-m-bot">00</div></div>
+            <div class="flip-panel flip-panel-top" id="clk-m-ptop"><div class="flip-text" id="clk-m-ptop-txt">00</div></div>
+            <div class="flip-panel flip-panel-bottom" id="clk-m-pbot"><div class="flip-text" id="clk-m-pbot-txt">00</div></div>
+          </div>
+        </div>
+      </div>
+      <span class="clock-sep">:</span>
+      <!-- Seconds -->
+      <div class="card clock-card" id="clk-s">
+        <div class="divider"></div>
+        <div class="flip-card-container">
+          <div class="flip-unit" id="clk-s-unit">
+            <div class="flip-top"><div class="flip-text" id="clk-s-top">00</div></div>
+            <div class="flip-bottom"><div class="flip-text" id="clk-s-bot">00</div></div>
+            <div class="flip-panel flip-panel-top" id="clk-s-ptop"><div class="flip-text" id="clk-s-ptop-txt">00</div></div>
+            <div class="flip-panel flip-panel-bottom" id="clk-s-pbot"><div class="flip-text" id="clk-s-pbot-txt">00</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ── POMODORO ───────────────────────────────────── -->
+<div class="page-content-wrapper page-section" id="page-pomodoro">
+  <section id="pomodoro-page" class="page-container">
+    <h2 class="sr-only">Pomodoro Timer</h2>
+    <div class="pomodoro-content-wrapper">
+      <!-- Mode tabs at top -->
+      <div class="session-type-selector">
+        <button class="session-selector-btn" data-type="work"><span class="material-symbols-outlined">work</span><span>Work</span></button>
+        <button class="session-selector-btn" data-type="shortBreak"><span class="material-symbols-outlined">coffee</span><span>Short Break</span></button>
+        <button class="session-selector-btn active" data-type="longBreak"><span class="material-symbols-outlined">self_improvement</span><span>Long Break</span></button>
+      </div>
+      <!-- Flip timer — exact original structure -->
+      <div class="flip-timer-display" aria-live="polite" aria-atomic="true">
+        <div class="session-type" id="session-type-display" style="color:var(--long-break-color)">Long Break</div>
+        <div class="card minutes-card">
+          <div class="divider"></div>
+          <div class="flip-card-container">
+            <div class="flip-unit" id="minutes-unit">
+              <div class="flip-top"><div class="flip-text" id="minutes-top-text">15</div></div>
+              <div class="flip-bottom"><div class="flip-text" id="minutes-bottom-text">15</div></div>
+              <div class="flip-panel flip-panel-top flip-animate-top" id="minutes-flip-top"><div class="flip-text" id="minutes-flip-top-text">15</div></div>
+              <div class="flip-panel flip-panel-bottom flip-animate-bottom" id="minutes-flip-bottom"><div class="flip-text" id="minutes-flip-bottom-text">15</div></div>
+            </div>
+          </div>
+          <span class="sr-only" id="minutes-sr">15 minutes</span>
+        </div>
+        <div class="card seconds-card">
+          <div class="divider"></div>
+          <div class="flip-card-container">
+            <div class="flip-unit" id="seconds-unit">
+              <div class="flip-top"><div class="flip-text" id="seconds-top-text">00</div></div>
+              <div class="flip-bottom"><div class="flip-text" id="seconds-bottom-text">00</div></div>
+              <div class="flip-panel flip-panel-top flip-animate-top" id="seconds-flip-top"><div class="flip-text" id="seconds-flip-top-text">00</div></div>
+              <div class="flip-panel flip-panel-bottom flip-animate-bottom" id="seconds-flip-bottom"><div class="flip-text" id="seconds-flip-bottom-text">00</div></div>
+            </div>
+          </div>
+          <span class="sr-only" id="seconds-sr">00 seconds</span>
+        </div>
+        <div class="session-count" id="pomodoro-session-count">
+          <div class="pomodoro-dot active"></div><div class="pomodoro-dot"></div><div class="pomodoro-dot"></div><div class="pomodoro-dot"></div>
+        </div>
+      </div>
+      <div class="session-progress"><div class="session-progress-bar" id="session-progress-bar" style="background-color:var(--long-break-color);width:0%"></div></div>
+      <!-- Controls -->
+      <div class="pomodoro-controls">
+        <button class="pomodoro-button reset action-button secondary" id="pomodoro-reset-btn" aria-label="Reset"><span class="material-symbols-outlined">refresh</span><span class="sr-only">Reset</span></button>
+        <button class="pomodoro-button start-pause action-button" id="pomodoro-start-pause-btn" aria-label="Start" style="background-color:var(--long-break-color)"><span class="material-symbols-outlined">play_arrow</span><span class="sr-only">Start</span></button>
+        <button class="pomodoro-button skip action-button secondary" id="pomodoro-skip-btn" aria-label="Skip" disabled><span class="material-symbols-outlined">skip_next</span><span class="sr-only">Skip</span></button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ── STOPWATCH ──────────────────────────────────── -->
+<div class="page-content-wrapper page-section" id="page-stopwatch">
+  <section class="page-container">
+    <div class="tool-page-wrap">
+      <div class="tool-flip-row">
+        <!-- Minutes -->
+        <div class="card tool-card" id="sw-m-card">
+          <div class="divider"></div>
+          <div class="flip-card-container">
+            <div class="flip-unit">
+              <div class="flip-top"><div class="flip-text" id="sw-m-top">00</div></div>
+              <div class="flip-bottom"><div class="flip-text" id="sw-m-bot">00</div></div>
+              <div class="flip-panel flip-panel-top" id="sw-m-ptop"><div class="flip-text" id="sw-m-ptop-txt">00</div></div>
+              <div class="flip-panel flip-panel-bottom" id="sw-m-pbot"><div class="flip-text" id="sw-m-pbot-txt">00</div></div>
+            </div>
+          </div>
+        </div>
+        <span class="tool-sep">:</span>
+        <!-- Seconds -->
+        <div class="card tool-card" id="sw-s-card">
+          <div class="divider"></div>
+          <div class="flip-card-container">
+            <div class="flip-unit">
+              <div class="flip-top"><div class="flip-text" id="sw-s-top">00</div></div>
+              <div class="flip-bottom"><div class="flip-text" id="sw-s-bot">00</div></div>
+              <div class="flip-panel flip-panel-top" id="sw-s-ptop"><div class="flip-text" id="sw-s-ptop-txt">00</div></div>
+              <div class="flip-panel flip-panel-bottom" id="sw-s-pbot"><div class="flip-text" id="sw-s-pbot-txt">00</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sw-ms-display" id="sw-ms">.00</div>
+      <div class="tool-controls">
+        <button class="tool-btn tool-btn-secondary" id="sw-reset-btn" aria-label="Reset"><span class="material-symbols-outlined">refresh</span></button>
+        <button class="tool-btn tool-btn-success" id="sw-start-btn" aria-label="Start"><span class="material-symbols-outlined">play_arrow</span></button>
+        <button class="tool-btn tool-btn-secondary" id="sw-lap-btn" aria-label="Lap"><span class="material-symbols-outlined">flag</span></button>
+      </div>
+      <div class="sw-laps-container" id="sw-laps-wrap" style="display:none">
+        <div class="sw-laps-hdr"><span>Lap</span><span>Split</span><span>Total</span></div>
+        <ul id="sw-laps-list"></ul>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ── COUNTDOWN ─────────────────────────────────── -->
+<div class="page-content-wrapper page-section" id="page-countdown">
+  <section class="page-container">
+    <div class="tool-page-wrap">
+      <!-- Set row shown before start -->
+      <div class="cd-set-wrap" id="cd-set-wrap">
+        <div class="cd-picker-group"><label>H</label><input type="number" id="cd-h" min="0" max="23" value="0"></div>
+        <div class="cd-colon">:</div>
+        <div class="cd-picker-group"><label>M</label><input type="number" id="cd-m" min="0" max="59" value="5"></div>
+        <div class="cd-colon">:</div>
+        <div class="cd-picker-group"><label>S</label><input type="number" id="cd-s" min="0" max="59" value="0"></div>
+      </div>
+      <!-- Flip display shown during countdown -->
+      <div class="tool-flip-row" id="cd-flip-row" style="display:none">
+        <div class="card tool-card" id="cd-h-card">
+          <div class="divider"></div>
+          <div class="flip-card-container">
+            <div class="flip-unit">
+              <div class="flip-top"><div class="flip-text" id="cd-h-top">00</div></div>
+              <div class="flip-bottom"><div class="flip-text" id="cd-h-bot">00</div></div>
+              <div class="flip-panel flip-panel-top" id="cd-h-ptop"><div class="flip-text" id="cd-h-ptop-txt">00</div></div>
+              <div class="flip-panel flip-panel-bottom" id="cd-h-pbot"><div class="flip-text" id="cd-h-pbot-txt">00</div></div>
+            </div>
+          </div>
+        </div>
+        <span class="tool-sep">:</span>
+        <div class="card tool-card" id="cd-m-card">
+          <div class="divider"></div>
+          <div class="flip-card-container">
+            <div class="flip-unit">
+              <div class="flip-top"><div class="flip-text" id="cd-m-top">00</div></div>
+              <div class="flip-bottom"><div class="flip-text" id="cd-m-bot">00</div></div>
+              <div class="flip-panel flip-panel-top" id="cd-m-ptop"><div class="flip-text" id="cd-m-ptop-txt">00</div></div>
+              <div class="flip-panel flip-panel-bottom" id="cd-m-pbot"><div class="flip-text" id="cd-m-pbot-txt">00</div></div>
+            </div>
+          </div>
+        </div>
+        <span class="tool-sep">:</span>
+        <div class="card tool-card" id="cd-s-card">
+          <div class="divider"></div>
+          <div class="flip-card-container">
+            <div class="flip-unit">
+              <div class="flip-top"><div class="flip-text" id="cd-s-top">00</div></div>
+              <div class="flip-bottom"><div class="flip-text" id="cd-s-bot">00</div></div>
+              <div class="flip-panel flip-panel-top" id="cd-s-ptop"><div class="flip-text" id="cd-s-ptop-txt">00</div></div>
+              <div class="flip-panel flip-panel-bottom" id="cd-s-pbot"><div class="flip-text" id="cd-s-pbot-txt">00</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cd-progress-wrap" id="cd-progress-wrap" style="display:none"><div class="cd-progress-fill" id="cd-progress-fill"></div></div>
+      <div class="cd-done-msg" id="cd-done-msg" style="display:none">⏰ Time's up!</div>
+      <div class="tool-controls">
+        <button class="tool-btn tool-btn-secondary" id="cd-reset-btn" aria-label="Reset"><span class="material-symbols-outlined">refresh</span></button>
+        <button class="tool-btn tool-btn-primary" id="cd-start-btn" aria-label="Start"><span class="material-symbols-outlined">play_arrow</span></button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ── ALARM ──────────────────────────────────────── -->
+<div class="page-content-wrapper page-section" id="page-alarm">
+  <section class="page-container">
+    <div class="alarm-now-time" id="alarm-now-time">--:--:--</div>
+    <div class="alarm-now-date" id="alarm-now-date">—</div>
+    <div class="alarm-add-row">
+      <input type="time" class="alarm-time-in" id="alarm-time-in">
+      <input type="text" class="alarm-lbl-in" id="alarm-lbl-in" placeholder="Label (optional)">
+      <button class="alarm-add-btn-el" id="alarm-add-btn" aria-label="Add alarm"><span class="material-symbols-outlined">add</span></button>
+    </div>
+    <div class="alarm-duration-row">
+      <span>Ring for</span>
+      <select id="alarm-ring-duration">
+        <option value="5">5 seconds</option>
+        <option value="10">10 seconds</option>
+        <option value="15" selected>15 seconds</option>
+        <option value="30">30 seconds</option>
+        <option value="60">60 seconds</option>
+      </select>
+    </div>
+    <div class="alarm-list-wrap" id="alarm-list-wrap">
+      <p class="alarm-empty-msg" id="alarm-empty-msg">No alarms set.</p>
+    </div>
+  </section>
+</div>
+
+</main>
+
+<!-- footer, fullscreen elements -->
+<footer class="app-footer"><span id="year"></span></footer>
+<button id="fullscreen-close-btn" class="fullscreen-close-btn" aria-label="Close Fullscreen"><span class="material-symbols-outlined">close</span></button>
+<div id="fullscreen-notification" class="fullscreen-notification"><span class="material-symbols-outlined">touch_app</span><span>Double-tap to exit fullscreen</span></div>
+<div class="toast-msg" id="toast-msg"></div>
+<audio id="pomodoro-audio" preload="auto"></audio>
+
+</div><!-- .app-container -->
+
+<!-- ══ SCRIPTS ════════════════════════════════════════ -->
+<script src="translations.js"></script>
+<script>
+/* ═══════════════════════════════════════════
+   SHARED FLIP ANIMATION  (same logic as pomodoro.js x() fn)
+   flipCard(ids, newVal, lastStore)
+   ids = { top, bot, ptop, pbot, ptopTxt, pbotTxt }
+   lastStore = { val: '' }   — mutable ref object
+═══════════════════════════════════════════ */
+function setText(el, v) { if (el && el.textContent !== v) el.textContent = v; }
+
+function flipCard(ids, newVal, store) {
+  const v = String(newVal).padStart(2, '0');
+  if (store.val === v) return;
+  const top     = document.getElementById(ids.top);
+  const bot     = document.getElementById(ids.bot);
+  const ptop    = document.getElementById(ids.ptop);
+  const pbot    = document.getElementById(ids.pbot);
+  const ptopTxt = document.getElementById(ids.ptopTxt);
+  const pbotTxt = document.getElementById(ids.pbotTxt);
+  if (!top || !ptop) return;
+  if (store.val === '') {
+    // first render — no animation
+    setText(top, v); setText(bot, v); setText(ptopTxt, v); setText(pbotTxt, v);
+    store.val = v; return;
+  }
+  // standard flip
+  setText(top, v);
+  setText(ptopTxt, store.val);
+  setText(pbotTxt, v);
+  ptop.classList.remove('flip-animate-top');
+  pbot.classList.remove('flip-animate-bottom');
+  void ptop.offsetWidth; // reflow to restart animation
+  ptop.classList.add('flip-animate-top');
+  pbot.classList.add('flip-animate-bottom');
+  setTimeout(() => { setText(bot, v); store.val = v; }, 300);
+}
+
+/* ═══════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════ */
+const PAGE_TITLES = { clock:'Clock', pomodoro:'Pomodoro', stopwatch:'Stopwatch', countdown:'Countdown', alarm:'Alarm' };
+let currentPage = 'clock';
+const headerTitle = document.getElementById('header-title');
+const settingsToggleBtn = document.getElementById('settings-toggle');
+function showPage(name) {
+  document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+  const pg = document.getElementById('page-' + name);
+  if (pg) pg.classList.add('active');
+  document.querySelectorAll('.nav-dock-item[data-page]').forEach(n => n.classList.toggle('active', n.dataset.page === name));
+  document.querySelectorAll('.drawer-item[data-page]').forEach(n => n.classList.toggle('active', n.dataset.page === name));
+  headerTitle.textContent = PAGE_TITLES[name] || name;
+  settingsToggleBtn.style.display = name === 'pomodoro' ? '' : 'none';
+  currentPage = name;
+  closeDrawer();
+}
+
+document.querySelectorAll('[data-page]').forEach(btn => {
+  btn.addEventListener('click', () => { if (btn.dataset.page) showPage(btn.dataset.page); });
+});
+
+/* ═══════════════════════════════════════════
+   DRAWER
+═══════════════════════════════════════════ */
+const drawer = document.getElementById('drawer');
+const drawerOverlay = document.getElementById('drawer-overlay');
+function openDrawer()  { drawer.classList.add('open'); drawerOverlay.classList.add('open'); }
+function closeDrawer() { drawer.classList.remove('open'); drawerOverlay.classList.remove('open'); }
+document.getElementById('menu-toggle').addEventListener('click', openDrawer);
+document.getElementById('drawer-close').addEventListener('click', closeDrawer);
+drawerOverlay.addEventListener('click', closeDrawer);
+document.getElementById('drawer-tasks-btn').addEventListener('click',    () => { closeDrawer(); openPanel('tasks'); });
+document.getElementById('drawer-settings-btn').addEventListener('click', () => { closeDrawer(); openPanel('settings-panel'); });
+document.getElementById('drawer-help-btn').addEventListener('click',     () => { closeDrawer(); openPanel('help'); });
+
+/* ═══════════════════════════════════════════
+   RIGHT PANELS
+═══════════════════════════════════════════ */
+const panelOverlay = document.getElementById('panel-overlay');
+let activePanel = null;
+function openPanel(name) {
+  closePanel();
+  // allow passing either 'tasks' or 'panel-tasks' or 'settings-panel'
+  const p = document.getElementById(name) || document.getElementById('panel-' + name);
+  if (!p) return;
+  p.classList.add('open'); panelOverlay.classList.add('open'); activePanel = p;
+}
+function closePanel() {
+  if (activePanel) activePanel.classList.remove('open');
+  panelOverlay.classList.remove('open'); activePanel = null;
+}
+panelOverlay.addEventListener('click', closePanel);
+settingsToggleBtn.addEventListener('click', () => openPanel('settings-panel'));
+document.getElementById('close-settings').addEventListener('click', closePanel);
+document.getElementById('close-tasks-panel').addEventListener('click', closePanel);
+document.getElementById('close-help-panel').addEventListener('click', closePanel);
+// expose for pomodoro.js toggleSettingsPanel compat (uses id="settings-panel" directly)
+window.toggleSettingsPanel = (open) => {
+  const sp = document.getElementById('settings-panel');
+  if (!sp) return;
+  if (open) { closePanel(); sp.classList.add('open'); panelOverlay.classList.add('open'); activePanel = sp; }
+  else closePanel();
+};
+
+/* ═══════════════════════════════════════════
+   THEME  (from layout.js logic)
+═══════════════════════════════════════════ */
+const LAYOUT_KEY = 'flipSuiteBaseSettings_v1';
+const themeToggleBtn = document.getElementById('theme-toggle');
+let isDark = true;
+function applyTheme(dark) {
+  isDark = dark;
+  document.body.dataset.theme = dark ? 'dark' : 'light';
+  themeToggleBtn.querySelector('.material-symbols-outlined').textContent = dark ? 'light_mode' : 'dark_mode';
+  themeToggleBtn.setAttribute('aria-label', dark ? 'Switch to Light Theme' : 'Switch to Dark Theme');
+  try { localStorage.setItem(LAYOUT_KEY, JSON.stringify({ theme: dark ? 'dark' : 'light' })); } catch(e) {}
+}
+try {
+  const s = JSON.parse(localStorage.getItem(LAYOUT_KEY) || '{}');
+  isDark = s.theme !== 'light';
+} catch(e) {}
+applyTheme(isDark);
+themeToggleBtn.addEventListener('click', () => applyTheme(!isDark));
+
+/* fullscreen */
+const fsBtn = document.getElementById('fullscreen-btn');
+const fsCBtn = document.getElementById('fullscreen-close-btn');
+const fsNotif = document.getElementById('fullscreen-notification');
+fsBtn.addEventListener('click', () => {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+  else document.exitFullscreen();
+});
+fsCBtn.addEventListener('click', () => { if (document.exitFullscreen) document.exitFullscreen(); });
+document.addEventListener('fullscreenchange', () => {
+  const isFs = !!document.fullscreenElement;
+  document.body.classList.toggle('fullscreen-active', isFs);
+  fsBtn.querySelector('.material-symbols-outlined').textContent = isFs ? 'fullscreen_exit' : 'fullscreen';
+  if (isFs && fsNotif) { fsNotif.classList.add('show'); setTimeout(() => fsNotif.classList.remove('show'), 3000); }
+});
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+
+/* year */
+document.getElementById('year').textContent = '© ' + new Date().getFullYear() + ' Flip Suite';
+
+/* ═══════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════ */
+let toastTimer;
+const toastEl = document.getElementById('toast-msg');
+function showToast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2800);
+}
+
+/* ═══════════════════════════════════════════
+   CLOCK PAGE
+═══════════════════════════════════════════ */
+const DAYS   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const clockDate = document.getElementById('clock-date');
+
+const clkH = { top:'clk-h-top', bot:'clk-h-bot', ptop:'clk-h-ptop', pbot:'clk-h-pbot', ptopTxt:'clk-h-ptop-txt', pbotTxt:'clk-h-pbot-txt' };
+const clkM = { top:'clk-m-top', bot:'clk-m-bot', ptop:'clk-m-ptop', pbot:'clk-m-pbot', ptopTxt:'clk-m-ptop-txt', pbotTxt:'clk-m-pbot-txt' };
+const clkS = { top:'clk-s-top', bot:'clk-s-bot', ptop:'clk-s-ptop', pbot:'clk-s-pbot', ptopTxt:'clk-s-ptop-txt', pbotTxt:'clk-s-pbot-txt' };
+const clkHStore = { val: '' }, clkMStore = { val: '' }, clkSStore = { val: '' };
+
+function updateClock() {
+  const n = new Date();
+  flipCard(clkH, n.getHours(),   clkHStore);
+  flipCard(clkM, n.getMinutes(), clkMStore);
+  flipCard(clkS, n.getSeconds(), clkSStore);
+  clockDate.textContent = `${DAYS[n.getDay()]}, ${MONTHS[n.getMonth()]} ${n.getDate()}, ${n.getFullYear()}`;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+/* ═══════════════════════════════════════════
+   STOPWATCH
+═══════════════════════════════════════════ */
+const swM = { top:'sw-m-top', bot:'sw-m-bot', ptop:'sw-m-ptop', pbot:'sw-m-pbot', ptopTxt:'sw-m-ptop-txt', pbotTxt:'sw-m-pbot-txt' };
+const swS = { top:'sw-s-top', bot:'sw-s-bot', ptop:'sw-s-ptop', pbot:'sw-s-pbot', ptopTxt:'sw-s-ptop-txt', pbotTxt:'sw-s-pbot-txt' };
+const swMStore = { val: '' }, swSStore = { val: '' };
+const swMsEl   = document.getElementById('sw-ms');
+const swStartBtn = document.getElementById('sw-start-btn');
+const swResetBtn = document.getElementById('sw-reset-btn');
+const swLapBtn   = document.getElementById('sw-lap-btn');
+const swLapsWrap = document.getElementById('sw-laps-wrap');
+const swLapsList = document.getElementById('sw-laps-list');
+
+let swRunning = false, swStartTime = 0, swElapsed = 0, swRaf = null, swLaps = [];
+
+function swFmt(ms) {
+  const ts = Math.floor(ms / 1000);
+  return { m: Math.floor(ts / 60), s: ts % 60, cs: Math.floor((ms % 1000) / 10) };
+}
+function swFmtStr(ms) {
+  const { m, s, cs } = swFmt(ms);
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;
+}
+function swRender() {
+  const ms = swElapsed + (swRunning ? Date.now() - swStartTime : 0);
+  const { m, s, cs } = swFmt(ms);
+  flipCard(swM, m, swMStore);
+  flipCard(swS, s, swSStore);
+  swMsEl.textContent = '.' + String(cs).padStart(2, '0');
+  if (swRunning) swRaf = requestAnimationFrame(swRender);
+}
+swStartBtn.addEventListener('click', () => {
+  if (!swRunning) {
+    swRunning = true; swStartTime = Date.now();
+    swStartBtn.querySelector('.material-symbols-outlined').textContent = 'pause';
+    swStartBtn.classList.add('running');
+    swRaf = requestAnimationFrame(swRender);
+  } else {
+    swElapsed += Date.now() - swStartTime; swRunning = false;
+    cancelAnimationFrame(swRaf);
+    swStartBtn.querySelector('.material-symbols-outlined').textContent = 'play_arrow';
+    swStartBtn.classList.remove('running');
+    swRender();
+  }
+});
+swResetBtn.addEventListener('click', () => {
+  swRunning = false; swElapsed = 0; swStartTime = 0; swLaps = [];
+  cancelAnimationFrame(swRaf);
+  swStartBtn.querySelector('.material-symbols-outlined').textContent = 'play_arrow';
+  swStartBtn.classList.remove('running');
+  swMStore.val = ''; swSStore.val = '';
+  flipCard(swM, 0, swMStore); flipCard(swS, 0, swSStore);
+  swMsEl.textContent = '.00';
+  swLapsWrap.style.display = 'none'; swLapsList.innerHTML = '';
+});
+swLapBtn.addEventListener('click', () => {
+  if (!swRunning && swElapsed === 0) return;
+  const ms = swElapsed + (swRunning ? Date.now() - swStartTime : 0);
+  swLaps.push(ms);
+  swLapsWrap.style.display = '';
+  swLapsList.innerHTML = '';
+  const rev = [...swLaps].reverse();
+  rev.forEach((lap, i) => {
+    const idx   = swLaps.length - i;
+    const prev  = swLaps[swLaps.length - i - 2] || 0;
+    const split = i === rev.length - 1 ? lap : lap - prev;
+    const li = document.createElement('li');
+    li.className = 'sw-lap-item';
+    li.innerHTML = `<span class="sw-lap-num">Lap ${idx}</span><span class="sw-lap-split">${swFmtStr(split)}</span><span>${swFmtStr(lap)}</span>`;
+    swLapsList.appendChild(li);
+  });
+});
+
+/* ═══════════════════════════════════════════
+   COUNTDOWN
+═══════════════════════════════════════════ */
+const cdH = { top:'cd-h-top', bot:'cd-h-bot', ptop:'cd-h-ptop', pbot:'cd-h-pbot', ptopTxt:'cd-h-ptop-txt', pbotTxt:'cd-h-pbot-txt' };
+const cdM = { top:'cd-m-top', bot:'cd-m-bot', ptop:'cd-m-ptop', pbot:'cd-m-pbot', ptopTxt:'cd-m-ptop-txt', pbotTxt:'cd-m-pbot-txt' };
+const cdS = { top:'cd-s-top', bot:'cd-s-bot', ptop:'cd-s-ptop', pbot:'cd-s-pbot', ptopTxt:'cd-s-ptop-txt', pbotTxt:'cd-s-pbot-txt' };
+const cdHStore = { val:'' }, cdMStore = { val:'' }, cdSStore = { val:'' };
+const cdFlipRow    = document.getElementById('cd-flip-row');
+const cdSetWrap    = document.getElementById('cd-set-wrap');
+const cdProgressWr = document.getElementById('cd-progress-wrap');
+const cdProgressFl = document.getElementById('cd-progress-fill');
+const cdDoneMsg    = document.getElementById('cd-done-msg');
+const cdStartBtn   = document.getElementById('cd-start-btn');
+const cdResetBtn   = document.getElementById('cd-reset-btn');
+
+let cdRunning = false, cdPaused = false, cdRemaining = 0, cdTotal = 0, cdInterval = null, cdAudio = null;
+
+function cdGetSet() {
+  const h = parseInt(document.getElementById('cd-h').value) || 0;
+  const m = parseInt(document.getElementById('cd-m').value) || 0;
+  const s = parseInt(document.getElementById('cd-s').value) || 0;
+  return h * 3600 + m * 60 + s;
+}
+function cdRenderFlip() {
+  const h = Math.floor(cdRemaining / 3600);
+  const m = Math.floor((cdRemaining % 3600) / 60);
+  const s = cdRemaining % 60;
+  flipCard(cdH, h, cdHStore);
+  flipCard(cdM, m, cdMStore);
+  flipCard(cdS, s, cdSStore);
+  cdProgressFl.style.width = cdTotal > 0 ? ((cdTotal - cdRemaining) / cdTotal * 100) + '%' : '0%';
+}
+function cdChime() {
+  try {
+    if (!cdAudio) cdAudio = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = cdAudio.createOscillator();
+    const gain = cdAudio.createGain();
+    osc.connect(gain); gain.connect(cdAudio.destination);
+    osc.type = 'sine'; osc.frequency.value = 880;
+    gain.gain.setValueAtTime(0.4, cdAudio.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, cdAudio.currentTime + 1.5);
+    osc.start(); osc.stop(cdAudio.currentTime + 1.5);
+  } catch(e) {}
+}
+cdStartBtn.addEventListener('click', () => {
+  if (!cdRunning || cdPaused) {
+    if (!cdRunning) {
+      cdTotal = cdGetSet();
+      if (cdTotal <= 0) return;
+      cdRemaining = cdTotal;
+      cdHStore.val = ''; cdMStore.val = ''; cdSStore.val = '';
+      cdSetWrap.style.display = 'none'; cdFlipRow.style.display = '';
+      cdProgressWr.style.display = ''; cdDoneMsg.style.display = 'none';
+      cdRenderFlip();
+    }
+    cdRunning = true; cdPaused = false;
+    cdStartBtn.querySelector('.material-symbols-outlined').textContent = 'pause';
+    cdStartBtn.classList.add('running');
+    cdInterval = setInterval(() => {
+      cdRemaining--;
+      cdRenderFlip();
+      if (cdRemaining <= 0) {
+        clearInterval(cdInterval); cdRunning = false; cdPaused = false;
+        cdStartBtn.querySelector('.material-symbols-outlined').textContent = 'play_arrow';
+        cdStartBtn.classList.remove('running');
+        cdDoneMsg.style.display = ''; cdChime();
+      }
+    }, 1000);
+  } else {
+    clearInterval(cdInterval); cdPaused = true;
+    cdStartBtn.querySelector('.material-symbols-outlined').textContent = 'play_arrow';
+    cdStartBtn.classList.remove('running');
+  }
+});
+cdResetBtn.addEventListener('click', () => {
+  clearInterval(cdInterval); cdRunning = false; cdPaused = false; cdRemaining = 0;
+  cdStartBtn.querySelector('.material-symbols-outlined').textContent = 'play_arrow';
+  cdStartBtn.classList.remove('running');
+  cdFlipRow.style.display = 'none'; cdSetWrap.style.display = '';
+  cdProgressWr.style.display = 'none'; cdDoneMsg.style.display = 'none';
+  cdProgressFl.style.width = '0%';
+});
+
+/* ═══════════════════════════════════════════
+   ALARM
+═══════════════════════════════════════════ */
+const alarmNowTimeEl = document.getElementById('alarm-now-time');
+const alarmNowDateEl = document.getElementById('alarm-now-date');
+const alarmListWrap  = document.getElementById('alarm-list-wrap');
+const alarmEmptyMsg  = document.getElementById('alarm-empty-msg');
+let alarms = [];
+let alarmAudio = null;
+let alarmRingDuration = 15;
+let alarmRingTimer = null;
+
+try { alarms = JSON.parse(localStorage.getItem('fs-alarms') || '[]'); } catch(e) {}
+try { alarmRingDuration = parseInt(localStorage.getItem('fs-alarm-duration')) || 15; } catch(e) {}
+function saveAlarms() { try { localStorage.setItem('fs-alarms', JSON.stringify(alarms)); } catch(e) {} }
+function saveAlarmDuration() { try { localStorage.setItem('fs-alarm-duration', alarmRingDuration); } catch(e) {} }
+
+function alarmChime() {
+  try {
+    if (!alarmAudio) alarmAudio = new (window.AudioContext || window.webkitAudioContext)();
+    const notes = [880, 1046, 1318, 1046, 880];
+    let t = alarmAudio.currentTime;
+    notes.forEach(freq => {
+      const o = alarmAudio.createOscillator(), g = alarmAudio.createGain();
+      o.connect(g); g.connect(alarmAudio.destination);
+      o.type = 'sine'; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.35, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+      o.start(t); o.stop(t + 0.4);
+      t += 0.38;
+    });
+  } catch(e) {}
+}
+
+function startAlarmRing() {
+  alarmChime();
+  if (alarmRingTimer) clearInterval(alarmRingTimer);
+  alarmRingTimer = setInterval(() => {
+    alarmChime();
+  }, 2000);
+  setTimeout(() => {
+    clearInterval(alarmRingTimer);
+    alarmRingTimer = null;
+  }, alarmRingDuration * 1000);
+}
+
+function renderAlarms() {
+  // remove old alarm items (keep empty msg)
+  [...alarmListWrap.querySelectorAll('.alarm-item-el')].forEach(el => el.remove());
+  alarmEmptyMsg.style.display = alarms.length ? 'none' : '';
+  alarms.forEach(alarm => {
+    const div = document.createElement('div');
+    div.className = 'alarm-item-el' + (alarm.ringing ? ' ringing' : '');
+    div.innerHTML = `
+      <span class="alarm-time-txt">${alarm.time}</span>
+      <span class="alarm-lbl-txt">${alarm.label || ''}</span>
+      <button class="alarm-del-btn" aria-label="Delete alarm"><span class="material-symbols-outlined">delete</span></button>`;
+    if (alarm.ringing) {
+      div.title = 'Tap to dismiss';
+      div.style.cursor = 'pointer';
+      div.addEventListener('click', e => {
+        if (!e.target.closest('.alarm-del-btn')) { alarm.ringing = false; clearInterval(alarmRingTimer); alarmRingTimer = null; saveAlarms(); renderAlarms(); }
+      });
+    }
+    div.querySelector('.alarm-del-btn').addEventListener('click', e => {
+      e.stopPropagation();
+      alarms = alarms.filter(a => a.id !== alarm.id);
+      saveAlarms(); renderAlarms();
+    });
+    alarmListWrap.appendChild(div);
+  });
+}
+
+const alarmDurationEl = document.getElementById('alarm-ring-duration');
+alarmDurationEl.value = alarmRingDuration;
+alarmDurationEl.addEventListener('change', () => {
+  alarmRingDuration = parseInt(alarmDurationEl.value) || 15;
+  saveAlarmDuration();
+});
+
+document.getElementById('alarm-add-btn').addEventListener('click', () => {
+  const t = document.getElementById('alarm-time-in').value;
+  if (!t) return;
+  alarms.push({ id: Date.now(), time: t, label: document.getElementById('alarm-lbl-in').value.trim(), ringing: false });
+  document.getElementById('alarm-lbl-in').value = '';
+  saveAlarms(); renderAlarms();
+  showToast('Alarm set for ' + t);
+});
+
+function checkAlarms() {
+  const now = new Date();
+  const hh  = String(now.getHours()).padStart(2,'0');
+  const mm  = String(now.getMinutes()).padStart(2,'0');
+  const ss  = String(now.getSeconds()).padStart(2,'0');
+  const cur = hh + ':' + mm;
+  alarmNowTimeEl.textContent = hh + ':' + mm + ':' + ss;
+  alarmNowDateEl.textContent = `${DAYS[now.getDay()]}, ${MONTHS[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+  alarms.forEach(a => {
+    if (a.time === cur && now.getSeconds() < 3 && !a.ringing) {
+      a.ringing = true; startAlarmRing(); saveAlarms(); renderAlarms();
+      if (currentPage !== 'alarm') showToast('🔔 Alarm: ' + (a.label || a.time));
+    }
+  });
+}
+renderAlarms();
+setInterval(checkAlarms, 1000);
+checkAlarms();
+</script>
+<!-- Pomodoro logic (from separated file) — all IDs match original HTML -->
+<script src="translations.js"></script>
+<script src="pomodoro.js"></script>
+<!-- Layout interactivity (theme already handled inline above; layout.js skipped to avoid double-init) -->
+</body>
+</html>
