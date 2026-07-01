@@ -1,6 +1,6 @@
 // --------------------------------------------------------------
 // PLAYLIST CONFIG
-// Exported from TubeVault on 01/07/2026, 18:14:13
+// Exported from TubeVault on 01/07/2026, 20:59:54
 //
 // Each playlist: id, name, color, videoIds, videos (full details)
 // To apply as defaults: replace playlist.js and clear localStorage.
@@ -225,7 +225,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mr22a2y3jmrh',
     name: 'Daily Routine',
     color: '#AB47BC',
-    videoIds: ['mr226c570497', 'mr224sg1gvs7', 'mr220rrpfl53', 'mr21rutepflu', 'mr20uyztixjo', 'mr20o9rzyjjd', 'mr20hngmoprv', 'mr1zxdpyubj7', 'mr1zt1kdwzef', 'mr1zqxnbldw9', 'mr22c6agmk0h', 'mr22h2t68erg'],
+    videoIds: ['mr226c570497', 'mr224sg1gvs7', 'mr220rrpfl53', 'mr21rutepflu', 'mr20uyztixjo', 'mr20o9rzyjjd', 'mr20hngmoprv', 'mr1zxdpyubj7', 'mr1zt1kdwzef', 'mr1zqxnbldw9', 'mr22c6agmk0h', 'mr22h2t68erg', 'mr28e4d2dwzf', 'mr285oitm09y', 'mr27wd3qduh4', 'mr27vjdxhh5r', 'mr27ubbcvg8a', 'mr27u4it166u', 'mr27sy80b43z', 'mr27sdcz88dc', 'mr25ffquayyv', 'mr22lby8m5zb', 'mr22kzmoe2ok'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=eF9LRFbkHLQ&list=RDKUN5Uf9mObQ&index=27',
@@ -332,6 +332,104 @@ const DEFAULT_PLAYLISTS = [
       playlistId: 'RDjZEA2mMwL1k',
       title: 'Mutta Kalakki Music Video | Youth | Ken Karunaas | Suraj Venjaramoodu | GV Prakash Kumar',
       channel: 'G.V. Prakash Kumar',
+      collectionPath: 'Music / Daily Routine',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=Bm9lLpmPM0A&list=PLYloDMfA37Gd8gz_rBSWHaOcMQuHqFHfz&index=1',
+      videoId: 'Bm9lLpmPM0A',
+      playlistId: 'PLYloDMfA37Gd8gz_rBSWHaOcMQuHqFHfz',
+      title: 'Pattampoochi Lyric Video | Vishwanath and Sons | Suriya, Mamitha Baiju | G.V. Prakash | Venky Atluri',
+      channel: 'Aditya Music Tamil',
+      collectionPath: 'Music / Daily Routine',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=dR9B_gPxjkk&list=RDKUN5Uf9mObQ&index=31',
+      videoId: 'dR9B_gPxjkk',
+      playlistId: 'RDKUN5Uf9mObQ',
+      title: 'Kiliye Kiliye - Video Song | Lokah Chapter 1: Chandra | Kalyani Priyadarshan | Naslen | Dominic Arun',
+      channel: 'Saregama Malayalam',
+      collectionPath: 'Music / Daily Routine',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=PjT12Ce0Kw8&list=RDKUN5Uf9mObQ&index=27',
+      videoId: 'PjT12Ce0Kw8',
+      playlistId: 'RDKUN5Uf9mObQ',
+      title: 'Mukkala Mukkabala Video Song | Kadhalan Movie Songs | Prabhudeva | Nagma | AR Rahman',
+      channel: 'API Tamil Songs',
+      collectionPath: 'Music / Daily Routine',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=1seR_ckLXz4&list=RDKUN5Uf9mObQ&index=24',
+      videoId: '1seR_ckLXz4',
+      playlistId: 'RDKUN5Uf9mObQ',
+      title: 'Golden Sparrow - Video Song | Dhanush | Priyanka Mohan | Pavish | Anikha | GV Prakash #NEEK',
+      channel: 'Wunderbar Films',
+      collectionPath: 'Music / Daily Routine',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=8eYG5QGZAZs&list=RDKUN5Uf9mObQ&index=15',
+      videoId: '8eYG5QGZAZs',
+      playlistId: 'RDKUN5Uf9mObQ',
+      title: 'Jawan: Hayyoda (Tamil) | Shahrukh Khan | Atlee | Anirudh | Nayanthara | Vijay S | Priya Mali | Vivek',
+      channel: 'T-Series Tamil',
+      collectionPath: 'Music / Daily Routine',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=mNcmezwxWTI&list=RDKUN5Uf9mObQ&index=11',
+      videoId: 'mNcmezwxWTI',
+      playlistId: 'RDKUN5Uf9mObQ',
+      title: 'Thottu Thottu Pesum Sulthana Song | Ethirum Puthirum (1999) | Vidyasagar | Tamil Hit Song',
+      channel: 'RJS Music',
+      collectionPath: 'Music / Daily Routine',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=U1JLtpJTe84&list=RDKUN5Uf9mObQ&index=6',
+      videoId: 'U1JLtpJTe84',
+      playlistId: 'RDKUN5Uf9mObQ',
+      title: 'Vazhithunaiye - Video Song | Dragon | Pradeep Ranganathan, Kayadu | Ashwath Marimuthu | Leon James',
+      channel: 'Think Music India',
+      collectionPath: 'Music / Daily Routine',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=Hho8U12gf1Y&list=RDKUN5Uf9mObQ',
+      videoId: 'Hho8U12gf1Y',
+      playlistId: 'RDKUN5Uf9mObQ',
+      title: 'Kadhalikka Neramillai - Yennai Izhukkuthadi Video | Feat. AR Rahman | Ravi Mohan | Nithya Menen',
+      channel: 'T-Series Tamil',
+      collectionPath: 'Music / Daily Routine',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=bWlsbVfEnII&list=RDjZEA2mMwL1k&index=11',
+      videoId: 'bWlsbVfEnII',
+      playlistId: 'RDjZEA2mMwL1k',
+      title: 'Naanayam - Naan Pogiren Video | Prasanna, Sibi Raj | James Vasanthan',
+      channel: 'SonyMusicSouthVEVO',
+      collectionPath: 'Music / Daily Routine',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=paDG3S3UmQM',
+      videoId: 'paDG3S3UmQM',
+      title: 'Don - Private Party Music Video | Sivakarthikeyan, Priyanka Mohan | Anirudh | Jonita Gandhi | Cibi',
+      channel: 'Sony Music South',
+      collectionPath: 'Music / Daily Routine',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=4deZ7o3zfmI&list=RDjZEA2mMwL1k&index=2',
+      videoId: '4deZ7o3zfmI',
+      playlistId: 'RDjZEA2mMwL1k',
+      title: 'Idhayam | Once More |Arjun Das,Aditi Shankar |Hesham Abdul Wahab |Vineeth |Vignesh Srikanth |Yuvaraj',
+      channel: 'Think Music India',
       collectionPath: 'Music / Daily Routine',
       note: ''
     }
