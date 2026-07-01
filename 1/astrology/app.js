@@ -1874,11 +1874,33 @@ ${colorsBlock}
 ${collectionsBlock}
 `;
 
+  // Build per-collection group details
+  const colDetails = state.collections.map(col => {
+    const colVideos = state.videos.filter(v => v.collection === col.id);
+    const groups = {};
+    let ungroupedCount = 0;
+    colVideos.forEach(v => {
+      if (v.group) {
+        groups[v.group] = (groups[v.group] || 0) + 1;
+      } else {
+        ungroupedCount++;
+      }
+    });
+    const groupLines = Object.entries(groups)
+      .sort((a, b) => b[1] - a[1])
+      .map(([g, c]) => `  ${g}: ${c}`)
+      .join('\n');
+    let detail = `${col.name} (${colVideos.length} videos)`;
+    if (groupLines) detail += '\n' + groupLines;
+    if (ungroupedCount) detail += `\n  Ungrouped: ${ungroupedCount}`;
+    return detail;
+  }).join('\n\n');
+
   closeExportMenu();
   showExportConfirm(
     'Export Collections',
     'Export your collections and videos as a JavaScript file.',
-    'File: collections.js\nContains: ' + state.collections.length + ' collection(s), ' + state.videos.length + ' video(s)',
+    'File: collections.js\nContains: ' + state.collections.length + ' collection(s), ' + state.videos.length + ' video(s)' + (colDetails ? '\n\n' + colDetails : ''),
     () => {
       saveToFolderOrDownload('collections.js', fileContents, 'text/javascript').then(saved => {
         showToast(saved ? '✓ Saved collections.js to folder' : '✓ Exported as collections.js');
