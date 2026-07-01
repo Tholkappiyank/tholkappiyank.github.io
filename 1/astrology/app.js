@@ -1654,9 +1654,67 @@ function toggleSidebarSection(sectionId, chevEl) {
   chevEl.classList.toggle('chev-down', isCollapsed);
 }
 
+function getAppName() {
+  const m = window.location.pathname.match(/\/(music|electronics|astrology)\//);
+  return m ? m[1] : 'unknown';
+}
+
 // ──────────────────────────────────────────────
-// EXPORT FOLDER (File System Access API)
+// EXPORT FOLDER (File System Access API + IndexedDB persistence)
 // ──────────────────────────────────────────────
+const DB_NAME = 'TubeVaultExportFolders';
+const DB_VERSION = 1;
+const DB_STORE = 'folders';
+
+function openExportFolderDb() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = () => req.result.createObjectStore(DB_STORE);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function saveExportFolderHandle(appName, handle) {
+  try {
+    const db = await openExportFolderDb();
+    const tx = db.transaction(DB_STORE, 'readwrite');
+    tx.objectStore(DB_STORE).put(handle, appName);
+    await new Promise((resolve, reject) => {
+      tx.oncomplete = resolve;
+      tx.onerror = () => reject(tx.error);
+    });
+  } catch (e) {
+    console.warn('Could not persist export folder handle:', e);
+  }
+}
+
+async function loadExportFolderHandle(appName) {
+  try {
+    const db = await openExportFolderDb();
+    const tx = db.transaction(DB_STORE, 'readonly');
+    const store = tx.objectStore(DB_STORE);
+    const req = store.get(appName);
+    return new Promise((resolve, reject) => {
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => reject(req.error);
+    });
+  } catch (e) {
+    return null;
+  }
+}
+
+function clearExportFolderHandle(appName) {
+  return openExportFolderDb().then(db => {
+    const tx = db.transaction(DB_STORE, 'readwrite');
+    tx.objectStore(DB_STORE).delete(appName);
+    return new Promise((resolve, reject) => {
+      tx.oncomplete = resolve;
+      tx.onerror = () => reject(tx.error);
+    });
+  }).catch(() => {});
+}
+
 let exportFolderHandle = null; // FileSystemDirectoryHandle when selected
 
 async function browseExportFolder() {
@@ -1667,6 +1725,7 @@ async function browseExportFolder() {
   try {
     const handle = await window.showDirectoryPicker({ mode: 'readwrite' });
     exportFolderHandle = handle;
+    saveExportFolderHandle(getAppName(), handle);
     const wrap = document.getElementById('exportLocationWrap');
     const label = document.getElementById('exportLocationLabel');
     if (wrap) wrap.style.display = 'flex';
@@ -1679,9 +1738,32 @@ async function browseExportFolder() {
 
 function clearExportFolder() {
   exportFolderHandle = null;
+  clearExportFolderHandle(getAppName());
   const wrap = document.getElementById('exportLocationWrap');
   if (wrap) wrap.style.display = 'none';
   showToast('Export folder cleared — files will download normally');
+}
+
+async function restoreExportFolder() {
+  const appName = getAppName();
+  const handle = await loadExportFolderHandle(appName);
+  if (handle) {
+    try {
+      const opts = { mode: 'readwrite' };
+      const ok = await handle.queryPermission(opts) === 'granted' || await handle.requestPermission(opts) === 'granted';
+      if (ok) {
+        exportFolderHandle = handle;
+        const wrap = document.getElementById('exportLocationWrap');
+        const label = document.getElementById('exportLocationLabel');
+        if (wrap) wrap.style.display = 'flex';
+        if (label) label.textContent = handle.name;
+      } else {
+        clearExportFolderHandle(appName);
+      }
+    } catch (e) {
+      clearExportFolderHandle(appName);
+    }
+  }
 }
 
 // Write text content to the selected folder, or fall back to download
@@ -1715,7 +1797,11 @@ let _exportCallback = null;
 function showExportConfirm(title, message, details, callback) {
   document.getElementById('exportConfirmTitle').textContent = title;
   document.getElementById('exportConfirmMessage').textContent = message;
-  document.getElementById('exportConfirmDetails').textContent = details;
+  const appName = getAppName();
+  const folderLine = exportFolderHandle
+    ? '\n\nTarget folder: ' + appName + '/'
+    : '\n\nTarget folder: Downloads (click Browse to set a folder)';
+  document.getElementById('exportConfirmDetails').textContent = details + folderLine;
   _exportCallback = callback;
   openModal('exportConfirmModal');
 }
@@ -2892,5 +2978,6 @@ function closePlaylistPlayer() {
 // INIT
 // ──────────────────────────────────────────────
 seedData();
+restoreExportFolder();
 renderSidebar();
 renderCards();

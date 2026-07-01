@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
-// Exported from TubeVault on 6/24/2026, 10:07:27 AM
+// Exported from TubeVault on 01/07/2026, 18:07:36
 //
 // STRUCTURE — easy to browse/edit in any JSON editor:
 //   DEFAULT_COLLECTIONS
@@ -39,6 +39,88 @@ const DEFAULT_COLLECTIONS = [
     name: 'Music',
     color: '#EC407A',
     groups: {
+      'Daily Routine': [
+        {
+          url: 'https://www.youtube.com/watch?v=eF9LRFbkHLQ&list=RDKUN5Uf9mObQ&index=27',
+          videoId: 'eF9LRFbkHLQ',
+          playlistId: 'RDKUN5Uf9mObQ',
+          title: 'Makkamishi | Brother | Jayam Ravi, Priyanka Mohan| Harris Jayaraj |Paal Dabba| Rajesh.M|Screen Scene',
+          channel: 'Think Music India',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=MJmxdlCtFWU&list=RDKUN5Uf9mObQ&index=27',
+          videoId: 'MJmxdlCtFWU',
+          playlistId: 'RDKUN5Uf9mObQ',
+          title: 'Two Two Two - Video Song | Kaathuvaakula Rendu Kaadhal | Vijay Sethupathi | Anirudh | Vignesh Shivan',
+          channel: 'Sony Music South',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=MmvpbLdaIRs&list=RDKUN5Uf9mObQ&index=27',
+          videoId: 'MmvpbLdaIRs',
+          playlistId: 'RDKUN5Uf9mObQ',
+          title: 'Mersal - Maacho Tamil Video | Vijay, Kajal Aggarwal | A.R. Rahman',
+          channel: 'SonyMusicSouthVEVO',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=u_nDlTN0fQk&list=RDKUN5Uf9mObQ&index=28',
+          videoId: 'u_nDlTN0fQk',
+          playlistId: 'RDKUN5Uf9mObQ',
+          title: 'Bullet Full Video Song (Tamil) | Ram Pothineni, Krithi Shetty | Simbu | Lingusamy | DSP',
+          channel: 'Aditya Music Tamil',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=izbydia9jz4&list=RDKUN5Uf9mObQ&index=27',
+          videoId: 'izbydia9jz4',
+          playlistId: 'RDKUN5Uf9mObQ',
+          title: 'Narivetta - Minnalvala Video Song | Tovino Thomas, Anuraj Manohar, Jakes Bejoy, Sid Sriram, Sithara',
+          channel: 'Sony Music South',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=q_hevkY0hhY&list=RDKUN5Uf9mObQ&index=27',
+          videoId: 'q_hevkY0hhY',
+          playlistId: 'RDKUN5Uf9mObQ',
+          title: 'Full Video: Mehabooba (Tamil) KGF Chapter 2 | RockingStar Yash | Prashanth Neel | Ravi Basrur',
+          channel: 'T-Series Tamil',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=tYSrY4iPX6w&list=RDKUN5Uf9mObQ&index=27',
+          videoId: 'tYSrY4iPX6w',
+          playlistId: 'RDKUN5Uf9mObQ',
+          title: 'Tum Tum - Video Song | Enemy (Tamil) | Vishal,Arya | Anand Shankar | Vinod Kumar | Thaman S',
+          channel: 'Divo Music',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=ijBxe70sd8M&list=RDKUN5Uf9mObQ&index=21',
+          videoId: 'ijBxe70sd8M',
+          playlistId: 'RDKUN5Uf9mObQ',
+          title: 'Achacho - Video Song | Aranmanai 4  | Sundar.C | Tamannaah | Raashii Khanna | Hiphop Tamizha',
+          channel: 'Think Music India',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=b68HETiNO98&list=RDKUN5Uf9mObQ&index=20',
+          videoId: 'b68HETiNO98',
+          playlistId: 'RDKUN5Uf9mObQ',
+          title: '@SaiAbhyankkar - Pavazha Malli (Music Video) | Kayadu | Shruti Haasan | Vivek | Thejo | Think Indie',
+          channel: 'Think Music India',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=R3IKB2tmaC8&list=RDKUN5Uf9mObQ&index=13',
+          videoId: 'R3IKB2tmaC8',
+          playlistId: 'RDKUN5Uf9mObQ',
+          title: 'YouTube Video',
+          channel: '',
+          note: 'Tamil Songs for Daily Routine'
+        },
+      ],
       'Veena': [
         {
           url: 'https://www.youtube.com/watch?v=aLSA8Su-3ag',

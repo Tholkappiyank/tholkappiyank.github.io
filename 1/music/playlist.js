@@ -1,6 +1,6 @@
 // --------------------------------------------------------------
 // PLAYLIST CONFIG
-// Exported from TubeVault on 6/24/2026, 10:07:13 AM
+// Exported from TubeVault on 01/07/2026, 18:10:54
 //
 // Each playlist: id, name, color, videoIds, videos (full details)
 // To apply as defaults: replace playlist.js and clear localStorage.
@@ -11,7 +11,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mqq9bpw24iah',
     name: 'Veena',
     color: '#26A69A',
-    videoIds: ['mqq9awnrqx7y', 'mqq9awnrk6ft', 'mqq9awnr6x7i', 'mqq9awnrxsf1', 'mqq9awnrnya0', 'mqq9awnrr12x', 'mqq9awnrfufz', 'mqq9awnrka44', 'mqq9awnrequl', 'mqq9awnr7uet', 'mqq9awnrvs8l', 'mqq9awnrmbck', 'mqq9awnr415s', 'mqq9awnr8ksd', 'mqq9awnrglub', 'mqq9awnrgmw3', 'mqq9awnrt10t', 'mqq9awnr0lg1', 'mqq9awnrhg7l', 'mqq9awnrm7cs', 'mqq9awnrmejj', 'mqq9awnr5aft', 'mqq9awnrp2qz'],
+    videoIds: ['mr1uzf6nmx21', 'mr1uzf6n00ux', 'mr1uzf6n5mwp', 'mr1uzf6ni55l', 'mr1uzf6npzma', 'mr1uzf6njd67', 'mr1uzf6n8a2p', 'mr1uzf6nfiif', 'mr1uzf6n77i5', 'mr1uzf6nkr6o', 'mr1uzf6nlhfy', 'mr1uzf6ny5ls', 'mr1uzf6nmwwc', 'mr1uzf6nc7lm', 'mr1uzf6nrzy3', 'mr1uzf6nqw31', 'mr1uzf6n1l4o', 'mr1uzf6n6jko', 'mr1uzf6nefsy', 'mr1uzf6nu8ha', 'mr1uzf6nwtg7', 'mr1uzf6nldew', 'mr1uzf6nsn7j'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=vIDl1E26FpU&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=2',
@@ -218,6 +218,113 @@ const DEFAULT_PLAYLISTS = [
       channel: 'Veena Ranjani Mahesh',
       collectionPath: 'Music / Veena',
       note: 'Veena by Ranjani mahesh'
+    }
+    ]
+  },
+  {
+    id: 'mr22a2y3jmrh',
+    name: 'Daily Routine',
+    color: '#AB47BC',
+    videoIds: ['mr226c570497', 'mr224sg1gvs7', 'mr220rrpfl53', 'mr21rutepflu', 'mr20uyztixjo', 'mr20o9rzyjjd', 'mr20hngmoprv', 'mr1zxdpyubj7', 'mr1zt1kdwzef', 'mr1zqxnbldw9', 'mr22c6agmk0h'],
+    videos: [
+    {
+      url: 'https://www.youtube.com/watch?v=eF9LRFbkHLQ&list=RDKUN5Uf9mObQ&index=27',
+      videoId: 'eF9LRFbkHLQ',
+      playlistId: 'RDKUN5Uf9mObQ',
+      title: 'Makkamishi | Brother | Jayam Ravi, Priyanka Mohan| Harris Jayaraj |Paal Dabba| Rajesh.M|Screen Scene',
+      channel: 'Think Music India',
+      collectionPath: 'Music / Daily Routine',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=MJmxdlCtFWU&list=RDKUN5Uf9mObQ&index=27',
+      videoId: 'MJmxdlCtFWU',
+      playlistId: 'RDKUN5Uf9mObQ',
+      title: 'Two Two Two - Video Song | Kaathuvaakula Rendu Kaadhal | Vijay Sethupathi | Anirudh | Vignesh Shivan',
+      channel: 'Sony Music South',
+      collectionPath: 'Music / Daily Routine',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=MmvpbLdaIRs&list=RDKUN5Uf9mObQ&index=27',
+      videoId: 'MmvpbLdaIRs',
+      playlistId: 'RDKUN5Uf9mObQ',
+      title: 'Mersal - Maacho Tamil Video | Vijay, Kajal Aggarwal | A.R. Rahman',
+      channel: 'SonyMusicSouthVEVO',
+      collectionPath: 'Music / Daily Routine',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=u_nDlTN0fQk&list=RDKUN5Uf9mObQ&index=28',
+      videoId: 'u_nDlTN0fQk',
+      playlistId: 'RDKUN5Uf9mObQ',
+      title: 'Bullet Full Video Song (Tamil) | Ram Pothineni, Krithi Shetty | Simbu | Lingusamy | DSP',
+      channel: 'Aditya Music Tamil',
+      collectionPath: 'Music / Daily Routine',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=izbydia9jz4&list=RDKUN5Uf9mObQ&index=27',
+      videoId: 'izbydia9jz4',
+      playlistId: 'RDKUN5Uf9mObQ',
+      title: 'Narivetta - Minnalvala Video Song | Tovino Thomas, Anuraj Manohar, Jakes Bejoy, Sid Sriram, Sithara',
+      channel: 'Sony Music South',
+      collectionPath: 'Music / Daily Routine',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=q_hevkY0hhY&list=RDKUN5Uf9mObQ&index=27',
+      videoId: 'q_hevkY0hhY',
+      playlistId: 'RDKUN5Uf9mObQ',
+      title: 'Full Video: Mehabooba (Tamil) KGF Chapter 2 | RockingStar Yash | Prashanth Neel | Ravi Basrur',
+      channel: 'T-Series Tamil',
+      collectionPath: 'Music / Daily Routine',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=tYSrY4iPX6w&list=RDKUN5Uf9mObQ&index=27',
+      videoId: 'tYSrY4iPX6w',
+      playlistId: 'RDKUN5Uf9mObQ',
+      title: 'Tum Tum - Video Song | Enemy (Tamil) | Vishal,Arya | Anand Shankar | Vinod Kumar | Thaman S',
+      channel: 'Divo Music',
+      collectionPath: 'Music / Daily Routine',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=ijBxe70sd8M&list=RDKUN5Uf9mObQ&index=21',
+      videoId: 'ijBxe70sd8M',
+      playlistId: 'RDKUN5Uf9mObQ',
+      title: 'Achacho - Video Song | Aranmanai 4  | Sundar.C | Tamannaah | Raashii Khanna | Hiphop Tamizha',
+      channel: 'Think Music India',
+      collectionPath: 'Music / Daily Routine',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=b68HETiNO98&list=RDKUN5Uf9mObQ&index=20',
+      videoId: 'b68HETiNO98',
+      playlistId: 'RDKUN5Uf9mObQ',
+      title: '@SaiAbhyankkar - Pavazha Malli (Music Video) | Kayadu | Shruti Haasan | Vivek | Thejo | Think Indie',
+      channel: 'Think Music India',
+      collectionPath: 'Music / Daily Routine',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=R3IKB2tmaC8&list=RDKUN5Uf9mObQ&index=13',
+      videoId: 'R3IKB2tmaC8',
+      playlistId: 'RDKUN5Uf9mObQ',
+      title: 'YouTube Video',
+      channel: '',
+      collectionPath: 'Music / Daily Routine',
+      note: 'Tamil Songs for Daily Routine'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=JEf6C7PYBys&list=RDJEf6C7PYBys&start_radio=1',
+      videoId: 'JEf6C7PYBys',
+      playlistId: 'RDJEf6C7PYBys',
+      title: '✨️🎼Aasa kooda song tamil trending🙏 songs🎶 Sai Abhyankar 💖🎶🍟',
+      channel: 'Abinaya Murthy',
+      collectionPath: 'Music / Daily Routine',
+      note: ''
     }
     ]
   }
