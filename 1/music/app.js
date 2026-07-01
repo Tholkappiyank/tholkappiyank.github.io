@@ -5,7 +5,7 @@
 //  state.collections only stores {id, name, color}; the nested
 //  video data is flattened into state.videos by seedData() below.)
 // ──────────────────────────────────────────────
-let state = JSON.parse(localStorage.getItem('tholsstudio') || 'null') || {
+let state = JSON.parse(localStorage.getItem('tholsstudio_music') || 'null') || {
   videos: [],
   collections: DEFAULT_COLLECTIONS.map(c => ({ id: c.id, name: c.name, color: c.color })),
   playlists: DEFAULT_PLAYLISTS.map(p => ({ id: p.id, name: p.name, color: p.color, videoIds: [...p.videoIds] })),
@@ -39,7 +39,7 @@ let searchQuery = '';
 let newGroupColId = null;
 
 function save() {
-  localStorage.setItem('tholsstudio', JSON.stringify(state));
+  localStorage.setItem('tholsstudio_music', JSON.stringify(state));
 }
 
 // ──────────────────────────────────────────────
@@ -1118,7 +1118,7 @@ function startTitleEdit(id) {
 
 // save alias that doesn't conflict with the global save() name
 function saveState() {
-  localStorage.setItem('tholsstudio', JSON.stringify(state));
+  localStorage.setItem('tholsstudio_music', JSON.stringify(state));
 }
 
 function toggleNote(id) {
