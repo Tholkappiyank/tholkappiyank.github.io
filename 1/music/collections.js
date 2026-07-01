@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
-// Exported from TubeVault on 01/07/2026, 18:07:36
+// Exported from TubeVault on 01/07/2026, 21:32:34
 //
 // STRUCTURE — easy to browse/edit in any JSON editor:
 //   DEFAULT_COLLECTIONS
@@ -40,6 +40,117 @@ const DEFAULT_COLLECTIONS = [
     color: '#EC407A',
     groups: {
       'Daily Routine': [
+        {
+          url: 'https://www.youtube.com/watch?v=lZORMUufA_Y&list=RDlZORMUufA_Y&start_radio=1',
+          videoId: 'lZORMUufA_Y',
+          playlistId: 'RDlZORMUufA_Y',
+          title: '3 - Idhazhin Oram Video | Dhanush, Shruti | Anirudh',
+          channel: 'SonyMusicSouthVEVO',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=Bm9lLpmPM0A&list=PLYloDMfA37Gd8gz_rBSWHaOcMQuHqFHfz&index=1',
+          videoId: 'Bm9lLpmPM0A',
+          playlistId: 'PLYloDMfA37Gd8gz_rBSWHaOcMQuHqFHfz',
+          title: 'Pattampoochi Lyric Video | Vishwanath and Sons | Suriya, Mamitha Baiju | G.V. Prakash | Venky Atluri',
+          channel: 'Aditya Music Tamil',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=dR9B_gPxjkk&list=RDKUN5Uf9mObQ&index=31',
+          videoId: 'dR9B_gPxjkk',
+          playlistId: 'RDKUN5Uf9mObQ',
+          title: 'Kiliye Kiliye - Video Song | Lokah Chapter 1: Chandra | Kalyani Priyadarshan | Naslen | Dominic Arun',
+          channel: 'Saregama Malayalam',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=PjT12Ce0Kw8&list=RDKUN5Uf9mObQ&index=27',
+          videoId: 'PjT12Ce0Kw8',
+          playlistId: 'RDKUN5Uf9mObQ',
+          title: 'Mukkala Mukkabala Video Song | Kadhalan Movie Songs | Prabhudeva | Nagma | AR Rahman',
+          channel: 'API Tamil Songs',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=1seR_ckLXz4&list=RDKUN5Uf9mObQ&index=24',
+          videoId: '1seR_ckLXz4',
+          playlistId: 'RDKUN5Uf9mObQ',
+          title: 'Golden Sparrow - Video Song | Dhanush | Priyanka Mohan | Pavish | Anikha | GV Prakash #NEEK',
+          channel: 'Wunderbar Films',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=8eYG5QGZAZs&list=RDKUN5Uf9mObQ&index=15',
+          videoId: '8eYG5QGZAZs',
+          playlistId: 'RDKUN5Uf9mObQ',
+          title: 'Jawan: Hayyoda (Tamil) | Shahrukh Khan | Atlee | Anirudh | Nayanthara | Vijay S | Priya Mali | Vivek',
+          channel: 'T-Series Tamil',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=mNcmezwxWTI&list=RDKUN5Uf9mObQ&index=11',
+          videoId: 'mNcmezwxWTI',
+          playlistId: 'RDKUN5Uf9mObQ',
+          title: 'Thottu Thottu Pesum Sulthana Song | Ethirum Puthirum (1999) | Vidyasagar | Tamil Hit Song',
+          channel: 'RJS Music',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=U1JLtpJTe84&list=RDKUN5Uf9mObQ&index=6',
+          videoId: 'U1JLtpJTe84',
+          playlistId: 'RDKUN5Uf9mObQ',
+          title: 'Vazhithunaiye - Video Song | Dragon | Pradeep Ranganathan, Kayadu | Ashwath Marimuthu | Leon James',
+          channel: 'Think Music India',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=Hho8U12gf1Y&list=RDKUN5Uf9mObQ',
+          videoId: 'Hho8U12gf1Y',
+          playlistId: 'RDKUN5Uf9mObQ',
+          title: 'Kadhalikka Neramillai - Yennai Izhukkuthadi Video | Feat. AR Rahman | Ravi Mohan | Nithya Menen',
+          channel: 'T-Series Tamil',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=bWlsbVfEnII&list=RDjZEA2mMwL1k&index=11',
+          videoId: 'bWlsbVfEnII',
+          playlistId: 'RDjZEA2mMwL1k',
+          title: 'Naanayam - Naan Pogiren Video | Prasanna, Sibi Raj | James Vasanthan',
+          channel: 'SonyMusicSouthVEVO',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=paDG3S3UmQM',
+          videoId: 'paDG3S3UmQM',
+          title: 'Don - Private Party Music Video | Sivakarthikeyan, Priyanka Mohan | Anirudh | Jonita Gandhi | Cibi',
+          channel: 'Sony Music South',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=4deZ7o3zfmI&list=RDjZEA2mMwL1k&index=2',
+          videoId: '4deZ7o3zfmI',
+          playlistId: 'RDjZEA2mMwL1k',
+          title: 'Idhayam | Once More |Arjun Das,Aditi Shankar |Hesham Abdul Wahab |Vineeth |Vignesh Srikanth |Yuvaraj',
+          channel: 'Think Music India',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=jZEA2mMwL1k&list=RDjZEA2mMwL1k&start_radio=1',
+          videoId: 'jZEA2mMwL1k',
+          playlistId: 'RDjZEA2mMwL1k',
+          title: 'Mutta Kalakki Music Video | Youth | Ken Karunaas | Suraj Venjaramoodu | GV Prakash Kumar',
+          channel: 'G.V. Prakash Kumar',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=JEf6C7PYBys&list=RDJEf6C7PYBys&start_radio=1',
+          videoId: 'JEf6C7PYBys',
+          playlistId: 'RDJEf6C7PYBys',
+          title: '✨️🎼Aasa kooda song tamil trending🙏 songs🎶 Sai Abhyankar 💖🎶🍟',
+          channel: 'Abinaya Murthy',
+          note: ''
+        },
         {
           url: 'https://www.youtube.com/watch?v=eF9LRFbkHLQ&list=RDKUN5Uf9mObQ&index=27',
           videoId: 'eF9LRFbkHLQ',

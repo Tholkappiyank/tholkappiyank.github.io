@@ -1,6 +1,6 @@
 // --------------------------------------------------------------
 // PLAYLIST CONFIG
-// Exported from TubeVault on 01/07/2026, 20:59:54
+// Exported from TubeVault on 01/07/2026, 21:32:50
 //
 // Each playlist: id, name, color, videoIds, videos (full details)
 // To apply as defaults: replace playlist.js and clear localStorage.
@@ -225,7 +225,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mr22a2y3jmrh',
     name: 'Daily Routine',
     color: '#AB47BC',
-    videoIds: ['mr226c570497', 'mr224sg1gvs7', 'mr220rrpfl53', 'mr21rutepflu', 'mr20uyztixjo', 'mr20o9rzyjjd', 'mr20hngmoprv', 'mr1zxdpyubj7', 'mr1zt1kdwzef', 'mr1zqxnbldw9', 'mr22c6agmk0h', 'mr22h2t68erg', 'mr28e4d2dwzf', 'mr285oitm09y', 'mr27wd3qduh4', 'mr27vjdxhh5r', 'mr27ubbcvg8a', 'mr27u4it166u', 'mr27sy80b43z', 'mr27sdcz88dc', 'mr25ffquayyv', 'mr22lby8m5zb', 'mr22kzmoe2ok'],
+    videoIds: ['mr226c570497', 'mr224sg1gvs7', 'mr220rrpfl53', 'mr21rutepflu', 'mr20uyztixjo', 'mr20o9rzyjjd', 'mr20hngmoprv', 'mr1zxdpyubj7', 'mr1zt1kdwzef', 'mr1zqxnbldw9', 'mr22c6agmk0h', 'mr22h2t68erg', 'mr28e4d2dwzf', 'mr285oitm09y', 'mr27wd3qduh4', 'mr27vjdxhh5r', 'mr27ubbcvg8a', 'mr27u4it166u', 'mr27sy80b43z', 'mr27sdcz88dc', 'mr25ffquayyv', 'mr22lby8m5zb', 'mr22kzmoe2ok', 'mr29ke4sp1em'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=eF9LRFbkHLQ&list=RDKUN5Uf9mObQ&index=27',
@@ -430,6 +430,15 @@ const DEFAULT_PLAYLISTS = [
       playlistId: 'RDjZEA2mMwL1k',
       title: 'Idhayam | Once More |Arjun Das,Aditi Shankar |Hesham Abdul Wahab |Vineeth |Vignesh Srikanth |Yuvaraj',
       channel: 'Think Music India',
+      collectionPath: 'Music / Daily Routine',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=lZORMUufA_Y&list=RDlZORMUufA_Y&start_radio=1',
+      videoId: 'lZORMUufA_Y',
+      playlistId: 'RDlZORMUufA_Y',
+      title: '3 - Idhazhin Oram Video | Dhanush, Shruti | Anirudh',
+      channel: 'SonyMusicSouthVEVO',
       collectionPath: 'Music / Daily Routine',
       note: ''
     }
