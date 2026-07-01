@@ -14,6 +14,7 @@ let state = JSON.parse(localStorage.getItem('tholsstudio_music') || 'null') || {
   lastUsedGroup: '',
   videoOrder: {},
   watchedIds: [],   // YouTube videoId strings of watched videos
+  expandedGroups: [],
 };
 
 // Ensure older saved states have all fields
@@ -32,6 +33,7 @@ if (!state.playlists) {
 state.playlists.forEach((pl, i) => {
   if (!pl.color) pl.color = COLLECTION_COLORS[i % COLLECTION_COLORS.length];
 });
+if (!state.expandedGroups) state.expandedGroups = [];
 
 let currentFilter = 'all';
 let currentView = 'grid';
@@ -644,11 +646,13 @@ function buildCollectionBlock(colId, colName, colColor, colVids, isFirst, expand
   const dividerStyle = isFirst
     ? 'margin-bottom:12px;'
     : 'margin-bottom:12px; padding-top:14px; margin-top:2px; border-top:1px solid var(--border-subtle);';
-  const chevClass = expanded ? 'group-chevron chev-up' : 'group-chevron collapsed';
-  const bodyClass = expanded ? 'group-body' : 'group-body collapsed';
+  const colKey = `col-${colId}`;
+  const isExpanded = expanded || state.expandedGroups.includes(colKey);
+  const chevClass = isExpanded ? 'group-chevron chev-up' : 'group-chevron collapsed';
+  const bodyClass = isExpanded ? 'group-body' : 'group-body collapsed';
   let html = `<div class="group-section" style="${dividerStyle}">`;
-  html += `<div class="group-header group-header--collection" onclick="toggleGroup('col-${colId}')">
-    <span class="${chevClass}" id="chev-col-${colId}">
+  html += `<div class="group-header group-header--collection" onclick="toggleGroup('${colKey}')">
+    <span class="${chevClass}" id="chev-${colKey}">
       <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
     </span>
     <span class="collection-dot" style="background:${colColor};width:9px;height:9px;border-radius:50%;flex-shrink:0;"></span>
@@ -700,8 +704,9 @@ function renderGroupedByTitle(vids, colId, colColor, nested = false, expanded = 
       });
     }
     const gKey = `${colId}__${gName}`.replace(/[^a-z0-9_]/gi, '_');
-    const gChevClass = expanded ? 'group-chevron chev-up' : 'group-chevron collapsed';
-    const gBodyClass = expanded ? 'group-body' : 'group-body collapsed';
+    const gIsExpanded = expanded || state.expandedGroups.includes(gKey);
+    const gChevClass = gIsExpanded ? 'group-chevron chev-up' : 'group-chevron collapsed';
+    const gBodyClass = gIsExpanded ? 'group-body' : 'group-body collapsed';
     html += `<div class="group-section">
       <div class="group-header" onclick="toggleGroup('${gKey}')">
         <span class="${gChevClass}" id="chev-${gKey}">
@@ -849,6 +854,13 @@ function toggleGroup(key) {
   if (!body) return;
   body.classList.toggle('collapsed');
   chev?.classList.toggle('collapsed');
+  const idx = state.expandedGroups.indexOf(key);
+  if (idx === -1) {
+    state.expandedGroups.push(key);
+  } else {
+    state.expandedGroups.splice(idx, 1);
+  }
+  save();
 }
 
 function openGroupModal(colId) {
