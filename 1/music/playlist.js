@@ -1,6 +1,6 @@
 // --------------------------------------------------------------
 // PLAYLIST CONFIG
-// Exported from TubeVault on 01/07/2026, 18:10:54
+// Exported from TubeVault on 01/07/2026, 18:14:13
 //
 // Each playlist: id, name, color, videoIds, videos (full details)
 // To apply as defaults: replace playlist.js and clear localStorage.
@@ -225,7 +225,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mr22a2y3jmrh',
     name: 'Daily Routine',
     color: '#AB47BC',
-    videoIds: ['mr226c570497', 'mr224sg1gvs7', 'mr220rrpfl53', 'mr21rutepflu', 'mr20uyztixjo', 'mr20o9rzyjjd', 'mr20hngmoprv', 'mr1zxdpyubj7', 'mr1zt1kdwzef', 'mr1zqxnbldw9', 'mr22c6agmk0h'],
+    videoIds: ['mr226c570497', 'mr224sg1gvs7', 'mr220rrpfl53', 'mr21rutepflu', 'mr20uyztixjo', 'mr20o9rzyjjd', 'mr20hngmoprv', 'mr1zxdpyubj7', 'mr1zt1kdwzef', 'mr1zqxnbldw9', 'mr22c6agmk0h', 'mr22h2t68erg'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=eF9LRFbkHLQ&list=RDKUN5Uf9mObQ&index=27',
@@ -323,6 +323,15 @@ const DEFAULT_PLAYLISTS = [
       playlistId: 'RDJEf6C7PYBys',
       title: '✨️🎼Aasa kooda song tamil trending🙏 songs🎶 Sai Abhyankar 💖🎶🍟',
       channel: 'Abinaya Murthy',
+      collectionPath: 'Music / Daily Routine',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=jZEA2mMwL1k&list=RDjZEA2mMwL1k&start_radio=1',
+      videoId: 'jZEA2mMwL1k',
+      playlistId: 'RDjZEA2mMwL1k',
+      title: 'Mutta Kalakki Music Video | Youth | Ken Karunaas | Suraj Venjaramoodu | GV Prakash Kumar',
+      channel: 'G.V. Prakash Kumar',
       collectionPath: 'Music / Daily Routine',
       note: ''
     }
