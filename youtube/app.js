@@ -5,7 +5,13 @@
 //  state.collections only stores {id, name, color}; the nested
 //  video data is flattened into state.videos by seedData() below.)
 // ──────────────────────────────────────────────
-let state = JSON.parse(localStorage.getItem('tholsstudio_astrology') || 'null') || {
+// APP_NAME / APP_LABEL / APP_COLOR are defined in a small inline <script>
+// block in each app's HTML file (music.html, electronics.html, astrology.html)
+// BEFORE this file is loaded. They namespace localStorage + the export-folder
+// IndexedDB store per app, and drive the branding (title/logo subtitle).
+const STORAGE_KEY = 'tholsstudio_' + (typeof APP_NAME !== 'undefined' ? APP_NAME : 'default');
+
+let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') || {
   videos: [],
   collections: DEFAULT_COLLECTIONS.map(c => ({ id: c.id, name: c.name, color: c.color })),
   playlists: DEFAULT_PLAYLISTS.map(p => ({ id: p.id, name: p.name, color: p.color, videoIds: [...p.videoIds] })),
@@ -41,7 +47,7 @@ let searchQuery = '';
 let newGroupColId = null;
 
 function save() {
-  localStorage.setItem('tholsstudio_astrology', JSON.stringify(state));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
 // ──────────────────────────────────────────────
@@ -1138,7 +1144,7 @@ function startTitleEdit(id) {
 
 // save alias that doesn't conflict with the global save() name
 function saveState() {
-  localStorage.setItem('tholsstudio_astrology', JSON.stringify(state));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
 function toggleNote(id) {
@@ -1212,6 +1218,7 @@ function openAddModal() {
     colSel.value = '';
     groupSel.innerHTML = '<option value="">— No group —</option>';
   }
+  checkAddDuplicate();
   openModal('addModal');
 }
 
@@ -1222,6 +1229,44 @@ function previewUrl() {
     const titleInput = document.getElementById('addTitle');
     if (!titleInput.value) titleInput.placeholder = `YouTube video (${videoId})`;
   }
+}
+
+// Live duplicate check for the Add Video modal — runs on every keystroke/change
+// of the URL, collection, and group fields. Toggles the inline "Duplicate"
+// message, marks the URL field invalid, and disables/reddens the Save button.
+// Returns the matching existing video (or null) so saveVideo() can reuse it.
+function checkAddDuplicate() {
+  const urlInput = document.getElementById('addUrl');
+  const msgEl = document.getElementById('addUrlDuplicateMsg');
+  const btn = document.getElementById('saveVideoBtn');
+  if (!urlInput || !msgEl || !btn) return null;
+
+  const url = urlInput.value.trim();
+  const videoId = extractVideoId(url);
+  const colId = document.getElementById('addCollection')?.value || '';
+  const groupNew = document.getElementById('addGroupNew')?.value.trim() || '';
+  const groupSel = document.getElementById('addGroup')?.value || '';
+  const group = groupNew || groupSel;
+
+  const existing = videoId
+    ? state.videos.find(v => v.videoId === videoId && (v.collection || '') === colId && (v.group || '') === group)
+    : null;
+
+  if (existing) {
+    msgEl.textContent = 'Duplicate';
+    msgEl.style.display = '';
+    urlInput.classList.add('field-invalid');
+    btn.disabled = true;
+    btn.classList.remove('btn-primary');
+    btn.classList.add('btn-danger');
+  } else {
+    msgEl.style.display = 'none';
+    urlInput.classList.remove('field-invalid');
+    btn.disabled = false;
+    btn.classList.remove('btn-danger');
+    btn.classList.add('btn-primary');
+  }
+  return existing || null;
 }
 
 function saveVideo() {
@@ -1236,14 +1281,10 @@ function saveVideo() {
   const groupSel = document.getElementById('addGroup').value;
   const group = groupNew || groupSel;
 
-  const existing = state.videos.find(v => v.videoId === videoId && (v.collection || '') === (colId || '') && (v.group || '') === (group || ''));
-  if (existing) {
-    const col = state.collections.find(c => c.id === colId);
-    const location = col ? (group ? `${col.name} / ${group}` : col.name) : (group || 'Uncollected');
-    const title = existing.title || 'Untitled';
-    showConfirm('Duplicate Found', `"${title}" already exists in "${location}".`, 'OK', null);
-    return;
-  }
+  // Safety net — the Save button is disabled while a duplicate is detected,
+  // but re-check here in case this was reached another way (e.g. Enter key).
+  if (checkAddDuplicate()) return;
+
   doSaveVideo(url, videoId, playlistId, colId, group);
 }
 
@@ -1673,8 +1714,7 @@ function toggleSidebarSection(sectionId, chevEl) {
 }
 
 function getAppName() {
-  const m = window.location.pathname.match(/\/(music|electronics|astrology)\//);
-  return m ? m[1] : 'unknown';
+  return typeof APP_NAME !== 'undefined' ? APP_NAME : 'unknown';
 }
 
 // ──────────────────────────────────────────────
@@ -1943,6 +1983,8 @@ function exportCollectionsJs() {
 
   const collectionsBlock = `const DEFAULT_COLLECTIONS = [\n${collectionBlocks.join(',\n')}\n];`;
 
+  const fileName = getAppName() + '-collections.js';
+
   const fileContents =
 `// ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
@@ -1955,7 +1997,7 @@ function exportCollectionsJs() {
 //          └─ ungrouped: [ ...videos ]   (videos with no sub-group)
 //
 // To apply this snapshot:
-//   1. Replace your existing collections.js with this file
+//   1. Replace your existing ${fileName} with this file
 //   2. Clear the app's localStorage (or open in a private window)
 //      so the new defaults are picked up on next load
 // ──────────────────────────────────────────────────────────────
@@ -2004,10 +2046,10 @@ ${collectionsBlock}
   showExportConfirm(
     'Export Collections',
     'Export your collections and videos as a JavaScript file.',
-    'File: collections.js\nContains: ' + state.collections.length + ' collection(s), ' + state.videos.length + ' video(s)' + (colDetails ? '\n\n' + colDetails : ''),
+    'File: ' + fileName + '\nContains: ' + state.collections.length + ' collection(s), ' + state.videos.length + ' video(s)' + (colDetails ? '\n\n' + colDetails : ''),
     () => {
-      saveToFolderOrDownload('collections.js', fileContents, 'text/javascript').then(saved => {
-        showToast(saved ? '✓ Saved collections.js to folder' : '✓ Exported as collections.js');
+      saveToFolderOrDownload(fileName, fileContents, 'text/javascript').then(saved => {
+        showToast(saved ? ('✓ Saved ' + fileName + ' to folder') : ('✓ Exported as ' + fileName));
       });
     }
   );
@@ -2046,6 +2088,7 @@ function exportWatchedJs() {
 
   const SEP = '// ' + '-'.repeat(62);
   const ts = new Date().toLocaleString();
+  const fileName = getAppName() + '-watched.js';
 
   const fileContents = [
     SEP,
@@ -2053,7 +2096,7 @@ function exportWatchedJs() {
     '// Exported from TubeVault on ' + ts,
     '//',
     '// WATCHED_VIDEO_IDS: YouTube video IDs marked as watched.',
-    '// To restore: replace watched.js with this file and clear localStorage.',
+    '// To restore: replace ' + fileName + ' with this file and clear localStorage.',
     SEP,
     '',
     'const WATCHED_VIDEO_IDS = [',
@@ -2066,11 +2109,11 @@ function exportWatchedJs() {
   showExportConfirm(
     'Export Watched',
     'Export your watched video history as a JavaScript file.',
-    'File: watched.js\nContains: ' + n + ' watched video(s)',
+    'File: ' + fileName + '\nContains: ' + n + ' watched video(s)',
     () => {
-      saveToFolderOrDownload('watched.js', fileContents, 'text/javascript').then(saved => {
-        const dest = saved ? 'to folder' : 'as watched.js';
-        if (n === 0) showToast('\u26a0\ufe0f No watched videos — exported empty watched.js');
+      saveToFolderOrDownload(fileName, fileContents, 'text/javascript').then(saved => {
+        const dest = saved ? ('to folder') : ('as ' + fileName);
+        if (n === 0) showToast('\u26a0\ufe0f No watched videos — exported empty ' + fileName);
         else showToast('\u2713 Saved ' + n + ' watched video' + (n !== 1 ? 's' : '') + ' ' + dest);
       });
     }
@@ -2110,13 +2153,15 @@ function exportPlaylistJs() {
     );
   });
 
+  const fileName = getAppName() + '-playlist.js';
+
   const header = [
     SEP,
     '// PLAYLIST CONFIG',
     '// Exported from TubeVault on ' + new Date().toLocaleString(),
     '//',
     '// Each playlist: id, name, color, videoIds, videos (full details)',
-    '// To apply as defaults: replace playlist.js and clear localStorage.',
+    '// To apply as defaults: replace ' + fileName + ' and clear localStorage.',
     SEP,
     '',
     'const DEFAULT_PLAYLISTS = ['
@@ -2130,10 +2175,10 @@ function exportPlaylistJs() {
   showExportConfirm(
     'Export Playlists',
     'Export your playlists as a JavaScript file.',
-    'File: playlist.js\n\nPlaylists: ' + n + '\nTotal videos: ' + totalVideos + '\n\n' + playlistDetails,
+    'File: ' + fileName + '\n\nPlaylists: ' + n + '\nTotal videos: ' + totalVideos + '\n\n' + playlistDetails,
     () => {
-      saveToFolderOrDownload('playlist.js', fileContents, 'text/javascript').then(saved => {
-        showToast('\u2713 ' + (saved ? 'Saved' : 'Exported') + ' ' + n + ' playlist' + (n !== 1 ? 's' : '') + ' ' + (saved ? 'to folder' : 'as playlist.js'));
+      saveToFolderOrDownload(fileName, fileContents, 'text/javascript').then(saved => {
+        showToast('\u2713 ' + (saved ? 'Saved' : 'Exported') + ' ' + n + ' playlist' + (n !== 1 ? 's' : '') + ' ' + (saved ? 'to folder' : ('as ' + fileName)));
       });
     }
   );
@@ -2141,17 +2186,23 @@ function exportPlaylistJs() {
 
 function exportAllJs() {
   closeExportMenu();
+  const appName = getAppName();
+  const names = {
+    collections: appName + '-collections.js',
+    playlist: appName + '-playlist.js',
+    watched: appName + '-watched.js',
+  };
   showExportConfirm(
     'Export All JS Files',
     'Export all configuration files as JavaScript.',
-    'Files: collections.js, playlist.js, watched.js',
+    'Files: ' + names.collections + ', ' + names.playlist + ', ' + names.watched,
     () => {
       exportCollectionsJs();
       setTimeout(function() { exportPlaylistJs(); }, 300);
       setTimeout(function() { exportWatchedJs(); }, 600);
       setTimeout(function() {
         const dest = exportFolderHandle ? 'to folder' : 'as downloads';
-        showToast('\u2713 Exported collections.js, playlist.js & watched.js ' + dest);
+        showToast('\u2713 Exported ' + names.collections + ', ' + names.playlist + ' & ' + names.watched + ' ' + dest);
       }, 700);
     }
   );
@@ -2235,16 +2286,6 @@ function renderLocationPicker() {
     selectLocation(row.dataset.col, row.dataset.grp);
   };
 }
-
-function selectLocation(colId, group) {
-  state.lastUsedCollection = colId;
-  state.lastUsedGroup = group;
-  save();
-  renderQuickAddLocation();
-  const picker = document.getElementById('locationPicker');
-  if (picker) picker.style.display = 'none';
-}
-
 
 function selectLocation(colId, group) {
   state.lastUsedCollection = colId;
@@ -2525,6 +2566,16 @@ let pvState = {
   autoplay: true,     // auto-advance to next video when current ends
 };
 
+// Search query typed into the playlist split-view search bar — filters
+// which tracks are shown in the left panel (playback order is untouched).
+let pvSearchQuery = '';
+
+function pvHandleSearch() {
+  const input = document.getElementById('pvSearchInput');
+  pvSearchQuery = input ? input.value.trim().toLowerCase() : '';
+  pvRenderList();
+}
+
 // YouTube IFrame API player instance
 let ytPlayer = null;
 let ytReady = false;
@@ -2542,6 +2593,11 @@ function openPlaylistView(plId) {
   pvState.mode = pvState.mode || 'sequential';
   pvBuildOrder(pl);
   pvState.index = 0;
+
+  // Reset search bar for this playlist session
+  pvSearchQuery = '';
+  const pvSearchInput = document.getElementById('pvSearchInput');
+  if (pvSearchInput) pvSearchInput.value = '';
 
   // Show split view, hide main + sidebar
   document.getElementById('playlistView').style.display = 'flex';
@@ -2581,11 +2637,18 @@ function pvRenderList() {
   document.getElementById('pvSeqBtn').classList.toggle('active', pvState.mode === 'sequential');
   document.getElementById('pvRndBtn').classList.toggle('active', pvState.mode === 'random');
 
-  // Track list
+  // Track list — filtered by the playlist search bar (if any query is set).
+  // Filtering only affects which rows are shown; pvState.order / playback
+  // indices are untouched so drag-reorder and pvPlayIndex(i) stay correct.
   const tracks = document.getElementById('pvTracks');
-  tracks.innerHTML = pvState.order.map((vidId, i) => {
+  const q = pvSearchQuery;
+  const rows = pvState.order.map((vidId, i) => {
     const v = state.videos.find(v => v.id === vidId);
     if (!v) return '';
+    if (q) {
+      const haystack = `${v.title || ''} ${v.channel || ''} ${v.note || ''}`.toLowerCase();
+      if (!haystack.includes(q)) return '';
+    }
     const col = state.collections.find(c => c.id === v.collection);
     const path = col ? (v.group ? `${col.name} / ${v.group}` : col.name) : (v.group || '');
     const thumb = `https://img.youtube.com/vi/${v.videoId}/mqdefault.jpg`;
@@ -2617,7 +2680,12 @@ function pvRenderList() {
         ${path ? `<div class="pv-track-path">${escHtml(path)}</div>` : ''}
       </div>
     </div>`;
-  }).join('');
+  });
+
+  const visibleRows = rows.filter(Boolean);
+  tracks.innerHTML = visibleRows.length
+    ? visibleRows.join('')
+    : (q ? `<div class="pv-search-empty">No tracks match "${escHtml(pvSearchQuery)}"</div>` : '');
 
   pvAttachTrackDrag();
 }
@@ -2993,9 +3061,781 @@ function closePlaylistPlayer() {
 }
 
 // ──────────────────────────────────────────────
+// CATEGORY SWITCHER (sidebar-bottom text menu)
+// Replaces the old topbar kebab/dot app-switcher. Lists every known
+// "category" (a category = its own TholsStudio page, e.g. Music,
+// Electronics, Astrology) plus a "Create category…" action that
+// generates a brand-new category page.
+//
+// The registry lives in a SHARED (non-namespaced) localStorage key so
+// every category page — old and new — sees the same list, as long as
+// they're served from the same origin.
+// ──────────────────────────────────────────────
+const APPS_REGISTRY_KEY = 'tholsstudio_categories';
+
+// The three categories that ship with the project. Custom ones created
+// via "Create category…" are layered on top of this list.
+const BUILTIN_APPS = [
+  { id: 'music',       name: 'Music',       color: '#EC407A', file: 'music.html' },
+  { id: 'electronics', name: 'Electronics', color: '#29B6F6', file: 'electronics.html' },
+  { id: 'astrology',   name: 'Astrology',   color: '#AB47BC', file: 'astrology.html' },
+];
+
+function getAppsRegistry() {
+  let custom = [];
+  try { custom = JSON.parse(localStorage.getItem(APPS_REGISTRY_KEY) || '[]'); } catch {}
+  const map = new Map();
+  BUILTIN_APPS.forEach(a => map.set(a.id, a));
+  custom.forEach(a => map.set(a.id, a)); // custom entries win on id collision
+  return [...map.values()];
+}
+
+function saveCustomApp(app) {
+  let custom = [];
+  try { custom = JSON.parse(localStorage.getItem(APPS_REGISTRY_KEY) || '[]'); } catch {}
+  custom.push(app);
+  localStorage.setItem(APPS_REGISTRY_KEY, JSON.stringify(custom));
+}
+
+function renderCategorySwitcher() {
+  const wrap = document.getElementById('categorySwitcher');
+  if (!wrap) return;
+
+  const apps = getAppsRegistry();
+  const myId = getAppName();
+  const current = apps.find(a => a.id === myId) || { name: APP_LABEL || 'Category', color: APP_COLOR || 'var(--indigo)' };
+
+  wrap.innerHTML = `
+    <button class="category-toggle-btn" id="categoryToggleBtn" onclick="toggleCategoryMenu()">
+      <span class="category-toggle-dot" style="background:${current.color}"></span>
+      <span class="category-toggle-label">${escHtml(current.name)}</span>
+      <svg class="category-toggle-chev" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+    </button>
+    <div class="category-menu" id="categoryMenu">
+      ${apps.map(a => `
+        <a class="category-menu-item${a.id === myId ? ' active' : ''}" href="${escAttr(a.file)}">
+          <span class="category-menu-dot" style="background:${a.color}"></span>${escHtml(a.name)}
+        </a>`).join('')}
+      <div class="category-menu-divider"></div>
+      <button class="category-menu-item category-menu-create" onclick="openCreateCategoryModal()">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Create category…
+      </button>
+    </div>
+  `;
+}
+
+function toggleCategoryMenu() {
+  const menu = document.getElementById('categoryMenu');
+  const btn = document.getElementById('categoryToggleBtn');
+  if (!menu) return;
+  const isOpen = menu.classList.toggle('open');
+  btn?.classList.toggle('menu-open', isOpen);
+  if (isOpen) {
+    setTimeout(() => {
+      const close = (e) => {
+        const wrap = document.getElementById('categorySwitcher');
+        if (wrap && !wrap.contains(e.target)) {
+          menu.classList.remove('open');
+          btn?.classList.remove('menu-open');
+          document.removeEventListener('click', close);
+        }
+      };
+      document.addEventListener('click', close);
+    }, 0);
+  }
+}
+
+// ── Create category ──
+function openCreateCategoryModal() {
+  document.getElementById('categoryMenu')?.classList.remove('open');
+  document.getElementById('categoryToggleBtn')?.classList.remove('menu-open');
+  const input = document.getElementById('newCategoryName');
+  if (input) input.value = '';
+  state.selectedCategoryColor = COLLECTION_COLORS[Math.floor(Math.random() * COLLECTION_COLORS.length)];
+  renderCategoryColorPicker();
+  openModal('createCategoryModal');
+  setTimeout(() => input?.focus(), 100);
+}
+
+function renderCategoryColorPicker() {
+  const cp = document.getElementById('categoryColorPicker');
+  if (!cp) return;
+  cp.innerHTML = COLLECTION_COLORS.map(c => `
+    <div class="color-chip ${c === state.selectedCategoryColor ? 'selected' : ''}"
+      style="background:${c}"
+      onclick="selectCategoryColor('${c}')"></div>
+  `).join('');
+}
+
+function selectCategoryColor(c) {
+  state.selectedCategoryColor = c;
+  renderCategoryColorPicker();
+}
+
+function slugifyAppName(name) {
+  let base = name.trim().toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  if (!base) base = 'category';
+  let id = base, n = 2;
+  const existingIds = getAppsRegistry().map(a => a.id);
+  while (existingIds.includes(id)) { id = `${base}-${n}`; n++; }
+  return id;
+}
+
+function downloadTextFile(filename, text, mimeType) {
+  const blob = new Blob([text], { type: mimeType });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+
+function createCategory() {
+  const nameInput = document.getElementById('newCategoryName');
+  const name = nameInput ? nameInput.value.trim() : '';
+  if (!name) { showToast('⚠️ Enter a category name'); return; }
+
+  const id = slugifyAppName(name);
+  const color = state.selectedCategoryColor || COLLECTION_COLORS[0];
+  const file = `${id}.html`;
+
+  saveCustomApp({ id, name, color, file });
+
+  downloadTextFile(file, buildCategoryHtml(id, name, color), 'text/html');
+  setTimeout(() => downloadTextFile(`${id}-collections.js`, buildCategoryCollectionsJs(id, name, color), 'text/javascript'), 250);
+  setTimeout(() => downloadTextFile(`${id}-playlist.js`, buildCategoryPlaylistJs(), 'text/javascript'), 500);
+  setTimeout(() => downloadTextFile(`${id}-watched.js`, buildCategoryWatchedJs(), 'text/javascript'), 750);
+
+  closeModal('createCategoryModal');
+  renderCategorySwitcher();
+  showToast(`✓ "${name}" created — save the 4 downloaded files next to your other TholsStudio pages`);
+}
+
+function buildCategoryCollectionsJs(id, name, color) {
+  return `// --------------------------------------------------------------
+// COLLECTIONS CONFIG — ${name}
+// Starter file (empty — add your own).
+//
+// Each collection: id, name, color, groups: {}, ungrouped: []
+// To apply as defaults: replace this file and clear localStorage.
+// --------------------------------------------------------------
+
+const COLLECTION_COLORS = [
+  '#5C6BC0', '#EF5350', '#26A69A', '#FFA726',
+  '#66BB6A', '#AB47BC', '#29B6F6', '#FF7043',
+  '#78909C', '#EC407A'
+];
+
+const DEFAULT_COLLECTIONS = [
+  {
+    id: ${jsStr(id)},
+    name: ${jsStr(name)},
+    color: ${jsStr(color)},
+    groups: {},
+    ungrouped: []
+  }
+];
+`;
+}
+
+function buildCategoryPlaylistJs() {
+  return `// --------------------------------------------------------------
+// PLAYLIST CONFIG
+// Starter file (no playlists yet — create some in the app).
+//
+// Each playlist: id, name, color, videoIds, videos (full details)
+// To apply as defaults: replace this file and clear localStorage.
+// --------------------------------------------------------------
+
+const DEFAULT_PLAYLISTS = [];
+`;
+}
+
+function buildCategoryWatchedJs() {
+  return `// --------------------------------------------------------------
+// WATCHED HISTORY
+//
+// WATCHED_VIDEO_IDS: YouTube video IDs marked as watched.
+// To restore: replace this file with an exported watched.js
+// and clear localStorage.
+// --------------------------------------------------------------
+
+const WATCHED_VIDEO_IDS = [];
+`;
+}
+
+// Full standalone HTML page for a brand-new category — mirrors the
+// structure of music.html / electronics.html / astrology.html.
+function buildCategoryHtml(id, name, color) {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TholsStudio — ${name}</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23F5C518'/><polygon points='13,10 13,22 23,16' fill='%23111'/></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="style.css" rel="stylesheet">
+
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.27 8.27 0 004.84 1.55V6.79a4.85 4.85 0 01-1.07-.1z"/></svg>
+    </div>
+    <div class="logo-text-wrap">
+      <span class="logo-title">TholsStudio</span>
+      <span class="logo-subtitle" id="appSubtitle"></span>
+    </div>
+  </div>
+  <div class="search-bar">
+    <span class="search-icon">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    </span>
+    <input type="text" placeholder="Search videos, channels, notes…" id="searchInput" oninput="handleSearch()">
+  </div>
+  <div class="topbar-actions">
+    <button class="btn btn-ghost" onclick="openImportModal()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Import
+    </button>
+    <button class="btn btn-primary" onclick="openAddModal()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add Video
+    </button>
+  </div>
+</div>
+
+<!-- APP BODY -->
+<div class="app-body">
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-resizer" id="sidebarResizer" title="Drag to resize · Double-click to reset"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label sidebar-label-toggle" onclick="toggleSidebarSection('librarySection', this.querySelector('.section-chev'))">
+        Library
+        <svg class="section-chev chev-up" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+      </div>
+      <div id="librarySection">
+      <button class="sidebar-item active" onclick="filterByCollection('all', this)">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+        </svg>
+        <span class="col-name">All Videos</span>
+        <span class="count" id="count-all">0</span>
+      </button>
+      <button class="sidebar-item" onclick="filterByCollection('recent', this)">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <span class="col-name">Recently Added</span>
+        <span class="count" id="count-recent">0</span>
+      </button>
+      <button class="sidebar-item" onclick="filterByCollection('watched', this)">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+        <span class="col-name">Watched</span>
+        <span class="count" id="count-watched">0</span>
+      </button>
+      </div><!-- /librarySection -->
+    </div><!-- /sidebar-section -->
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label sidebar-label-toggle" onclick="toggleSidebarSection('collectionsSection', this.querySelector('.section-chev'))">
+        Collections
+        <svg class="section-chev chev-up" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+      </div>
+      <div id="collectionsSection">
+      <div id="collectionsList"></div>
+      <div style="padding: 0 0 0 0; margin-top: 4px;">
+        <button class="add-collection-btn" onclick="startNewCollection()">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New collection
+        </button>
+      </div>
+      </div><!-- /collectionsSection -->
+    </div><!-- /sidebar-section -->
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label sidebar-label-toggle" onclick="toggleSidebarSection('playlistsSection', this.querySelector('.section-chev'))">
+        Playlists
+        <svg class="section-chev chev-up" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+      </div>
+      <div id="playlistsSection">
+        <div id="playlistsList"></div>
+        <div style="padding:0; margin-top:4px;">
+          <button class="add-collection-btn" onclick="openPlaylistModal()">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            New playlist
+          </button>
+        </div>
+      </div><!-- /playlistsSection -->
+    </div><!-- /sidebar-section -->
+
+    <!-- CATEGORY SWITCHER (pinned to bottom) -->
+    <div class="sidebar-footer" id="categorySwitcher"></div>
+  </div><!-- /sidebar -->
+
+  <!-- MAIN -->
+  <!-- PLAYLIST SPLIT VIEW (shown instead of .main when a playlist is clicked) -->
+  <div class="playlist-view" id="playlistView" style="display:none;">
+
+    <!-- Left panel: playlist track list -->
+    <div class="pv-list" id="pvList">
+      <div class="pv-list-header">
+        <div class="pv-list-meta">
+          <span class="pv-list-dot" id="pvDot"></span>
+          <div>
+            <div class="pv-list-name" id="pvName">Playlist</div>
+            <div class="pv-list-count" id="pvCount">0 videos</div>
+          </div>
+        </div>
+        <div class="pv-list-modes">
+          <button class="pv-mode-btn active" id="pvSeqBtn" onclick="pvSetMode('sequential')" title="Sequential">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="15 8 19 12 15 16"/></svg>
+          </button>
+          <button class="pv-mode-btn" id="pvRndBtn" onclick="pvSetMode('random')" title="Random">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
+          </button>
+          <button class="pv-mode-btn active" id="pvAutoBtn" onclick="pvToggleAutoplay()" title="Auto-play next">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/><line x1="19" y1="3" x2="19" y2="21"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="pv-search-wrap">
+        <span class="pv-search-icon">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        </span>
+        <input type="text" id="pvSearchInput" placeholder="Search this playlist…" oninput="pvHandleSearch()">
+      </div>
+      <div class="pv-tracks" id="pvTracks"></div>
+    </div>
+
+    <!-- Right panel: iframe player -->
+    <div class="pv-player" id="pvPlayer">
+      <button class="pv-close-btn" onclick="closePvView()" title="Close playlist view">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div id="pvIframeContainer" style="width:100%;height:100%;"></div>
+    </div>
+
+  </div>
+
+  <div class="main" id="mainView">
+    <!-- Quick add bar -->
+    <div class="add-url-location" id="quickAddLocation" style="position:relative;">
+      <button class="browse-location-btn" onclick="toggleLocationPicker()" title="Choose collection / group to save into">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h3l2 2h7a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+      </button>
+      <span class="add-url-location-dot" id="quickAddLocationDot"></span>
+      <span id="quickAddLocationText">Saving to: Uncollected</span>
+      <!-- Location picker dropdown -->
+      <div class="location-picker" id="locationPicker" style="display:none;">
+        <div class="location-picker-title">Save quick-add to…</div>
+        <div class="location-picker-body" id="locationPickerBody"></div>
+      </div>
+    </div>
+    <div class="add-url-bar">
+      <svg width="16" height="16" fill="none" stroke="var(--text-dim)" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+      <input type="text" id="quickAddInput" placeholder="Paste a YouTube URL and press Enter to save…" onkeydown="if(event.key==='Enter') quickAdd()">
+      <button class="btn btn-primary" onclick="quickAdd()" style="flex-shrink:0;">Save</button>
+    </div>
+
+    <!-- Section header -->
+    <div class="section-header">
+      <span class="section-title" id="sectionTitle">All Videos</span>
+      <span class="section-count" id="sectionCount">0 videos</span>
+      <button class="btn btn-primary" id="playPlaylistBtn" onclick="startPlaylistPlayer()" style="display:none;padding:5px 12px;font-size:12px;gap:6px;">
+        <svg width="11" height="11" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Play
+      </button>
+      <div class="section-header-right">
+        <!-- Export folder location label -->
+        <div class="export-location-wrap" id="exportLocationWrap" style="display:none;">
+          <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h3l2 2h7a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+          <span id="exportLocationLabel">No folder selected</span>
+          <button class="export-location-clear" onclick="clearExportFolder()" title="Clear folder">×</button>
+        </div>
+        <!-- Browse folder button -->
+        <button class="btn-icon" onclick="browseExportFolder()" title="Select export folder">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h3l2 2h7a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+        </button>
+        <div class="export-dropdown" id="exportDropdown">
+          <button class="btn-icon" onclick="toggleExportMenu()" title="Export">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.29"/></svg>
+          </button>
+          <div class="export-menu" id="exportMenu">
+            <button class="export-menu-item" onclick="exportData()">Export as JSON</button>
+            <button class="export-menu-item" onclick="exportCollectionsJs()">Export as collections.js</button>
+            <button class="export-menu-item" onclick="exportWatchedJs()">Export as watched.js</button>
+            <button class="export-menu-item" onclick="exportPlaylistJs()">Export as playlist.js</button>
+            <div class="export-menu-divider"></div>
+            <button class="export-menu-item export-menu-item-all" onclick="exportAllJs()">
+              <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export All JS Files
+            </button>
+          </div>
+        </div>
+        <div class="view-toggle">
+          <button class="view-btn active" id="gridBtn" onclick="setView('grid')" title="Grid view">
+            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          </button>
+          <button class="view-btn" id="listBtn" onclick="setView('list')" title="List view">
+            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="2"/><rect x="3" y="11" width="18" height="2"/><rect x="3" y="18" width="18" height="2"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="cards-grid-container" id="cardsGrid"></div>
+  </div><!-- end #mainView -->
+</div>
+
+<!-- ADD VIDEO MODAL -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <div class="modal-title">
+      <svg width="18" height="18" fill="none" stroke="var(--indigo-bright)" stroke-width="2" viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.4a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>
+      Add YouTube Video
+      <button class="modal-close" onclick="closeModal('addModal')">×</button>
+    </div>
+    <div class="field">
+      <label>YouTube URL *</label>
+      <input type="url" id="addUrl" placeholder="https://youtube.com/watch?v=..." oninput="previewUrl();checkAddDuplicate()">
+      <div class="field-error" id="addUrlDuplicateMsg" style="display:none;">Duplicate</div>
+    </div>
+    <div class="field">
+      <label>Title (auto-detected or custom)</label>
+      <input type="text" id="addTitle" placeholder="Video title">
+    </div>
+    <div class="field">
+      <label>Collection</label>
+      <select id="addCollection" onchange="refreshGroupSelect('addCollection','addGroup');checkAddDuplicate()">
+        <option value="">— No collection —</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Group / Topic <span style="color:var(--text-dim);font-weight:400;">(optional sub-section)</span></label>
+      <div style="display:flex;gap:8px;">
+        <select id="addGroup" style="flex:1;" onchange="checkAddDuplicate()">
+          <option value="">— No group —</option>
+        </select>
+        <input type="text" id="addGroupNew" placeholder="Or type new group…" style="flex:1;" oninput="checkAddDuplicate()">
+      </div>
+    </div>
+    <div class="field">
+      <label>Note</label>
+      <textarea id="addNote" placeholder="Your thoughts, timestamps, why you saved this…"></textarea>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
+      <button class="btn btn-ghost" onclick="closeModal('addModal')">Cancel</button>
+      <button class="btn btn-primary" id="saveVideoBtn" onclick="saveVideo()">Save to Vault</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEW COLLECTION MODAL -->
+<div class="modal-overlay" id="collectionModal">
+  <div class="modal" style="width:360px;">
+    <div class="modal-title">
+      New Collection
+      <button class="modal-close" onclick="closeModal('collectionModal')">×</button>
+    </div>
+    <div class="field">
+      <label>Collection name</label>
+      <input type="text" id="collectionName" placeholder="e.g. Unity Tutorials, Game Design…">
+    </div>
+    <div class="field">
+      <label>Color</label>
+      <div class="color-picker-row" id="colorPicker"></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
+      <button class="btn btn-ghost" onclick="closeModal('collectionModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCollection()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- PLAYLIST MODAL -->
+<div class="modal-overlay" id="playlistModal">
+  <div class="modal" style="width:360px;">
+    <div class="modal-title">
+      New Playlist
+      <button class="modal-close" onclick="closeModal('playlistModal')">×</button>
+    </div>
+    <div class="field">
+      <label>Playlist name</label>
+      <input type="text" id="playlistName" placeholder="e.g. Watch Later, Favourites…"
+        onkeydown="if(event.key==='Enter') savePlaylist()">
+    </div>
+    <div class="field">
+      <label>Color</label>
+      <div class="color-picker-row" id="playlistColorPicker"></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
+      <button class="btn btn-ghost" onclick="closeModal('playlistModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="savePlaylist()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEW GROUP MODAL -->
+<div class="modal-overlay" id="groupModal">
+  <div class="modal" style="width:360px;">
+    <div class="modal-title">
+      <svg width="16" height="16" fill="none" stroke="var(--indigo-bright)" stroke-width="2" viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+      New Group
+      <button class="modal-close" onclick="closeModal('groupModal')">×</button>
+    </div>
+    <div class="field">
+      <label>Group name</label>
+      <input type="text" id="groupName" placeholder="e.g. Physics, AI, Shaders…"
+        onkeydown="if(event.key==='Enter') saveGroup()">
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
+      <button class="btn btn-ghost" onclick="closeModal('groupModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveGroup()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- EXPORT CONFIRM MODAL -->
+<div class="modal-overlay" id="exportConfirmModal">
+  <div class="modal" style="width:400px;">
+    <div class="modal-title">
+      <svg width="18" height="18" fill="none" stroke="var(--indigo-bright)" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <span id="exportConfirmTitle">Export</span>
+      <button class="modal-close" onclick="closeModal('exportConfirmModal')">×</button>
+    </div>
+    <p id="exportConfirmMessage" style="margin:0;font-size:13px;color:var(--text-muted);line-height:1.6;"></p>
+    <div id="exportConfirmDetails" style="font-size:12px;color:var(--text);background:var(--surface-raised);padding:14px 16px;border-radius:8px;border-left:3px solid var(--indigo);margin-top:14px;white-space:pre-wrap;line-height:1.7;font-family:var(--mono);"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px;">
+      <button class="btn btn-ghost" onclick="closeModal('exportConfirmModal')">Cancel</button>
+      <button class="btn btn-primary" id="exportConfirmBtn" onclick="confirmExport()">Export</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMPORT MODAL -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal">
+    <div class="modal-title">
+      Import URLs
+      <button class="modal-close" onclick="closeModal('importModal')">×</button>
+    </div>
+    <div class="field">
+      <label>Paste YouTube URLs (one per line)</label>
+      <textarea id="importText" placeholder="https://youtube.com/watch?v=abc&#10;https://youtu.be/xyz&#10;…" style="min-height:120px;"></textarea>
+    </div>
+    <div class="field">
+      <label>Add to collection (optional)</label>
+      <select id="importCollection" onchange="refreshGroupSelect('importCollection','importGroup')">
+        <option value="">— No collection —</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Group / Topic <span style="color:var(--text-dim);font-weight:400;">(optional)</span></label>
+      <div style="display:flex;gap:8px;">
+        <select id="importGroup" style="flex:1;"><option value="">— No group —</option></select>
+        <input type="text" id="importGroupNew" placeholder="Or type new group…" style="flex:1;">
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
+      <button class="btn btn-ghost" onclick="closeModal('importModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="importUrls()">Import All</button>
+    </div>
+  </div>
+</div>
+
+<!-- MOVE TO GROUP MODAL -->
+<div class="modal-overlay" id="moveGroupModal">
+  <div class="modal" style="width:380px;">
+    <div class="modal-title">
+      <svg width="16" height="16" fill="none" stroke="var(--indigo-bright)" stroke-width="2" viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+      Move to Group
+      <button class="modal-close" onclick="closeModal('moveGroupModal')">×</button>
+    </div>
+    <div style="font-size:12px;color:var(--text-muted);background:var(--surface-raised);padding:8px 12px;border-radius:6px;border-left:2px solid var(--indigo);" id="moveGroupVideoTitle"></div>
+    <div class="field">
+      <label>Choose existing group</label>
+      <select id="moveGroupSelect">
+        <option value="">— No group (ungrouped) —</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Or create a new group</label>
+      <input type="text" id="moveGroupNewInput" placeholder="Type new group name…">
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
+      <button class="btn btn-ghost" onclick="closeModal('moveGroupModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveMoveGroup()">Move</button>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE CATEGORY MODAL -->
+<div class="modal-overlay" id="createCategoryModal">
+  <div class="modal" style="width:380px;">
+    <div class="modal-title">
+      <svg width="16" height="16" fill="none" stroke="var(--indigo-bright)" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      New Category
+      <button class="modal-close" onclick="closeModal('createCategoryModal')">×</button>
+    </div>
+    <div class="field">
+      <label>Category name</label>
+      <input type="text" id="newCategoryName" placeholder="e.g. Cooking, Gaming, Fitness…"
+        onkeydown="if(event.key==='Enter') createCategory()">
+    </div>
+    <div class="field">
+      <label>Color</label>
+      <div class="color-picker-row" id="categoryColorPicker"></div>
+    </div>
+    <p style="margin:0;font-size:12px;color:var(--text-muted);line-height:1.6;">
+      This downloads 4 starter files (a new page + 3 config files). Save them into the same folder as your other TholsStudio pages, then open the new page from there.
+    </p>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
+      <button class="btn btn-ghost" onclick="closeModal('createCategoryModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="createCategory()">Create &amp; Download</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal" style="width:380px;">
+    <div class="modal-title">
+      <span id="confirmTitle">Confirm</span>
+      <button class="modal-close" onclick="closeConfirmModal()">×</button>
+    </div>
+    <p id="confirmMessage" style="margin:0 0 20px;font-size:13px;color:var(--text-muted);line-height:1.6;"></p>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn btn-ghost" onclick="closeConfirmModal()">Cancel</button>
+      <button class="btn btn-danger" id="confirmOkBtn" onclick="confirmOk()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- PLAYLIST PLAYER BAR -->
+<div class="playlist-player-bar" id="playlistPlayerBar" style="display:none;">
+
+  <!-- Left: playlist name + current video info -->
+  <div class="ppb-left">
+    <span class="ppb-dot" id="ppbDot"></span>
+    <div class="ppb-info">
+      <span class="ppb-playlist-name" id="ppbName">Playlist</span>
+      <span class="ppb-video-title" id="ppbVideoTitle">—</span>
+    </div>
+  </div>
+
+  <!-- Centre: mode selectors + playback controls -->
+  <div class="ppb-centre">
+    <!-- Mode group -->
+    <div class="ppb-mode-group">
+      <!-- Sequential -->
+      <button class="ppb-mode-btn active" id="ppbSeqBtn" onclick="setPlaylistMode('sequential')" title="Sequential — play in order">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="15 8 19 12 15 16"/>
+        </svg>
+        <span>Sequential</span>
+      </button>
+      <!-- Random -->
+      <button class="ppb-mode-btn" id="ppbRndBtn" onclick="setPlaylistMode('random')" title="Random — shuffle order">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <polyline points="16 3 21 3 21 8"/>
+          <line x1="4" y1="20" x2="21" y2="3"/>
+          <polyline points="21 16 21 21 16 21"/>
+          <line x1="15" y1="15" x2="21" y2="21"/>
+        </svg>
+        <span>Random</span>
+      </button>
+    </div>
+
+    <!-- Playback controls -->
+    <div class="ppb-controls">
+      <button class="ppb-btn" onclick="playlistStep(-1)" title="Previous">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/>
+        </svg>
+      </button>
+      <button class="ppb-btn ppb-play" onclick="openCurrentPlaylistVideo()" title="Open in YouTube">
+        <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </button>
+      <button class="ppb-btn" onclick="playlistStep(1)" title="Next">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Right: counter + close -->
+  <div class="ppb-right">
+    <span class="ppb-track" id="ppbTrack">1 / 5</span>
+    <button class="ppb-btn ppb-close" onclick="closePlaylistPlayer()" title="Stop playlist">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+</div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+  // Identifies this page to the shared engine (app.js): namespaces
+  // localStorage + the export-folder IndexedDB store, and drives branding.
+  const APP_NAME = ${jsStr(id)};
+  const APP_LABEL = ${jsStr(name)};
+  const APP_COLOR = ${jsStr(color)};
+</script>
+<script src="${id}-collections.js"></script>
+<script src="${id}-playlist.js"></script>
+<script src="${id}-watched.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
+`;
+}
+
+// ──────────────────────────────────────────────
+// BRANDING (per-app title / logo subtitle / accent)
+// Uses APP_NAME / APP_LABEL / APP_COLOR set in each app's HTML
+// ──────────────────────────────────────────────
+function applyAppBranding() {
+  const label = typeof APP_LABEL !== 'undefined' ? APP_LABEL : '';
+  const color = typeof APP_COLOR !== 'undefined' ? APP_COLOR : '';
+  if (label) document.title = `TholsStudio — ${label}`;
+  const sub = document.getElementById('appSubtitle');
+  if (sub && label) sub.textContent = label;
+  if (color) {
+    document.documentElement.style.setProperty('--indigo', color);
+    const icon = document.querySelector('.logo-icon');
+    if (icon) icon.style.background = color;
+  }
+}
+
+// ──────────────────────────────────────────────
 // INIT
 // ──────────────────────────────────────────────
+applyAppBranding();
 seedData();
 restoreExportFolder();
 renderSidebar();
 renderCards();
+renderCategorySwitcher();

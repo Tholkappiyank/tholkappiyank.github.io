@@ -1017,6 +1017,14 @@ async function quickAdd() {
   const col = state.collections.find(c => c.id === colId);
   const group = state.lastUsedGroup || '';
 
+  const existing = state.videos.find(v => v.videoId === videoId && (v.collection || '') === (colId || '') && (v.group || '') === (group || ''));
+  if (existing) {
+    const location = col ? (group ? `${col.name} / ${group}` : col.name) : (group || 'Uncollected');
+    const title = existing.title || 'Untitled';
+    showConfirm('Duplicate Found', `"${title}" already exists in "${location}".`, 'OK', null);
+    return;
+  }
+
   addVideo({ url, videoId, playlistId, title: '', channel: '', note: '', collection: colId, group, added: Date.now(), watched: false, id: generateId() });
   input.value = '';
   const path = col ? (group ? `${col.name}/${group}` : col.name) : (group ? `Uncollected/${group}` : 'Uncollected');
@@ -1228,7 +1236,18 @@ function saveVideo() {
   const groupSel = document.getElementById('addGroup').value;
   const group = groupNew || groupSel;
 
-  // Register group as pending if new
+  const existing = state.videos.find(v => v.videoId === videoId && (v.collection || '') === (colId || '') && (v.group || '') === (group || ''));
+  if (existing) {
+    const col = state.collections.find(c => c.id === colId);
+    const location = col ? (group ? `${col.name} / ${group}` : col.name) : (group || 'Uncollected');
+    const title = existing.title || 'Untitled';
+    showConfirm('Duplicate Found', `"${title}" already exists in "${location}".`, 'OK', null);
+    return;
+  }
+  doSaveVideo(url, videoId, playlistId, colId, group);
+}
+
+function doSaveVideo(url, videoId, playlistId, colId, group) {
   if (group && colId) {
     if (!state.pendingGroups) state.pendingGroups = {};
     if (!state.pendingGroups[colId]) state.pendingGroups[colId] = [];
@@ -1247,7 +1266,6 @@ function saveVideo() {
     watched: false,
   });
 
-  // Remember this collection + group so quick-add (and the location label) use it next time
   state.lastUsedCollection = colId;
   state.lastUsedGroup = group || '';
   save();
