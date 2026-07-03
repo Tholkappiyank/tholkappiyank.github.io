@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Folder Sieve — extension-filtered folder copy</title>
+<style>
+  :root{
+    --bg:        #12151a;
+    --panel:     #191d24;
+    --panel-2:   #1f242c;
+    --line:      #2a303a;
+    --text:      #e7ebf0;
+    --text-dim:  #8993a3;
+    --accent:    #4fd1c5;
+    --accent-2:  #ffb454;
+    --bad:       #ff6b6b;
+    --good:      #4fd1c5;
+    --mono: ui-monospace, "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -10%, rgba(79,209,197,.08), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .wrap{ max-width:1180px; margin:0 auto; padding:32px 24px 60px; }
+
+  header{ margin-bottom:28px; }
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent); margin:0 0 8px;
+  }
+  h1{ margin:0 0 6px; font-size:28px; font-weight:700; letter-spacing:-.01em; }
+  .sub{ color:var(--text-dim); font-size:14px; max-width:640px; line-height:1.5; }
+
+  .grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:16px;
+    margin-bottom:16px;
+  }
+  @media (max-width:820px){ .grid{ grid-template-columns:1fr; } }
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:18px 20px;
+  }
+  .card h2{
+    font-size:12px; margin:0 0 12px; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--text-dim); font-weight:600;
+  }
+  .picker-row{ display:flex; align-items:center; gap:12px; }
+  .path-pill{
+    font-family:var(--mono); font-size:13px; color:var(--text);
+    background:var(--panel-2); border:1px solid var(--line); border-radius:8px;
+    padding:9px 12px; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .path-pill.empty{ color:var(--text-dim); font-style:italic; }
+
+  button{
+    font-family:var(--sans); font-size:13.5px; font-weight:600; cursor:pointer;
+    border-radius:8px; border:1px solid var(--line); padding:9px 16px;
+    background:var(--panel-2); color:var(--text); transition:.15s ease;
+    white-space:nowrap;
+  }
+  button:hover:not(:disabled){ border-color:var(--accent); color:var(--accent); }
+  button:disabled{ opacity:.4; cursor:not-allowed; }
+  button.primary{
+    background:var(--accent); color:#0b1210; border-color:var(--accent);
+  }
+  button.primary:hover:not(:disabled){ background:#66ddd2; color:#0b1210; }
+  button.primary:disabled{ background:var(--panel-2); color:var(--text-dim); border-color:var(--line); }
+
+  .controls{
+    display:flex; align-items:end; gap:14px; flex-wrap:wrap;
+    background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    padding:18px 20px; margin-bottom:16px;
+  }
+  .field label{
+    display:block; font-size:12px; color:var(--text-dim); margin-bottom:6px;
+    text-transform:uppercase; letter-spacing:.08em; font-weight:600;
+  }
+  .field input[type=text]{
+    font-family:var(--mono); font-size:13.5px; background:var(--panel-2);
+    border:1px solid var(--line); border-radius:8px; padding:9px 12px;
+    color:var(--text); width:320px;
+  }
+  .field input[type=text]:focus{ outline:none; border-color:var(--accent); }
+  .field.grow{ flex:1; min-width:220px; }
+  .checkline{ display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-dim); }
+  .checkline input{ accent-color:var(--accent); }
+
+  .stats{
+    display:flex; gap:10px; margin-left:auto; font-family:var(--mono); font-size:12px;
+  }
+  .stat{
+    background:var(--panel-2); border:1px solid var(--line); border-radius:20px;
+    padding:6px 12px; color:var(--text-dim);
+  }
+  .stat b{ color:var(--text); font-weight:700; }
+  .stat.match b{ color:var(--good); }
+
+  .panes{
+    display:grid; grid-template-columns: 1.3fr 1fr; gap:16px;
+  }
+  @media (max-width:900px){ .panes{ grid-template-columns:1fr; } }
+
+  .pane{
+    background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    overflow:hidden; display:flex; flex-direction:column;
+  }
+  .pane-head{
+    padding:14px 18px; border-bottom:1px solid var(--line);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .pane-head h2{ margin:0; font-size:12px; text-transform:uppercase; letter-spacing:.1em; color:var(--text-dim); font-weight:600; }
+  .pane-body{ padding:12px 18px; overflow:auto; max-height:460px; }
+
+  .tree{ font-family:var(--mono); font-size:13px; line-height:1.9; }
+  .tree ul{ list-style:none; margin:0; padding-left:18px; border-left:1px dashed var(--line); }
+  .tree > ul{ padding-left:0; border-left:none; }
+  .tree li{ white-space:nowrap; }
+  .node-dir{ color:var(--text-dim); }
+  .node-dir::before{ content:"📁 "; }
+  .node-file{ color:var(--text-dim); }
+  .node-file::before{ content:"· "; color:var(--line); }
+  .node-file.match{ color:var(--good); }
+  .node-file.match::before{ content:"✓ "; color:var(--good); }
+  .empty-hint{ color:var(--text-dim); font-size:13px; font-style:italic; padding:8px 0; }
+
+  .log{ font-family:var(--mono); font-size:12.5px; line-height:1.7; }
+  .log .line{ white-space:pre-wrap; word-break:break-all; }
+  .log .ok{ color:var(--good); }
+  .log .err{ color:var(--bad); }
+  .log .dim{ color:var(--text-dim); }
+
+  .actionbar{ display:flex; align-items:center; gap:12px; margin-top:16px; }
+  .progress-wrap{
+    flex:1; height:8px; border-radius:6px; background:var(--panel-2);
+    border:1px solid var(--line); overflow:hidden;
+  }
+  .progress-bar{ height:100%; width:0%; background:linear-gradient(90deg, var(--accent), var(--accent-2)); transition:width .15s ease; }
+
+  .warn{
+    display:none; margin-bottom:16px; padding:12px 16px; border-radius:10px;
+    background:rgba(255,107,107,.08); border:1px solid rgba(255,107,107,.35);
+    color:#ffb3b3; font-size:13px; line-height:1.5;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Folder Sieve</p>
+    <h1>Copy files by extension, keep the folder structure</h1>
+    <p class="sub">Pick a source folder, scan it, choose which extensions to keep, then copy just those files into a destination folder — every subfolder recreated exactly as it was.</p>
+  </header>
+
+  <div id="apiWarn" class="warn">
+    Your browser doesn't support the File System Access API needed for this tool. Please open this file in a recent version of <b>Chrome</b> or <b>Edge</b>.
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Source folder</h2>
+      <div class="picker-row">
+        <div class="path-pill empty" id="srcPath">No folder selected</div>
+        <button id="srcBtn">Choose folder</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Destination folder</h2>
+      <div class="picker-row">
+        <div class="path-pill empty" id="dstPath">No folder selected</div>
+        <button id="dstBtn">Choose folder</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="field grow">
+      <label for="extInput">Extensions to keep</label>
+      <input type="text" id="extInput" placeholder=".png, .jpg, .cs, .prefab" style="width:100%">
+    </div>
+    <div class="field">
+      <label>&nbsp;</label>
+      <button id="scanBtn" class="primary" disabled>Scan source</button>
+    </div>
+    <div class="field">
+      <label class="checkline" style="margin-top:8px">
+        <input type="checkbox" id="overwriteChk" checked> Overwrite existing files
+      </label>
+    </div>
+    <div class="stats" id="stats" style="display:none">
+      <div class="stat">files scanned <b id="statTotal">0</b></div>
+      <div class="stat match">matches <b id="statMatch">0</b></div>
+    </div>
+  </div>
+
+  <div class="panes">
+    <div class="pane">
+      <div class="pane-head">
+        <h2>Structure preview</h2>
+      </div>
+      <div class="pane-body">
+        <div class="tree" id="tree"><p class="empty-hint">Choose a source folder and scan it to preview the structure here.</p></div>
+      </div>
+    </div>
+    <div class="pane">
+      <div class="pane-head">
+        <h2>Activity log</h2>
+      </div>
+      <div class="pane-body">
+        <div class="log" id="log"><p class="empty-hint">Nothing yet.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="actionbar">
+    <button id="copyBtn" class="primary" disabled>Copy matching files →</button>
+    <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="stat" id="progressLabel" style="font-family:var(--mono)">idle</div>
+  </div>
+
+</div>
+
+<script>
+let srcHandle = null, dstHandle = null;
+let scannedEntries = []; // {relPath, name, handle, isMatch}
+
+const el = id => document.getElementById(id);
+const srcBtn = el('srcBtn'), dstBtn = el('dstBtn');
+const srcPathEl = el('srcPath'), dstPathEl = el('dstPath');
+const extInput = el('extInput');
+const scanBtn = el('scanBtn'), copyBtn = el('copyBtn');
+const treeEl = el('tree'), logEl = el('log');
+const statsEl = el('stats'), statTotal = el('statTotal'), statMatch = el('statMatch');
+const progressBar = el('progressBar'), progressLabel = el('progressLabel');
+const overwriteChk = el('overwriteChk');
+
+if (!('showDirectoryPicker' in window)) {
+  el('apiWarn').style.display = 'block';
+  [srcBtn, dstBtn, scanBtn, copyBtn].forEach(b => b.disabled = true);
+}
+
+function log(msg, cls){
+  if (logEl.querySelector('.empty-hint')) logEl.innerHTML = '';
+  const line = document.createElement('div');
+  line.className = 'line' + (cls ? ' ' + cls : '');
+  line.textContent = msg;
+  logEl.appendChild(line);
+  logEl.parentElement.scrollTop = logEl.parentElement.scrollHeight;
+}
+
+function parseExtensions(){
+  return extInput.value
+    .split(',')
+    .map(s => s.trim().toLowerCase())
+    .filter(Boolean)
+    .map(s => s.startsWith('.') ? s : '.' + s);
+}
+
+function matchesExt(name, exts){
+  if (exts.length === 0) return true;
+  const lower = name.toLowerCase();
+  return exts.some(ext => lower.endsWith(ext));
+}
+
+srcBtn.addEventListener('click', async () => {
+  try {
+    srcHandle = await window.showDirectoryPicker({ id: 'sieve-src', mode: 'read' });
+    srcPathEl.textContent = srcHandle.name;
+    srcPathEl.classList.remove('empty');
+    scanBtn.disabled = false;
+    scannedEntries = [];
+    copyBtn.disabled = true;
+    treeEl.innerHTML = '<p class="empty-hint">Ready to scan.</p>';
+    statsEl.style.display = 'none';
+  } catch (e) { if (e.name !== 'AbortError') log('Source pick failed: ' + e.message, 'err'); }
+});
+
+dstBtn.addEventListener('click', async () => {
+  try {
+    dstHandle = await window.showDirectoryPicker({ id: 'sieve-dst', mode: 'readwrite' });
+    dstPathEl.textContent = dstHandle.name;
+    dstPathEl.classList.remove('empty');
+    updateCopyBtn();
+  } catch (e) { if (e.name !== 'AbortError') log('Destination pick failed: ' + e.message, 'err'); }
+});
+
+function updateCopyBtn(){
+  copyBtn.disabled = !(srcHandle && dstHandle && scannedEntries.some(e => e.isMatch));
+}
+
+async function* walk(dirHandle, relPath = ''){
+  for await (const [name, handle] of dirHandle.entries()){
+    const childPath = relPath ? relPath + '/' + name : name;
+    if (handle.kind === 'directory'){
+      yield { kind: 'dir', relPath: childPath, name, handle };
+      yield* walk(handle, childPath);
+    } else {
+      yield { kind: 'file', relPath: childPath, name, handle };
+    }
+  }
+}
+
+// Build a nested object tree from flat entries for rendering
+function buildTreeDom(entries){
+  const root = { dirs: new Map(), files: [] };
+  for (const entry of entries){
+    const parts = entry.relPath.split('/');
+    let node = root;
+    for (let i = 0; i < parts.length - 1; i++){
+      const part = parts[i];
+      if (!node.dirs.has(part)) node.dirs.set(part, { dirs: new Map(), files: [] });
+      node = node.dirs.get(part);
+    }
+    if (entry.kind === 'file'){
+      node.files.push(entry);
+    }
+  }
+  return root;
+}
+
+function renderNode(node){
+  const ul = document.createElement('ul');
+  for (const [dirName, child] of node.dirs.entries()){
+    const li = document.createElement('li');
+    const span = document.createElement('span');
+    span.className = 'node-dir';
+    span.textContent = dirName;
+    li.appendChild(span);
+    li.appendChild(renderNode(child));
+    ul.appendChild(li);
+  }
+  for (const fileEntry of node.files){
+    const li = document.createElement('li');
+    const span = document.createElement('span');
+    span.className = 'node-file' + (fileEntry.isMatch ? ' match' : '');
+    span.textContent = fileEntry.name;
+    li.appendChild(span);
+    ul.appendChild(li);
+  }
+  return ul;
+}
+
+scanBtn.addEventListener('click', async () => {
+  if (!srcHandle) return;
+  scanBtn.disabled = true;
+  scanBtn.textContent = 'Scanning…';
+  treeEl.innerHTML = '';
+  scannedEntries = [];
+  log('Scanning "' + srcHandle.name + '"…', 'dim');
+
+  const exts = parseExtensions();
+  let total = 0, matches = 0;
+
+  try {
+    for await (const entry of walk(srcHandle)){
+      if (entry.kind === 'file'){
+        total++;
+        entry.isMatch = matchesExt(entry.name, exts);
+        if (entry.isMatch) matches++;
+        scannedEntries.push(entry);
+      }
+    }
+  } catch (e){
+    log('Scan error: ' + e.message, 'err');
+  }
+
+  const treeData = buildTreeDom(scannedEntries);
+  treeEl.appendChild(renderNode(treeData));
+
+  statTotal.textContent = total;
+  statMatch.textContent = matches;
+  statsEl.style.display = 'flex';
+
+  log('Scan complete — ' + total + ' files found, ' + matches + ' match the filter.', 'ok');
+
+  scanBtn.disabled = false;
+  scanBtn.textContent = 'Scan source';
+  updateCopyBtn();
+});
+
+extInput.addEventListener('input', () => {
+  if (scannedEntries.length === 0) return;
+  const exts = parseExtensions();
+  let matches = 0;
+  for (const entry of scannedEntries){
+    entry.isMatch = matchesExt(entry.name, exts);
+    if (entry.isMatch) matches++;
+  }
+  statMatch.textContent = matches;
+  treeEl.innerHTML = '';
+  treeEl.appendChild(renderNode(buildTreeDom(scannedEntries)));
+  updateCopyBtn();
+});
+
+async function getOrCreateDir(rootHandle, relDirPath, cache){
+  if (!relDirPath) return rootHandle;
+  if (cache.has(relDirPath)) return cache.get(relDirPath);
+  const parts = relDirPath.split('/');
+  let handle = rootHandle;
+  let built = '';
+  for (const part of parts){
+    built = built ? built + '/' + part : part;
+    if (cache.has(built)){
+      handle = cache.get(built);
+    } else {
+      handle = await handle.getDirectoryHandle(part, { create: true });
+      cache.set(built, handle);
+    }
+  }
+  return handle;
+}
+
+copyBtn.addEventListener('click', async () => {
+  if (!srcHandle || !dstHandle) return;
+
+  const perm = await dstHandle.queryPermission({ mode: 'readwrite' });
+  if (perm !== 'granted'){
+    const req = await dstHandle.requestPermission({ mode: 'readwrite' });
+    if (req !== 'granted'){
+      log('Write permission to destination was denied.', 'err');
+      return;
+    }
+  }
+
+  const toCopy = scannedEntries.filter(e => e.isMatch);
+  if (toCopy.length === 0){
+    log('No files match the current extension filter.', 'err');
+    return;
+  }
+
+  copyBtn.disabled = true;
+  scanBtn.disabled = true;
+  const overwrite = overwriteChk.checked;
+  const dirCache = new Map();
+  let done = 0, failed = 0, skipped = 0;
+
+  log('Copying ' + toCopy.length + ' file(s) to "' + dstHandle.name + '"…', 'dim');
+
+  for (const entry of toCopy){
+    const parts = entry.relPath.split('/');
+    const dirPart = parts.slice(0, -1).join('/');
+    try {
+      const targetDir = await getOrCreateDir(dstHandle, dirPart, dirCache);
+
+      if (!overwrite){
+        let exists = true;
+        try { await targetDir.getFileHandle(entry.name, { create: false }); }
+        catch { exists = false; }
+        if (exists){
+          skipped++;
+          log('· skipped (exists): ' + entry.relPath, 'dim');
+          done++;
+          progressBar.style.width = Math.round((done / toCopy.length) * 100) + '%';
+          progressLabel.textContent = done + ' / ' + toCopy.length;
+          continue;
+        }
+      }
+
+      const fileHandle = await targetDir.getFileHandle(entry.name, { create: true });
+      const writable = await fileHandle.createWritable();
+      const file = await entry.handle.getFile();
+      await writable.write(file);
+      await writable.close();
+
+      done++;
+      log('✓ ' + entry.relPath, 'ok');
+    } catch (e){
+      failed++;
+      done++;
+      log('✗ ' + entry.relPath + ' — ' + e.message, 'err');
+    }
+    progressBar.style.width = Math.round((done / toCopy.length) * 100) + '%';
+    progressLabel.textContent = done + ' / ' + toCopy.length;
+  }
+
+  progressLabel.textContent = 'done';
+  log('Finished. ' + (done - failed - skipped) + ' copied, ' + skipped + ' skipped, ' + failed + ' failed.',
+      failed ? 'err' : 'ok');
+
+  scanBtn.disabled = false;
+  copyBtn.disabled = false;
+});
+</script>
+</body>
+</html>
