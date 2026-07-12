@@ -15,24 +15,35 @@
   :root{
     --bg:#0d1117;
     --panel:#11161d;
-    --line:#1c2530;
-    --border:#232b36;
+    --panel-raised:#141b24;
+    --line:#303944;
+    --border:#454d58;
+    --border-soft:#2e3742;
     --text:#c9d1d9;
-    --dim:#6e7a89;
-    --add-bg:#0d2818;
-    --add-line:#238636;
+    --dim:#828ea0;
+    --add-bg:#113a22;
+    --add-line:#2ea043;
     --add-text:#7ee2a8;
-    --del-bg:#2a1215;
-    --del-line:#da3633;
+    --add-rail:#238636;
+    --del-bg:#3a171b;
+    --del-line:#f85149;
     --del-text:#ff9b93;
-    --mod-bg:#2a2410;
-    --mod-line:#d29922;
+    --del-rail:#da3633;
+    --mod-bg:#3a2c0f;
+    --mod-line:#e3a72e;
     --accent:#4fa3ff;
+    --accent-soft:rgba(79,163,255,.14);
+    --shadow:0 4px 16px rgba(0,0,0,.28);
     --mono: 'JetBrains Mono','Fira Code',ui-monospace,'SF Mono',Consolas,monospace;
     --sans: 'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   }
   *{box-sizing:border-box;}
   html,body{height:100%;}
+  :focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:2px;
+    border-radius:4px;
+  }
   body{
     margin:0;
     background:
@@ -47,6 +58,10 @@
   header{
     padding:28px 32px 20px;
     border-bottom:1px solid var(--border);
+    background:var(--panel-raised);
+    box-shadow:var(--shadow);
+    position:relative;
+    z-index:2;
     display:flex;
     align-items:baseline;
     justify-content:space-between;
@@ -69,11 +84,20 @@
   }
   .stats{
     display:flex;
-    gap:18px;
+    gap:10px;
     font-family:var(--mono);
-    font-size:12.5px;
+    font-size:12px;
   }
-  .stats b{font-size:14px;}
+  .stats > div{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:5px 12px;
+    border-radius:20px;
+    background:var(--panel);
+    border:1px solid var(--border-soft);
+  }
+  .stats b{font-size:13.5px;}
   .stats .add{color:var(--add-text);}
   .stats .del{color:var(--del-text);}
   .stats .mod{color:var(--mod-line);}
@@ -85,8 +109,10 @@
     border-radius:8px;
     font-family:var(--mono);
     font-size:13px;
+    font-weight:600;
     align-items:center;
     gap:10px;
+    box-shadow:0 2px 10px rgba(0,0,0,.2);
   }
   .status-banner.identical{
     display:flex;
@@ -105,7 +131,7 @@
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:1px;
-    background:var(--border);
+    background:var(--border-soft);
     border-bottom:1px solid var(--border);
   }
   .drop{
@@ -114,7 +140,7 @@
     position:relative;
     transition:background .15s ease;
   }
-  .drop.hover{background:#141c26;}
+  .drop.hover{background:var(--accent-soft);}
   .drop-label{
     font-family:var(--mono);
     font-size:11px;
@@ -140,7 +166,7 @@
   .filepath:empty::before{
     content:'No file loaded';
     color:var(--dim);
-    opacity:.6;
+    opacity:.75;
   }
   .drop-zone{
     border:1.5px dashed var(--border);
@@ -153,10 +179,11 @@
     align-items:center;
     gap:10px;
     font-family:var(--mono);
+    transition:border-color .15s ease, background .15s ease, color .15s ease;
   }
-  .drop-zone:hover{border-color:var(--accent);color:var(--text);}
+  .drop-zone:hover{border-color:var(--accent);color:var(--text);background:var(--accent-soft);}
   .drop-zone input{display:none;}
-  .drop-zone svg{flex-shrink:0;opacity:.6;}
+  .drop-zone svg{flex-shrink:0;opacity:.7;}
   .folder-row{
     margin-top:8px;
     display:flex;
@@ -176,7 +203,7 @@
     border:1px solid var(--border);
     border-radius:6px;
   }
-  .folder-btn:hover{border-color:var(--accent);color:var(--text);}
+  .folder-btn:hover{border-color:var(--accent);color:var(--text);background:var(--accent-soft);}
   .folder-btn input{display:none;}
   .folder-pick{
     font-family:var(--mono);
@@ -207,24 +234,25 @@
     display:flex;
     align-items:center;
     gap:16px;
-    border-bottom:1px solid var(--border);
+    border-bottom:1px solid var(--border-soft);
     background:var(--panel);
     flex-wrap:wrap;
   }
   .toolbar button{
     font-family:var(--mono);
     font-size:12.5px;
-    background:transparent;
+    background:var(--panel-raised);
     border:1px solid var(--border);
     color:var(--dim);
     padding:7px 14px;
     border-radius:6px;
     cursor:pointer;
-    transition:all .15s ease;
+    transition:background .15s ease, border-color .15s ease, color .15s ease, transform .1s ease;
   }
-  .toolbar button:hover{border-color:var(--accent);color:var(--text);}
-  .toolbar button.active{background:var(--accent);border-color:var(--accent);color:#04101f;font-weight:600;}
-  .toolbar .sep{width:1px;height:20px;background:var(--border);}
+  .toolbar button:hover{border-color:var(--accent);color:var(--text);background:var(--accent-soft);}
+  .toolbar button:active{transform:translateY(1px);}
+  .toolbar button.active{background:var(--accent);border-color:var(--accent);color:#04101f;font-weight:600;box-shadow:0 0 0 3px var(--accent-soft);}
+  .toolbar .sep{width:1px;height:20px;background:var(--border-soft);}
   .toolbar label.opt{
     font-family:var(--mono);
     font-size:12px;
@@ -237,21 +265,66 @@
   .toolbar select{
     font-family:var(--mono);
     font-size:12px;
-    background:var(--line);
+    background:var(--panel-raised);
     border:1px solid var(--border);
     color:var(--text);
     padding:6px 10px;
     border-radius:6px;
     cursor:pointer;
+    transition:border-color .15s ease;
   }
+  .toolbar select:hover{border-color:var(--accent);}
   .toolbar .run{
     margin-left:auto;
     background:var(--accent);
     border-color:var(--accent);
     color:#04101f;
     font-weight:700;
+    box-shadow:0 2px 10px rgba(79,163,255,.25);
   }
-  .toolbar .run:hover{filter:brightness(1.1);}
+  .toolbar .run:hover{filter:brightness(1.1);box-shadow:0 2px 14px rgba(79,163,255,.4);}
+  .jump-counter{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--dim);
+    min-width:52px;
+    text-align:center;
+  }
+
+  tr.collapse-marker td{
+    background:var(--panel-raised) !important;
+    cursor:pointer;
+    border-top:1px dashed var(--border);
+    border-bottom:1px dashed var(--border);
+    transition:background .15s ease;
+  }
+  tr.collapse-marker .collapse-label{
+    color:var(--accent);
+    text-align:center;
+    letter-spacing:.02em;
+    font-weight:600;
+  }
+  tr.collapse-marker:hover td{background:var(--accent-soft) !important;}
+  tr.collapse-marker .marker{color:var(--dim);}
+
+  mark.wdel{
+    background:rgba(248,81,73,.45);
+    color:#fff;
+    border-radius:2px;
+    padding:0 1px;
+  }
+  mark.wadd{
+    background:rgba(46,160,67,.45);
+    color:#fff;
+    border-radius:2px;
+    padding:0 1px;
+  }
+
+  @keyframes flashHighlight{
+    0%{ background-color:rgba(79,163,255,.5); }
+    100%{ background-color:transparent; }
+  }
+  tr.jump-flash td{ animation:flashHighlight 1s ease; }
 
   main{flex:1;overflow:auto;}
   .empty{
@@ -300,14 +373,18 @@
   }
   tr.add td.code{background:var(--add-bg);}
   tr.add .marker{color:var(--add-line);}
+  tr.add .gutter{box-shadow:inset 3px 0 0 var(--add-rail);}
   tr.del td.code{background:var(--del-bg);}
   tr.del .marker{color:var(--del-line);}
+  tr.del .gutter{box-shadow:inset 3px 0 0 var(--del-rail);}
   tr.mod-old td.code{background:var(--del-bg);}
   tr.mod-old .marker{color:var(--del-line);}
+  tr.mod-old .gutter{box-shadow:inset 3px 0 0 var(--del-rail);}
   tr.mod-new td.code{background:var(--add-bg);}
   tr.mod-new .marker{color:var(--add-line);}
+  tr.mod-new .gutter{box-shadow:inset 3px 0 0 var(--add-rail);}
   tr.ctx .code{color:var(--dim);}
-  tr:hover td.code{filter:brightness(1.15);}
+  tr:hover td{filter:brightness(1.18);}
 
   .split-wrap{display:none;}
   .split{display:grid;grid-template-columns:1fr 1fr;}
@@ -425,6 +502,10 @@
     <option value="plaintext">Plain text</option>
   </select>
   <div class="sep"></div>
+  <button id="prevChangeBtn" title="Previous change (p)">▲ Prev</button>
+  <span class="jump-counter" id="jumpCounter">0 / 0</span>
+  <button id="nextChangeBtn" title="Next change (n)">▼ Next</button>
+  <div class="sep"></div>
   <button id="fullViewBtn" title="Expand to full screen">⛶ Full view</button>
   <button class="run" id="runDiff">Compare ▸</button>
 </div>
@@ -486,6 +567,14 @@ function highlightLine(code, lang){
   }
 }
 
+// State kept between a full diff run and lighter re-renders (expand-block clicks, language switches)
+let lastOps = [];
+let lastEffectiveHideCtx = false;
+let lastIsIdentical = false;
+let expandedGroups = new Set();
+let changeBlockStarts = [];
+let currentBlockPos = -1;
+
 function resetResults(){
   $('emptyState').style.display = 'flex';
   $('unifiedWrap').style.display = 'none';
@@ -497,6 +586,11 @@ function resetResults(){
   const banner = $('statusBanner');
   banner.className = 'status-banner';
   banner.innerHTML = '';
+  lastOps = [];
+  expandedGroups = new Set();
+  changeBlockStarts = [];
+  currentBlockPos = -1;
+  updateJumpCounter();
 }
 
 function setupDrop(zoneId, fileInputId, textId, nameId, pathId, which){
@@ -600,6 +694,102 @@ function diffLines(a, b, ignoreWs){
 
 function esc(s){ return (s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+// --- Word-level diff for "modified" line pairs ---
+function tokenize(s){ return (s ?? '').match(/\w+|\s+|[^\s\w]/g) || []; }
+
+function diffTokens(a, b){
+  const n=a.length, m=b.length;
+  const dp = Array.from({length:n+1}, () => new Int32Array(m+1));
+  for(let i=n-1;i>=0;i--){
+    for(let j=m-1;j>=0;j--){
+      dp[i][j] = a[i]===b[j] ? dp[i+1][j+1]+1 : Math.max(dp[i+1][j], dp[i][j+1]);
+    }
+  }
+  const aFlags = new Array(n).fill(false), bFlags = new Array(m).fill(false);
+  let i=0,j=0;
+  while(i<n && j<m){
+    if(a[i]===b[j]){ i++; j++; }
+    else if(dp[i+1][j] >= dp[i][j+1]){ aFlags[i]=true; i++; }
+    else { bFlags[j]=true; j++; }
+  }
+  while(i<n){ aFlags[i]=true; i++; }
+  while(j<m){ bFlags[j]=true; j++; }
+  return {aFlags, bFlags};
+}
+
+function wordDiffHtml(aLine, bLine){
+  const aTok = tokenize(aLine), bTok = tokenize(bLine);
+  if(aTok.length * bTok.length > 20000){
+    // very long line — skip token diff for perf, just mark the whole thing
+    return { aHtml: `<mark class="wdel">${esc(aLine)}</mark>`, bHtml: `<mark class="wadd">${esc(bLine)}</mark>` };
+  }
+  const {aFlags, bFlags} = diffTokens(aTok, bTok);
+  const aHtml = aTok.map((t,idx) => aFlags[idx] ? `<mark class="wdel">${esc(t)}</mark>` : esc(t)).join('');
+  const bHtml = bTok.map((t,idx) => bFlags[idx] ? `<mark class="wadd">${esc(t)}</mark>` : esc(t)).join('');
+  return {aHtml, bHtml};
+}
+
+// --- Collapse long unchanged runs into a clickable summary row ---
+function computeCollapsePlan(ops, expanded){
+  const threshold = 8, edge = 3;
+  const plan = new Array(ops.length).fill('show');
+  let i = 0;
+  while(i < ops.length){
+    if(ops[i].t === 'ctx'){
+      let j = i;
+      while(j < ops.length && ops[j].t === 'ctx') j++;
+      const runLen = j - i;
+      if(runLen > threshold && !expanded.has(i)){
+        for(let k=i+edge; k<j-edge; k++) plan[k] = 'hidden';
+        plan[i+edge] = {type:'marker', group:i, start:i+edge, end:j-edge, count:(j-edge)-(i+edge)};
+      }
+      i = j;
+    } else {
+      i++;
+    }
+  }
+  return plan;
+}
+
+function computeChangeBlockStarts(ops){
+  const starts = [];
+  let prevChange = false;
+  ops.forEach((o, idx) => {
+    const isChange = o.t !== 'ctx';
+    if(isChange && !prevChange) starts.push(idx);
+    prevChange = isChange;
+  });
+  return starts;
+}
+
+function updateJumpCounter(){
+  const el = $('jumpCounter');
+  if(!el) return;
+  el.textContent = changeBlockStarts.length ? `${currentBlockPos+1<1?0:currentBlockPos+1} / ${changeBlockStarts.length}` : '0 / 0';
+}
+
+function jumpToChange(direction){
+  if(!changeBlockStarts.length) return;
+  currentBlockPos = (currentBlockPos + direction + changeBlockStarts.length) % changeBlockStarts.length;
+  const opIdx = changeBlockStarts[currentBlockPos];
+  const splitActive = $('splitWrap').style.display === 'block';
+  const selectors = splitActive ? ['#splitTableA tr','#splitTableB tr'] : ['#unifiedTable tr'];
+  let targetRow = null;
+  for(const sel of selectors){
+    const rows = document.querySelectorAll(sel + `[data-op="${opIdx}"]`);
+    for(const r of rows){
+      if(r.textContent.trim() !== ''){ targetRow = r; break; }
+    }
+    if(targetRow) break;
+  }
+  if(targetRow){
+    targetRow.scrollIntoView({behavior:'smooth', block:'center'});
+    targetRow.classList.add('jump-flash');
+    setTimeout(()=> targetRow.classList.remove('jump-flash'), 1000);
+  }
+  updateJumpCounter();
+}
+
 function render(){
   if(!contentA && !contentB){ return; }
   const ignoreWs = $('ignoreWs').checked;
@@ -629,26 +819,63 @@ function render(){
 
   $('emptyState').style.display = 'none';
 
+  // Precompute word-level diff html for modified line pairs, once
+  ops.forEach(o=>{
+    if(o.t==='mod'){
+      const wd = wordDiffHtml(o.a, o.b);
+      o._aHtml = wd.aHtml;
+      o._bHtml = wd.bHtml;
+    }
+  });
+
+  lastOps = ops;
+  lastEffectiveHideCtx = effectiveHideCtx;
+  lastIsIdentical = isIdentical;
+  expandedGroups = new Set();
+  changeBlockStarts = computeChangeBlockStarts(ops);
+  currentBlockPos = -1;
+  updateJumpCounter();
+
+  buildAndRenderRows();
+}
+
+function buildAndRenderRows(){
+  const ops = lastOps;
+  if(!ops.length) return;
+  const effectiveHideCtx = lastEffectiveHideCtx;
+  const isIdentical = lastIsIdentical;
   const lang = currentLang();
   const hl = code => highlightLine(code, lang);
 
+  const allowCollapse = !isIdentical && !effectiveHideCtx;
+  const plan = allowCollapse
+    ? computeCollapsePlan(ops, expandedGroups)
+    : ops.map(o => (o.t==='ctx' && effectiveHideCtx) ? 'hidden' : 'show');
+
+  const markerRow = (p, cols) => cols===4
+    ? `<tr class="collapse-marker" data-start="${p.start}" data-end="${p.end}" data-group="${p.group}"><td class="gutter"></td><td class="gutter"></td><td class="marker">⋯</td><td class="code collapse-label">Show ${p.count} unchanged line${p.count===1?'':'s'} ▾</td></tr>`
+    : `<tr class="collapse-marker" data-start="${p.start}" data-end="${p.end}" data-group="${p.group}"><td class="gutter"></td><td class="marker">⋯</td><td class="code collapse-label">Show ${p.count} more ▾</td></tr>`;
+
   // Unified view
   let lnA=1, lnB=1, rowsU='';
-  ops.forEach(o=>{
+  ops.forEach((o, idx)=>{
+    const p = plan[idx];
     if(o.t==='ctx'){
-      if(!effectiveHideCtx){
-        rowsU += `<tr class="ctx"><td class="gutter">${lnA}</td><td class="gutter">${lnB}</td><td class="marker"> </td><td class="code">${hl(o.a)}</td></tr>`;
+      if(p==='show'){
+        rowsU += `<tr class="ctx" data-op="${idx}"><td class="gutter">${lnA}</td><td class="gutter">${lnB}</td><td class="marker"> </td><td class="code">${hl(o.a)}</td></tr>`;
+      } else if(p && p.type==='marker'){
+        rowsU += markerRow(p, 4);
       }
       lnA++; lnB++;
     } else if(o.t==='del'){
-      rowsU += `<tr class="del"><td class="gutter">${lnA}</td><td class="gutter"></td><td class="marker">−</td><td class="code">${hl(o.a)}</td></tr>`;
+      rowsU += `<tr class="del" data-op="${idx}"><td class="gutter">${lnA}</td><td class="gutter"></td><td class="marker">−</td><td class="code">${hl(o.a)}</td></tr>`;
       lnA++;
     } else if(o.t==='add'){
-      rowsU += `<tr class="add"><td class="gutter"></td><td class="gutter">${lnB}</td><td class="marker">+</td><td class="code">${hl(o.b)}</td></tr>`;
+      rowsU += `<tr class="add" data-op="${idx}"><td class="gutter"></td><td class="gutter">${lnB}</td><td class="marker">+</td><td class="code">${hl(o.b)}</td></tr>`;
       lnB++;
     } else if(o.t==='mod'){
-      rowsU += `<tr class="mod-old"><td class="gutter">${lnA}</td><td class="gutter"></td><td class="marker">−</td><td class="code">${hl(o.a)}</td></tr>`;
-      rowsU += `<tr class="mod-new"><td class="gutter"></td><td class="gutter">${lnB}</td><td class="marker">+</td><td class="code">${hl(o.b)}</td></tr>`;
+      rowsU += `<tr class="mod-old" data-op="${idx}"><td class="gutter">${lnA}</td><td class="gutter"></td><td class="marker">−</td><td class="code">${o._aHtml}</td></tr>`;
+      rowsU += `<tr class="mod-new" data-op="${idx}"><td class="gutter"></td><td class="gutter">${lnB}</td><td class="marker">+</td><td class="code">${o._bHtml}</td></tr>`;
       lnA++; lnB++;
     }
   });
@@ -656,24 +883,28 @@ function render(){
 
   // Split view
   let lnA2=1, lnB2=1, rowsA='', rowsB='';
-  ops.forEach(o=>{
+  ops.forEach((o, idx)=>{
+    const p = plan[idx];
     if(o.t==='ctx'){
-      if(!effectiveHideCtx){
-        rowsA += `<tr class="ctx"><td class="gutter">${lnA2}</td><td class="marker"> </td><td class="code">${hl(o.a)}</td></tr>`;
-        rowsB += `<tr class="ctx"><td class="gutter">${lnB2}</td><td class="marker"> </td><td class="code">${hl(o.b)}</td></tr>`;
+      if(p==='show'){
+        rowsA += `<tr class="ctx" data-op="${idx}"><td class="gutter">${lnA2}</td><td class="marker"> </td><td class="code">${hl(o.a)}</td></tr>`;
+        rowsB += `<tr class="ctx" data-op="${idx}"><td class="gutter">${lnB2}</td><td class="marker"> </td><td class="code">${hl(o.b)}</td></tr>`;
+      } else if(p && p.type==='marker'){
+        rowsA += markerRow(p, 3);
+        rowsB += markerRow(p, 3);
       }
       lnA2++; lnB2++;
     } else if(o.t==='del'){
-      rowsA += `<tr class="del"><td class="gutter">${lnA2}</td><td class="marker">−</td><td class="code">${hl(o.a)}</td></tr>`;
-      rowsB += `<tr><td class="gutter"></td><td class="marker"></td><td class="code"></td></tr>`;
+      rowsA += `<tr class="del" data-op="${idx}"><td class="gutter">${lnA2}</td><td class="marker">−</td><td class="code">${hl(o.a)}</td></tr>`;
+      rowsB += `<tr data-op="${idx}"><td class="gutter"></td><td class="marker"></td><td class="code"></td></tr>`;
       lnA2++;
     } else if(o.t==='add'){
-      rowsA += `<tr><td class="gutter"></td><td class="marker"></td><td class="code"></td></tr>`;
-      rowsB += `<tr class="add"><td class="gutter">${lnB2}</td><td class="marker">+</td><td class="code">${hl(o.b)}</td></tr>`;
+      rowsA += `<tr data-op="${idx}"><td class="gutter"></td><td class="marker"></td><td class="code"></td></tr>`;
+      rowsB += `<tr class="add" data-op="${idx}"><td class="gutter">${lnB2}</td><td class="marker">+</td><td class="code">${hl(o.b)}</td></tr>`;
       lnB2++;
     } else if(o.t==='mod'){
-      rowsA += `<tr class="mod-old"><td class="gutter">${lnA2}</td><td class="marker">−</td><td class="code">${hl(o.a)}</td></tr>`;
-      rowsB += `<tr class="mod-new"><td class="gutter">${lnB2}</td><td class="marker">+</td><td class="code">${hl(o.b)}</td></tr>`;
+      rowsA += `<tr class="mod-old" data-op="${idx}"><td class="gutter">${lnA2}</td><td class="marker">−</td><td class="code">${o._aHtml}</td></tr>`;
+      rowsB += `<tr class="mod-new" data-op="${idx}"><td class="gutter">${lnB2}</td><td class="marker">+</td><td class="code">${o._bHtml}</td></tr>`;
       lnA2++; lnB2++;
     }
   });
@@ -681,11 +912,29 @@ function render(){
   $('splitTableB').innerHTML = rowsB;
 }
 
-$('langSelect').addEventListener('change', render);
+document.querySelector('main').addEventListener('click', e => {
+  const marker = e.target.closest('.collapse-marker');
+  if(!marker) return;
+  const group = parseInt(marker.dataset.group, 10);
+  expandedGroups.add(group);
+  buildAndRenderRows();
+});
+
+$('langSelect').addEventListener('change', () => { if(lastOps.length) buildAndRenderRows(); });
 
 $('runDiff').addEventListener('click', render);
 $('ignoreWs').addEventListener('change', render);
 $('hideCtx').addEventListener('change', render);
+
+$('prevChangeBtn').addEventListener('click', () => jumpToChange(-1));
+$('nextChangeBtn').addEventListener('click', () => jumpToChange(1));
+document.addEventListener('keydown', e => {
+  const tag = (document.activeElement && document.activeElement.tagName) || '';
+  if(tag==='TEXTAREA' || tag==='INPUT' || tag==='SELECT') return;
+  if(e.ctrlKey || e.metaKey || e.altKey) return;
+  if(e.key==='n' || e.key==='N') jumpToChange(1);
+  else if(e.key==='p' || e.key==='P') jumpToChange(-1);
+});
 
 $('viewUnified').addEventListener('click', () => {
   $('viewUnified').classList.add('active');
