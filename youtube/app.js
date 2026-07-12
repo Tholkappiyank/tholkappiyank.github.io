@@ -112,8 +112,6 @@ function formatDate(ts) {
 // ──────────────────────────────────────────────
 // RENDER SIDEBAR
 // ──────────────────────────────────────────────
-let dragSrcIndex = null;
-
 function renderSidebar() {
   const list = document.getElementById('collectionsList');
   list.innerHTML = '';
@@ -161,82 +159,36 @@ function renderSidebar() {
       filterByCollection(col.id, btn);
     });
 
-    // ── Drag events ──
-    btn.addEventListener('dragstart', (e) => {
-      dragSrcIndex = index;
-      btn.classList.add('dragging');
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', index);
-      // Small delay so the drag ghost renders before opacity drops
-      setTimeout(() => btn.classList.add('dragging'), 0);
-    });
+    list.appendChild(btn);
+  });
 
-    btn.addEventListener('dragend', () => {
-      btn.classList.remove('dragging');
-      btn.classList.add('was-dragging');
-      clearDropIndicators();
-    });
-
-    btn.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-      const targetIndex = parseInt(btn.dataset.index);
-      if (dragSrcIndex === null || dragSrcIndex === targetIndex) return;
-      clearDropIndicators();
-      // Determine top/bottom half
-      const rect = btn.getBoundingClientRect();
-      const midY = rect.top + rect.height / 2;
-      if (e.clientY < midY) {
-        btn.classList.add('drag-over-top');
-      } else {
-        btn.classList.add('drag-over-bottom');
-      }
-    });
-
-    btn.addEventListener('dragleave', () => {
-      btn.classList.remove('drag-over-top', 'drag-over-bottom');
-    });
-
-    btn.addEventListener('drop', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      clearDropIndicators();
-      const targetIndex = parseInt(btn.dataset.index);
-      if (dragSrcIndex === null || dragSrcIndex === targetIndex) return;
-
-      // Determine insert position
-      const rect = btn.getBoundingClientRect();
-      const midY = rect.top + rect.height / 2;
-      let insertAt = e.clientY < midY ? targetIndex : targetIndex + 1;
-
-      // Reorder
-      const moved = state.collections.splice(dragSrcIndex, 1)[0];
-      if (insertAt > dragSrcIndex) insertAt--;
+  // Drag-and-drop reordering is handled by the shared makeSortable() helper
+  makeSortable(list, '.sidebar-item.draggable', {
+    dragClass: 'dragging',
+    overTopClass: 'drag-over-top',
+    overBottomClass: 'drag-over-bottom',
+    wasDraggingClass: 'was-dragging',
+    stopPropagation: true,
+    onDrop: (srcEl, targetEl, position) => {
+      const srcIndex = parseInt(srcEl.dataset.index);
+      const targetIndex = parseInt(targetEl.dataset.index);
+      let insertAt = position === 'top' ? targetIndex : targetIndex + 1;
+      const moved = state.collections.splice(srcIndex, 1)[0];
+      if (insertAt > srcIndex) insertAt--;
       state.collections.splice(insertAt, 0, moved);
-
-      dragSrcIndex = null;
       save();
       renderSidebar();
       renderCards();
       showToast(`↕ "${moved.name}" reordered`);
-    });
-
-    list.appendChild(btn);
-  });
-
-  // Drop on the list container itself (drop below all items)
-  list.addEventListener('dragover', (e) => e.preventDefault());
-  list.addEventListener('drop', (e) => {
-    // Only fires if not caught by a child item (i.e. dropped on empty space)
-    if (dragSrcIndex === null) return;
-    const moved = state.collections.splice(dragSrcIndex, 1)[0];
-    state.collections.push(moved);
-    dragSrcIndex = null;
-    clearDropIndicators();
-    save();
-    renderSidebar();
-    renderCards();
-    showToast(`↕ "${moved.name}" moved to bottom`);
+    },
+    onDropToEnd: (srcEl) => {
+      const moved = state.collections.splice(parseInt(srcEl.dataset.index), 1)[0];
+      state.collections.push(moved);
+      save();
+      renderSidebar();
+      renderCards();
+      showToast(`↕ "${moved.name}" moved to bottom`);
+    }
   });
 
   document.getElementById('count-all').textContent = state.videos.length;
@@ -259,8 +211,6 @@ function renderSidebar() {
   renderPlaylistsSidebar();
   renderQuickAddLocation();
 }
-
-let plDragSrcIndex = null;
 
 function renderPlaylistsSidebar() {
   const list = document.getElementById('playlistsList');
@@ -307,73 +257,34 @@ function renderPlaylistsSidebar() {
       filterByCollection(`playlist:${pl.id}`, btn);
     });
 
-    btn.addEventListener('dragstart', (e) => {
-      plDragSrcIndex = index;
-      btn.classList.add('dragging');
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', index);
-      setTimeout(() => btn.classList.add('dragging'), 0);
-    });
-
-    btn.addEventListener('dragend', () => {
-      btn.classList.remove('dragging');
-      btn.classList.add('was-dragging');
-      clearDropIndicators();
-    });
-
-    btn.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-      const targetIndex = parseInt(btn.dataset.index);
-      if (plDragSrcIndex === null || plDragSrcIndex === targetIndex) return;
-      clearDropIndicators();
-      const rect = btn.getBoundingClientRect();
-      const midY = rect.top + rect.height / 2;
-      if (e.clientY < midY) {
-        btn.classList.add('drag-over-top');
-      } else {
-        btn.classList.add('drag-over-bottom');
-      }
-    });
-
-    btn.addEventListener('dragleave', () => {
-      btn.classList.remove('drag-over-top', 'drag-over-bottom');
-    });
-
-    btn.addEventListener('drop', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      clearDropIndicators();
-      const targetIndex = parseInt(btn.dataset.index);
-      if (plDragSrcIndex === null || plDragSrcIndex === targetIndex) return;
-
-      const rect = btn.getBoundingClientRect();
-      const midY = rect.top + rect.height / 2;
-      let insertAt = e.clientY < midY ? targetIndex : targetIndex + 1;
-
-      const moved = state.playlists.splice(plDragSrcIndex, 1)[0];
-      if (insertAt > plDragSrcIndex) insertAt--;
-      state.playlists.splice(insertAt, 0, moved);
-
-      plDragSrcIndex = null;
-      save();
-      renderSidebar();
-      showToast(`↕ "${moved.name}" reordered`);
-    });
-
     list.appendChild(btn);
   });
 
-  list.addEventListener('dragover', (e) => e.preventDefault());
-  list.addEventListener('drop', (e) => {
-    if (plDragSrcIndex === null) return;
-    const moved = state.playlists.splice(plDragSrcIndex, 1)[0];
-    state.playlists.push(moved);
-    plDragSrcIndex = null;
-    clearDropIndicators();
-    save();
-    renderSidebar();
-    showToast(`↕ "${moved.name}" moved to bottom`);
+  // Drag-and-drop reordering is handled by the shared makeSortable() helper
+  makeSortable(list, '.sidebar-item.draggable', {
+    dragClass: 'dragging',
+    overTopClass: 'drag-over-top',
+    overBottomClass: 'drag-over-bottom',
+    wasDraggingClass: 'was-dragging',
+    stopPropagation: true,
+    onDrop: (srcEl, targetEl, position) => {
+      const srcIndex = parseInt(srcEl.dataset.index);
+      const targetIndex = parseInt(targetEl.dataset.index);
+      let insertAt = position === 'top' ? targetIndex : targetIndex + 1;
+      const moved = state.playlists.splice(srcIndex, 1)[0];
+      if (insertAt > srcIndex) insertAt--;
+      state.playlists.splice(insertAt, 0, moved);
+      save();
+      renderSidebar();
+      showToast(`↕ "${moved.name}" reordered`);
+    },
+    onDropToEnd: (srcEl) => {
+      const moved = state.playlists.splice(parseInt(srcEl.dataset.index), 1)[0];
+      state.playlists.push(moved);
+      save();
+      renderSidebar();
+      showToast(`↕ "${moved.name}" moved to bottom`);
+    }
   });
 }
 
@@ -400,12 +311,6 @@ function renderQuickAddLocation() {
     textEl.textContent = `Saving to: ${path}`;
     dotEl.style.background = 'var(--text-dim)';
   }
-}
-
-function clearDropIndicators() {
-  document.querySelectorAll('.drag-over-top, .drag-over-bottom').forEach(el => {
-    el.classList.remove('drag-over-top', 'drag-over-bottom');
-  });
 }
 
 // ── Collection rename (inline) ──
@@ -1125,26 +1030,21 @@ function startTitleEdit(id) {
   input.focus();
   input.select();
   let saved = false;
-  const save = () => {
+  const commitTitle = () => {
     if (saved) return;
     saved = true;
     const newTitle = input.value.trim();
     v.title = newTitle || v.title;
-    saveState();
+    save();
     titleEl.innerHTML = escHtml(v.title || 'Untitled Video');
     if (document.getElementById('pvTracks')) pvRenderList();
   };
-  input.addEventListener('blur', save);
+  input.addEventListener('blur', commitTitle);
   input.addEventListener('click', e => e.stopPropagation());
   input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') { e.preventDefault(); save(); input.blur(); }
+    if (e.key === 'Enter') { e.preventDefault(); commitTitle(); input.blur(); }
     if (e.key === 'Escape') { saved = true; titleEl.innerHTML = escHtml(v.title || 'Untitled Video'); }
   });
-}
-
-// save alias that doesn't conflict with the global save() name
-function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
 function toggleNote(id) {
@@ -2550,56 +2450,104 @@ function remapPlaylistIds() {
 })();
 
 // ──────────────────────────────────────────────
+// SHARED DRAG-TO-REORDER HELPER
+// Replaces four near-identical drag-and-drop implementations (collection
+// sidebar, playlist sidebar, in-group video cards, and playlist split-view
+// tracks). Behaviour is preserved: top/bottom drop indicators, `was-dragging`
+// click suppression, and "drop on empty space" via onDropToEnd.
+// ──────────────────────────────────────────────
+function makeSortable(container, itemSelector, opts) {
+  opts = opts || {};
+  const dragClass = opts.dragClass || 'sortable-dragging';
+  const overTopClass = opts.overTopClass || 'sortable-over-top';
+  const overBottomClass = opts.overBottomClass || 'sortable-over-bottom';
+  const wasDraggingClass = opts.wasDraggingClass || null;
+  let srcEl = null;
+
+  function clearIndicators() {
+    container.querySelectorAll('.' + overTopClass + ', .' + overBottomClass)
+      .forEach(el => el.classList.remove(overTopClass, overBottomClass));
+  }
+
+  function items() {
+    return Array.from(container.querySelectorAll(itemSelector));
+  }
+
+  items().forEach(item => {
+    item.draggable = true;
+
+    item.addEventListener('dragstart', (e) => {
+      srcEl = item;
+      item.classList.add(dragClass);
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', 'sortable-drag');
+      // Defer the opacity drop so the browser snapshots a clean drag ghost
+      setTimeout(() => item.classList.add(dragClass), 0);
+    });
+
+    item.addEventListener('dragend', () => {
+      item.classList.remove(dragClass);
+      if (wasDraggingClass) item.classList.add(wasDraggingClass);
+      clearIndicators();
+      srcEl = null;
+    });
+
+    item.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      if (!srcEl || srcEl === item) return;
+      clearIndicators();
+      const rect = item.getBoundingClientRect();
+      const midY = rect.top + rect.height / 2;
+      item.classList.add(e.clientY < midY ? overTopClass : overBottomClass);
+    });
+
+    item.addEventListener('dragleave', () => {
+      item.classList.remove(overTopClass, overBottomClass);
+    });
+
+    item.addEventListener('drop', (e) => {
+      e.preventDefault();
+      if (opts.stopPropagation) e.stopPropagation();
+      clearIndicators();
+      if (!srcEl || srcEl === item) return;
+      const rect = item.getBoundingClientRect();
+      const midY = rect.top + rect.height / 2;
+      const position = e.clientY < midY ? 'top' : 'bottom';
+      const dragged = srcEl;
+      srcEl = null;
+      if (opts.onDrop) opts.onDrop(dragged, item, position);
+    });
+  });
+
+  container.addEventListener('dragover', (e) => e.preventDefault());
+  container.addEventListener('drop', (e) => {
+    if (!srcEl) return;
+    const dragged = srcEl;
+    srcEl = null;
+    clearIndicators();
+    if (opts.onDropToEnd) opts.onDropToEnd(dragged);
+  });
+}
+
+// ──────────────────────────────────────────────
 // CARD DRAG-AND-DROP (item reorder within group)
 // ──────────────────────────────────────────────
 function attachCardDrag() {
   document.querySelectorAll('.cards-grid').forEach(grid => {
-    const cards = Array.from(grid.querySelectorAll(':scope > .video-card'));
-    if (cards.length < 2) return;
-
-    cards.forEach(card => {
-      card.draggable = true;
-
-      card.addEventListener('dragstart', (e) => {
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/plain', card.id);
-        setTimeout(() => card.classList.add('card-dragging'), 0);
-      });
-
-      card.addEventListener('dragend', () => {
-        card.classList.remove('card-dragging');
-        grid.querySelectorAll('.card-drag-over').forEach(el => el.classList.remove('card-drag-over'));
-      });
-
-      card.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-        grid.querySelectorAll('.card-drag-over').forEach(el => el.classList.remove('card-drag-over'));
-        card.classList.add('card-drag-over');
-      });
-
-      card.addEventListener('dragleave', (e) => {
-        if (!card.contains(e.relatedTarget)) card.classList.remove('card-drag-over');
-      });
-
-      card.addEventListener('drop', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        card.classList.remove('card-drag-over');
-        const srcId = e.dataTransfer.getData('text/plain');
-        if (srcId === card.id) return;
-        const srcCard = document.getElementById(srcId);
-        if (!srcCard || srcCard.closest('.cards-grid') !== grid) return;
-
-        // Reorder in DOM
-        const allCards = Array.from(grid.querySelectorAll(':scope > .video-card'));
-        const srcIdx = allCards.indexOf(srcCard);
-        const tgtIdx = allCards.indexOf(card);
-        if (srcIdx < tgtIdx) grid.insertBefore(srcCard, card.nextSibling);
-        else grid.insertBefore(srcCard, card);
-
+    makeSortable(grid, ':scope > .video-card', {
+      dragClass: 'card-dragging',
+      overTopClass: 'card-drag-over',
+      overBottomClass: 'card-drag-over',
+      stopPropagation: true,
+      onDrop: (srcEl, targetEl, position) => {
+        if (position === 'bottom') {
+          grid.insertBefore(srcEl, targetEl.nextSibling);
+        } else {
+          grid.insertBefore(srcEl, targetEl);
+        }
         saveCardOrder(grid);
-      });
+      }
     });
   });
 }
@@ -2685,8 +2633,6 @@ function pvBuildOrder(pl) {
   pvState.order = ids;
 }
 
-let pvDragSrcIndex = null;
-
 function pvRenderList() {
   const pl = state.playlists.find(p => p.id === pvState.plId);
   if (!pl) return;
@@ -2766,89 +2712,48 @@ function pvAttachTrackDrag() {
   const tracks = document.getElementById('pvTracks');
   if (!tracks) return;
 
-  function clearIndicators() {
-    tracks.querySelectorAll('.pv-track-drag-over-top, .pv-track-drag-over-bottom').forEach(t => t.classList.remove('pv-track-drag-over-top', 'pv-track-drag-over-bottom'));
-  }
+  makeSortable(tracks, '.pv-track', {
+    dragClass: 'pv-track-dragging',
+    overTopClass: 'pv-track-drag-over-top',
+    overBottomClass: 'pv-track-drag-over-bottom',
+    wasDraggingClass: 'was-dragging',
+    stopPropagation: true,
+    onDrop: (srcEl, targetEl, position) => {
+      const srcIndex = parseInt(srcEl.dataset.pvIndex);
+      const targetIndex = parseInt(targetEl.dataset.pvIndex);
+      let insertAt = position === 'top' ? targetIndex : targetIndex + 1;
+      const moved = pvState.order.splice(srcIndex, 1)[0];
+      if (insertAt > srcIndex) insertAt--;
 
-  tracks.querySelectorAll('.pv-track').forEach(el => {
-    el.addEventListener('dragstart', (e) => {
-      pvDragSrcIndex = parseInt(el.dataset.pvIndex);
-      el.classList.add('pv-track-dragging');
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', pvDragSrcIndex);
-    });
-
-    el.addEventListener('dragend', () => {
-      el.classList.remove('pv-track-dragging');
-      el.classList.add('was-dragging');
-      clearIndicators();
-    });
-
-    el.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-      const targetIndex = parseInt(el.dataset.pvIndex);
-      if (pvDragSrcIndex === null || pvDragSrcIndex === targetIndex) return;
-      clearIndicators();
-      const rect = el.getBoundingClientRect();
-      const midY = rect.top + rect.height / 2;
-      if (e.clientY < midY) {
-        el.classList.add('pv-track-drag-over-top');
-      } else {
-        el.classList.add('pv-track-drag-over-bottom');
-      }
-    });
-
-    el.addEventListener('dragleave', () => {
-      el.classList.remove('pv-track-drag-over-top', 'pv-track-drag-over-bottom');
-    });
-
-    el.addEventListener('drop', (e) => {
-      e.preventDefault();
-      clearIndicators();
-      const targetIndex = parseInt(el.dataset.pvIndex);
-      if (pvDragSrcIndex === null || pvDragSrcIndex === targetIndex) return;
-
-      const rect = el.getBoundingClientRect();
-      const midY = rect.top + rect.height / 2;
-      let insertAt = e.clientY < midY ? targetIndex : targetIndex + 1;
-
-      const moved = pvState.order.splice(pvDragSrcIndex, 1)[0];
-      if (insertAt > pvDragSrcIndex) insertAt--;
       pvState.order.splice(insertAt, 0, moved);
 
       const oldPlaying = pvState.index;
-      if (pvDragSrcIndex === oldPlaying) {
+      if (srcIndex === oldPlaying) {
         pvState.index = insertAt;
-      } else if (pvDragSrcIndex < oldPlaying && insertAt >= oldPlaying) {
+      } else if (srcIndex < oldPlaying && insertAt >= oldPlaying) {
         pvState.index--;
-      } else if (pvDragSrcIndex > oldPlaying && insertAt <= oldPlaying) {
+      } else if (srcIndex > oldPlaying && insertAt <= oldPlaying) {
         pvState.index++;
       }
 
-      pvDragSrcIndex = null;
       pvSaveOrderToPlaylist();
       pvRenderList();
       showToast('✓ Playlist order saved');
-    });
-  });
-
-  // Allow drop on empty space at the bottom
-  tracks.addEventListener('dragover', (e) => e.preventDefault());
-  tracks.addEventListener('drop', (e) => {
-    if (pvDragSrcIndex === null) return;
-    clearIndicators();
-    const moved = pvState.order.splice(pvDragSrcIndex, 1)[0];
-    pvState.order.push(moved);
-    const oldPlaying = pvState.index;
-    if (pvDragSrcIndex === oldPlaying) pvState.index = pvState.order.length - 1;
-    else if (pvDragSrcIndex < oldPlaying) pvState.index--;
-    pvDragSrcIndex = null;
-    pvSaveOrderToPlaylist();
-    pvRenderList();
-    showToast('✓ Playlist order saved');
+    },
+    onDropToEnd: (srcEl) => {
+      const srcIndex = parseInt(srcEl.dataset.pvIndex);
+      const moved = pvState.order.splice(srcIndex, 1)[0];
+      pvState.order.push(moved);
+      const oldPlaying = pvState.index;
+      if (srcIndex === oldPlaying) pvState.index = pvState.order.length - 1;
+      else if (srcIndex < oldPlaying) pvState.index--;
+      pvSaveOrderToPlaylist();
+      pvRenderList();
+      showToast('✓ Playlist order saved');
+    }
   });
 }
+
 
 function pvSaveOrderToPlaylist() {
   const pl = state.playlists.find(p => p.id === pvState.plId);
@@ -3270,10 +3175,18 @@ function createCategory() {
   setTimeout(() => downloadTextFile(`${id}-collections.js`, buildCategoryCollectionsJs(id, name, color), 'text/javascript'), 250);
   setTimeout(() => downloadTextFile(`${id}-playlist.js`, buildCategoryPlaylistJs(), 'text/javascript'), 500);
   setTimeout(() => downloadTextFile(`${id}-watched.js`, buildCategoryWatchedJs(), 'text/javascript'), 750);
+  // Ship page-template.js too so the new category page is self-contained
+  // (it is referenced by the generated HTML and reused if another category
+  // is created from that page later).
+  setTimeout(() => {
+    if (typeof PAGE_TEMPLATE !== 'undefined') {
+      downloadTextFile('page-template.js', 'window.PAGE_TEMPLATE = ' + JSON.stringify(PAGE_TEMPLATE) + ';', 'text/javascript');
+    }
+  }, 1000);
 
   closeModal('createCategoryModal');
   renderCategorySwitcher();
-  showToast(`✓ "${name}" created — save the 4 downloaded files next to your other TholsStudio pages`);
+  showToast(`✓ "${name}" created — save ${file} at the root and the 4 .js files (${id}-collections.js, ${id}-playlist.js, ${id}-watched.js, page-template.js) inside a ${id}/ folder`);
 }
 
 function buildCategoryCollectionsJs(id, name, color) {
@@ -3331,550 +3244,31 @@ const WATCHED_VIDEO_IDS = [];
 
 // Full standalone HTML page for a brand-new category — mirrors the
 // structure of music.html / electronics.html / astrology.html.
-function buildCategoryHtml(id, name, color) {
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TholsStudio — ${name}</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23F5C518'/><polygon points='13,10 13,22 23,16' fill='%23111'/></svg>">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<link href="style.css" rel="stylesheet">
-
-</head>
-<body>
-
-<!-- TOPBAR -->
-<div class="topbar">
-  <div class="logo">
-    <div class="logo-icon">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.27 8.27 0 004.84 1.55V6.79a4.85 4.85 0 01-1.07-.1z"/></svg>
-    </div>
-    <div class="logo-text-wrap">
-      <span class="logo-title">TholsStudio</span>
-      <span class="logo-subtitle" id="appSubtitle"></span>
-    </div>
-  </div>
-  <div class="search-bar">
-    <span class="search-icon">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-    </span>
-    <input type="text" placeholder="Search videos, channels, notes…" id="searchInput" oninput="handleSearch()">
-  </div>
-  <div class="topbar-actions">
-    <button class="btn btn-ghost" onclick="openImportModal()">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Import
-    </button>
-    <button class="btn btn-primary" onclick="openAddModal()">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      Add Video
-    </button>
-  </div>
-</div>
-
-<!-- APP BODY -->
-<div class="app-body">
-  <!-- SIDEBAR -->
-  <div class="sidebar" id="sidebar">
-    <div class="sidebar-resizer" id="sidebarResizer" title="Drag to resize · Double-click to reset"></div>
-    <div class="sidebar-section">
-      <div class="sidebar-label sidebar-label-toggle" onclick="toggleSidebarSection('librarySection', this.querySelector('.section-chev'))">
-        Library
-        <svg class="section-chev chev-up" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
-      </div>
-      <div id="librarySection">
-      <button class="sidebar-item active" onclick="filterByCollection('all', this)">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-        </svg>
-        <span class="col-name">All Videos</span>
-        <span class="count" id="count-all">0</span>
-      </button>
-      <button class="sidebar-item" onclick="filterByCollection('recent', this)">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-        </svg>
-        <span class="col-name">Recently Added</span>
-        <span class="count" id="count-recent">0</span>
-      </button>
-      <button class="sidebar-item" onclick="filterByCollection('watched', this)">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-        </svg>
-        <span class="col-name">Watched</span>
-        <span class="count" id="count-watched">0</span>
-      </button>
-      </div><!-- /librarySection -->
-    </div><!-- /sidebar-section -->
-
-    <div class="sidebar-divider"></div>
-
-    <div class="sidebar-section">
-      <div class="sidebar-label sidebar-label-toggle" onclick="toggleSidebarSection('collectionsSection', this.querySelector('.section-chev'))">
-        Collections
-        <svg class="section-chev chev-up" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
-      </div>
-      <div id="collectionsSection">
-      <div id="collectionsList"></div>
-      <div style="padding: 0 0 0 0; margin-top: 4px;">
-        <button class="add-collection-btn" onclick="startNewCollection()">
-          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          New collection
-        </button>
-      </div>
-      </div><!-- /collectionsSection -->
-    </div><!-- /sidebar-section -->
-
-    <div class="sidebar-divider"></div>
-
-    <div class="sidebar-section">
-      <div class="sidebar-label sidebar-label-toggle" onclick="toggleSidebarSection('playlistsSection', this.querySelector('.section-chev'))">
-        Playlists
-        <svg class="section-chev chev-up" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
-      </div>
-      <div id="playlistsSection">
-        <div id="playlistsList"></div>
-        <div style="padding:0; margin-top:4px;">
-          <button class="add-collection-btn" onclick="openPlaylistModal()">
-            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            New playlist
-          </button>
-        </div>
-      </div><!-- /playlistsSection -->
-    </div><!-- /sidebar-section -->
-
-    <!-- CATEGORY SWITCHER (pinned to bottom) -->
-    <div class="sidebar-footer" id="categorySwitcher"></div>
-  </div><!-- /sidebar -->
-
-  <!-- MAIN -->
-  <!-- PLAYLIST SPLIT VIEW (shown instead of .main when a playlist is clicked) -->
-  <div class="playlist-view" id="playlistView" style="display:none;">
-
-    <!-- Left panel: playlist track list -->
-    <div class="pv-list" id="pvList">
-      <div class="pv-list-header">
-        <div class="pv-list-meta">
-          <span class="pv-list-dot" id="pvDot"></span>
-          <div>
-            <div class="pv-list-name" id="pvName">Playlist</div>
-            <div class="pv-list-count" id="pvCount">0 videos</div>
-          </div>
-        </div>
-        <div class="pv-list-modes">
-          <button class="pv-mode-btn active" id="pvSeqBtn" onclick="pvSetMode('sequential')" title="Sequential">
-            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="15 8 19 12 15 16"/></svg>
-          </button>
-          <button class="pv-mode-btn" id="pvRndBtn" onclick="pvSetMode('random')" title="Random">
-            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
-          </button>
-          <button class="pv-mode-btn active" id="pvAutoBtn" onclick="pvToggleAutoplay()" title="Auto-play next">
-            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/><line x1="19" y1="3" x2="19" y2="21"/></svg>
-          </button>
-        </div>
-      </div>
-      <div class="pv-search-wrap">
-        <span class="pv-search-icon">
-          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        </span>
-        <input type="text" id="pvSearchInput" placeholder="Search this playlist…" oninput="pvHandleSearch()">
-      </div>
-      <div class="pv-tracks" id="pvTracks"></div>
-    </div>
-
-    <!-- Right panel: iframe player -->
-    <div class="pv-player" id="pvPlayer">
-      <button class="pv-close-btn" onclick="closePvView()" title="Close playlist view">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-      <div id="pvIframeContainer" style="width:100%;height:100%;"></div>
-    </div>
-
-  </div>
-
-  <div class="main" id="mainView">
-    <!-- Quick add bar -->
-    <div class="add-url-location" id="quickAddLocation" style="position:relative;">
-      <button class="browse-location-btn" onclick="toggleLocationPicker()" title="Choose collection / group to save into">
-        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h3l2 2h7a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-      </button>
-      <span class="add-url-location-dot" id="quickAddLocationDot"></span>
-      <span id="quickAddLocationText">Saving to: Uncollected</span>
-      <!-- Location picker dropdown -->
-      <div class="location-picker" id="locationPicker" style="display:none;">
-        <div class="location-picker-title">Save quick-add to…</div>
-        <div class="location-picker-body" id="locationPickerBody"></div>
-      </div>
-    </div>
-    <div class="add-url-bar">
-      <svg width="16" height="16" fill="none" stroke="var(--text-dim)" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
-      <input type="text" id="quickAddInput" placeholder="Paste a YouTube URL and press Enter to save…" onkeydown="if(event.key==='Enter') quickAdd()">
-      <button class="btn btn-primary" onclick="quickAdd()" style="flex-shrink:0;">Save</button>
-    </div>
-
-    <!-- Section header -->
-    <div class="section-header">
-      <span class="section-title" id="sectionTitle">All Videos</span>
-      <span class="section-count" id="sectionCount">0 videos</span>
-      <button class="btn btn-primary" id="playPlaylistBtn" onclick="startPlaylistPlayer()" style="display:none;padding:5px 12px;font-size:12px;gap:6px;">
-        <svg width="11" height="11" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        Play
-      </button>
-      <div class="section-header-right">
-        <!-- Export folder location label -->
-        <div class="export-location-wrap" id="exportLocationWrap" style="display:none;">
-          <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h3l2 2h7a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-          <span id="exportLocationLabel">No folder selected</span>
-          <button class="export-location-clear" onclick="clearExportFolder()" title="Clear folder">×</button>
-        </div>
-        <!-- Browse folder button -->
-        <button class="btn-icon" onclick="browseExportFolder()" title="Select export folder">
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h3l2 2h7a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-        </button>
-        <div class="export-dropdown" id="exportDropdown">
-          <button class="btn-icon" onclick="toggleExportMenu()" title="Export">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.29"/></svg>
-          </button>
-          <div class="export-menu" id="exportMenu">
-            <button class="export-menu-item" onclick="exportData()">Export as JSON</button>
-            <button class="export-menu-item" onclick="exportCollectionsJs()" id="exportCollectionsLabel">Export as collections.js</button>
-            <button class="export-menu-item" onclick="exportWatchedJs()" id="exportWatchedLabel">Export as watched.js</button>
-            <button class="export-menu-item" onclick="exportPlaylistJs()" id="exportPlaylistLabel">Export as playlist.js</button>
-            <div class="export-menu-divider"></div>
-            <button class="export-menu-item export-menu-item-all" onclick="exportAllJs()">
-              <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Export All JS Files
-            </button>
-          </div>
-        </div>
-        <div class="view-toggle">
-          <button class="view-btn active" id="gridBtn" onclick="setView('grid')" title="Grid view">
-            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-          </button>
-          <button class="view-btn" id="listBtn" onclick="setView('list')" title="List view">
-            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="2"/><rect x="3" y="11" width="18" height="2"/><rect x="3" y="18" width="18" height="2"/></svg>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Cards -->
-    <div class="cards-grid-container" id="cardsGrid"></div>
-  </div><!-- end #mainView -->
-</div>
-
-<!-- ADD VIDEO MODAL -->
-<div class="modal-overlay" id="addModal">
-  <div class="modal">
-    <div class="modal-title">
-      <svg width="18" height="18" fill="none" stroke="var(--indigo-bright)" stroke-width="2" viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.4a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>
-      Add YouTube Video
-      <button class="modal-close" onclick="closeModal('addModal')">×</button>
-    </div>
-    <div class="field">
-      <label>YouTube URL *</label>
-      <input type="text" id="addUrl" placeholder="https://youtube.com/watch?v=..." oninput="previewUrl();checkAddDuplicate()" autocomplete="off" autocapitalize="off" spellcheck="false">
-      <div class="field-error" id="addUrlDuplicateMsg" style="display:none;">Duplicate</div>
-    </div>
-    <div class="field">
-      <label>Title (auto-detected or custom)</label>
-      <input type="text" id="addTitle" placeholder="Video title">
-    </div>
-    <div class="field">
-      <label>Collection</label>
-      <select id="addCollection" onchange="refreshGroupSelect('addCollection','addGroup');checkAddDuplicate()">
-        <option value="">— No collection —</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Group / Topic <span style="color:var(--text-dim);font-weight:400;">(optional sub-section)</span></label>
-      <div style="display:flex;gap:8px;">
-        <select id="addGroup" style="flex:1;" onchange="checkAddDuplicate()">
-          <option value="">— No group —</option>
-        </select>
-        <input type="text" id="addGroupNew" placeholder="Or type new group…" style="flex:1;" oninput="checkAddDuplicate()">
-      </div>
-    </div>
-    <div class="field">
-      <label>Note</label>
-      <textarea id="addNote" placeholder="Your thoughts, timestamps, why you saved this…"></textarea>
-    </div>
-    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
-      <button class="btn btn-ghost" onclick="closeModal('addModal')">Cancel</button>
-      <button class="btn btn-primary" id="saveVideoBtn" onclick="saveVideo()">Save to Vault</button>
-    </div>
-  </div>
-</div>
-
-<!-- NEW COLLECTION MODAL -->
-<div class="modal-overlay" id="collectionModal">
-  <div class="modal" style="width:360px;">
-    <div class="modal-title">
-      New Collection
-      <button class="modal-close" onclick="closeModal('collectionModal')">×</button>
-    </div>
-    <div class="field">
-      <label>Collection name</label>
-      <input type="text" id="collectionName" placeholder="e.g. Unity Tutorials, Game Design…">
-    </div>
-    <div class="field">
-      <label>Color</label>
-      <div class="color-picker-row" id="colorPicker"></div>
-    </div>
-    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
-      <button class="btn btn-ghost" onclick="closeModal('collectionModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveCollection()">Create</button>
-    </div>
-  </div>
-</div>
-
-<!-- PLAYLIST MODAL -->
-<div class="modal-overlay" id="playlistModal">
-  <div class="modal" style="width:360px;">
-    <div class="modal-title">
-      New Playlist
-      <button class="modal-close" onclick="closeModal('playlistModal')">×</button>
-    </div>
-    <div class="field">
-      <label>Playlist name</label>
-      <input type="text" id="playlistName" placeholder="e.g. Watch Later, Favourites…"
-        onkeydown="if(event.key==='Enter') savePlaylist()">
-    </div>
-    <div class="field">
-      <label>Color</label>
-      <div class="color-picker-row" id="playlistColorPicker"></div>
-    </div>
-    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
-      <button class="btn btn-ghost" onclick="closeModal('playlistModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="savePlaylist()">Create</button>
-    </div>
-  </div>
-</div>
-
-<!-- NEW GROUP MODAL -->
-<div class="modal-overlay" id="groupModal">
-  <div class="modal" style="width:360px;">
-    <div class="modal-title">
-      <svg width="16" height="16" fill="none" stroke="var(--indigo-bright)" stroke-width="2" viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
-      New Group
-      <button class="modal-close" onclick="closeModal('groupModal')">×</button>
-    </div>
-    <div class="field">
-      <label>Group name</label>
-      <input type="text" id="groupName" placeholder="e.g. Physics, AI, Shaders…"
-        onkeydown="if(event.key==='Enter') saveGroup()">
-    </div>
-    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
-      <button class="btn btn-ghost" onclick="closeModal('groupModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveGroup()">Create</button>
-    </div>
-  </div>
-</div>
-
-<!-- EXPORT CONFIRM MODAL -->
-<div class="modal-overlay" id="exportConfirmModal">
-  <div class="modal" style="width:400px;">
-    <div class="modal-title">
-      <svg width="18" height="18" fill="none" stroke="var(--indigo-bright)" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      <span id="exportConfirmTitle">Export</span>
-      <button class="modal-close" onclick="closeModal('exportConfirmModal')">×</button>
-    </div>
-    <p id="exportConfirmMessage" style="margin:0;font-size:13px;color:var(--text-muted);line-height:1.6;"></p>
-    <div id="exportConfirmDetails" style="font-size:12px;color:var(--text);background:var(--surface-raised);padding:14px 16px;border-radius:8px;border-left:3px solid var(--indigo);margin-top:14px;white-space:pre-wrap;line-height:1.7;font-family:var(--mono);"></div>
-    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px;">
-      <button class="btn btn-ghost" onclick="closeModal('exportConfirmModal')">Cancel</button>
-      <button class="btn btn-primary" id="exportConfirmBtn" onclick="confirmExport()">Export</button>
-    </div>
-  </div>
-</div>
-
-<!-- IMPORT MODAL -->
-<div class="modal-overlay" id="importModal">
-  <div class="modal">
-    <div class="modal-title">
-      Import URLs
-      <button class="modal-close" onclick="closeModal('importModal')">×</button>
-    </div>
-    <div class="field">
-      <label>Paste YouTube URLs (one per line)</label>
-      <textarea id="importText" placeholder="https://youtube.com/watch?v=abc&#10;https://youtu.be/xyz&#10;…" style="min-height:120px;"></textarea>
-    </div>
-    <div class="field">
-      <label>Add to collection (optional)</label>
-      <select id="importCollection" onchange="refreshGroupSelect('importCollection','importGroup')">
-        <option value="">— No collection —</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Group / Topic <span style="color:var(--text-dim);font-weight:400;">(optional)</span></label>
-      <div style="display:flex;gap:8px;">
-        <select id="importGroup" style="flex:1;"><option value="">— No group —</option></select>
-        <input type="text" id="importGroupNew" placeholder="Or type new group…" style="flex:1;">
-      </div>
-    </div>
-    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
-      <button class="btn btn-ghost" onclick="closeModal('importModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="importUrls()">Import All</button>
-    </div>
-  </div>
-</div>
-
-<!-- MOVE TO GROUP MODAL -->
-<div class="modal-overlay" id="moveGroupModal">
-  <div class="modal" style="width:380px;">
-    <div class="modal-title">
-      <svg width="16" height="16" fill="none" stroke="var(--indigo-bright)" stroke-width="2" viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
-      Move to Group
-      <button class="modal-close" onclick="closeModal('moveGroupModal')">×</button>
-    </div>
-    <div style="font-size:12px;color:var(--text-muted);background:var(--surface-raised);padding:8px 12px;border-radius:6px;border-left:2px solid var(--indigo);" id="moveGroupVideoTitle"></div>
-    <div class="field">
-      <label>Choose existing group</label>
-      <select id="moveGroupSelect">
-        <option value="">— No group (ungrouped) —</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Or create a new group</label>
-      <input type="text" id="moveGroupNewInput" placeholder="Type new group name…">
-    </div>
-    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
-      <button class="btn btn-ghost" onclick="closeModal('moveGroupModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveMoveGroup()">Move</button>
-    </div>
-  </div>
-</div>
-
-<!-- CREATE CATEGORY MODAL -->
-<div class="modal-overlay" id="createCategoryModal">
-  <div class="modal" style="width:380px;">
-    <div class="modal-title">
-      <svg width="16" height="16" fill="none" stroke="var(--indigo-bright)" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      New Category
-      <button class="modal-close" onclick="closeModal('createCategoryModal')">×</button>
-    </div>
-    <div class="field">
-      <label>Category name</label>
-      <input type="text" id="newCategoryName" placeholder="e.g. Cooking, Gaming, Fitness…"
-        onkeydown="if(event.key==='Enter') createCategory()">
-    </div>
-    <div class="field">
-      <label>Color</label>
-      <div class="color-picker-row" id="categoryColorPicker"></div>
-    </div>
-    <p style="margin:0;font-size:12px;color:var(--text-muted);line-height:1.6;">
-      This downloads 4 starter files (a new page + 3 config files). Save them into the same folder as your other TholsStudio pages, then open the new page from there.
-    </p>
-    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
-      <button class="btn btn-ghost" onclick="closeModal('createCategoryModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="createCategory()">Create &amp; Download</button>
-    </div>
-  </div>
-</div>
-
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
-
-<!-- CONFIRM MODAL -->
-<div class="modal-overlay" id="confirmModal">
-  <div class="modal" style="width:380px;">
-    <div class="modal-title">
-      <span id="confirmTitle">Confirm</span>
-      <button class="modal-close" onclick="closeConfirmModal()">×</button>
-    </div>
-    <p id="confirmMessage" style="margin:0 0 20px;font-size:13px;color:var(--text-muted);line-height:1.6;"></p>
-    <div style="display:flex;gap:10px;justify-content:flex-end;">
-      <button class="btn btn-ghost" onclick="closeConfirmModal()">Cancel</button>
-      <button class="btn btn-danger" id="confirmOkBtn" onclick="confirmOk()">Delete</button>
-    </div>
-  </div>
-</div>
-
-<!-- PLAYLIST PLAYER BAR -->
-<div class="playlist-player-bar" id="playlistPlayerBar" style="display:none;">
-
-  <!-- Left: playlist name + current video info -->
-  <div class="ppb-left">
-    <span class="ppb-dot" id="ppbDot"></span>
-    <div class="ppb-info">
-      <span class="ppb-playlist-name" id="ppbName">Playlist</span>
-      <span class="ppb-video-title" id="ppbVideoTitle">—</span>
-    </div>
-  </div>
-
-  <!-- Centre: mode selectors + playback controls -->
-  <div class="ppb-centre">
-    <!-- Mode group -->
-    <div class="ppb-mode-group">
-      <!-- Sequential -->
-      <button class="ppb-mode-btn active" id="ppbSeqBtn" onclick="setPlaylistMode('sequential')" title="Sequential — play in order">
-        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <line x1="5" y1="12" x2="19" y2="12"/>
-          <polyline points="15 8 19 12 15 16"/>
-        </svg>
-        <span>Sequential</span>
-      </button>
-      <!-- Random -->
-      <button class="ppb-mode-btn" id="ppbRndBtn" onclick="setPlaylistMode('random')" title="Random — shuffle order">
-        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <polyline points="16 3 21 3 21 8"/>
-          <line x1="4" y1="20" x2="21" y2="3"/>
-          <polyline points="21 16 21 21 16 21"/>
-          <line x1="15" y1="15" x2="21" y2="21"/>
-        </svg>
-        <span>Random</span>
-      </button>
-    </div>
-
-    <!-- Playback controls -->
-    <div class="ppb-controls">
-      <button class="ppb-btn" onclick="playlistStep(-1)" title="Previous">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/>
-        </svg>
-      </button>
-      <button class="ppb-btn ppb-play" onclick="openCurrentPlaylistVideo()" title="Open in YouTube">
-        <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-      </button>
-      <button class="ppb-btn" onclick="playlistStep(1)" title="Next">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/>
-        </svg>
-      </button>
-    </div>
-  </div>
-
-  <!-- Right: counter + close -->
-  <div class="ppb-right">
-    <span class="ppb-track" id="ppbTrack">1 / 5</span>
-    <button class="ppb-btn ppb-close" onclick="closePlaylistPlayer()" title="Stop playlist">
-      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-      </svg>
-    </button>
-  </div>
-
-</div>
-
-<script src="https://www.youtube.com/iframe_api"></script>
-<script>
-  // Identifies this page to the shared engine (app.js): namespaces
-  // localStorage + the export-folder IndexedDB store, and drives branding.
-  const APP_NAME = ${jsStr(id)};
-  const APP_LABEL = ${jsStr(name)};
-  const APP_COLOR = ${jsStr(color)};
-</script>
-<script src="${id}-collections.js"></script>
-<script src="${id}-playlist.js"></script>
-<script src="${id}-watched.js"></script>
-<script src="app.js"></script>
-
-</body>
-</html>
-`;
+function configScriptTags(id, dir) {
+  dir = dir || '';
+  return '<script src="' + dir + id + '-collections.js"></script>\n' +
+         '<script src="' + dir + id + '-playlist.js"></script>\n' +
+         '<script src="' + dir + id + '-watched.js"></script>';
 }
+
+// Builds a full standalone category page from the shared PAGE_TEMPLATE
+// (generated by build.js -> page-template.js), keeping runtime category
+// creation in lock-step with the three built-in pages. No fetch: works on
+// GitHub Pages and when opened via file://.
+function buildCategoryHtml(id, name, color) {
+  if (typeof PAGE_TEMPLATE === 'undefined') {
+    showToast('⚠️ page-template.js missing — category page not generated');
+    return '';
+  }
+  const dir = id + '/';
+  return PAGE_TEMPLATE
+    .replace(/\{\{APP_NAME\}\}/g, id)
+    .replace(/\{\{APP_LABEL\}\}/g, name)
+    .replace(/\{\{APP_COLOR\}\}/g, color)
+    .replace(/\{\{JS_DIR\}\}/g, dir)
+    .replace(/\{\{SCRIPT_TAGS\}\}/g, configScriptTags(id, dir));
+}
+
 
 // ──────────────────────────────────────────────
 // BRANDING (per-app title / logo subtitle / accent)
