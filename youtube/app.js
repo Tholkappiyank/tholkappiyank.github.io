@@ -1231,9 +1231,12 @@ function previewUrl() {
   }
 }
 
-// Live duplicate check for the Add Video modal — runs on every keystroke/change
-// of the URL, collection, and group fields. Toggles the inline "Duplicate"
-// message, marks the URL field invalid, and disables/reddens the Save button.
+// Live validation for the Add Video modal — runs on every keystroke/change
+// of the URL, collection, and group fields. Turns the URL field's outline
+// green once it's a recognized YouTube link that isn't already saved, red
+// if the link can't be parsed or is a duplicate of an existing video, and
+// leaves it neutral while the field is empty. Also toggles the inline
+// "Duplicate" message and disables/reddens the Save button on duplicates.
 // Returns the matching existing video (or null) so saveVideo() can reuse it.
 function checkAddDuplicate() {
   const urlInput = document.getElementById('addUrl');
@@ -1243,25 +1246,49 @@ function checkAddDuplicate() {
 
   const url = urlInput.value.trim();
   const videoId = extractVideoId(url);
-  const colId = document.getElementById('addCollection')?.value || '';
-  const groupNew = document.getElementById('addGroupNew')?.value.trim() || '';
-  const groupSel = document.getElementById('addGroup')?.value || '';
-  const group = groupNew || groupSel;
 
+  // Check against the WHOLE saved vault (all collections/groups), not just
+  // the collection/group currently selected in this modal — a video already
+  // saved anywhere counts as "already in the collections".
   const existing = videoId
-    ? state.videos.find(v => v.videoId === videoId && (v.collection || '') === colId && (v.group || '') === group)
+    ? state.videos.find(v => v.videoId === videoId)
     : null;
 
+  // Reset both states before deciding which (if any) applies
+  urlInput.classList.remove('field-invalid', 'field-valid');
+
+  if (!url) {
+    // Empty field — neutral, no message, Save enabled (native check catches empty on submit)
+    msgEl.style.display = 'none';
+    btn.disabled = false;
+    btn.classList.remove('btn-danger');
+    btn.classList.add('btn-primary');
+    return null;
+  }
+
   if (existing) {
-    msgEl.textContent = 'Duplicate';
+    // Valid YouTube link, but already saved somewhere in the vault
+    const existingCol = state.collections.find(c => c.id === existing.collection);
+    const where = existingCol
+      ? (existing.group ? `${existingCol.name} / ${existing.group}` : existingCol.name)
+      : (existing.group || 'Uncollected');
+    msgEl.textContent = `Already saved — in "${where}"`;
     msgEl.style.display = '';
     urlInput.classList.add('field-invalid');
     btn.disabled = true;
     btn.classList.remove('btn-primary');
     btn.classList.add('btn-danger');
-  } else {
+  } else if (!isYouTubeUrl(url) || !videoId) {
+    // Not a recognizable YouTube URL
     msgEl.style.display = 'none';
-    urlInput.classList.remove('field-invalid');
+    urlInput.classList.add('field-invalid');
+    btn.disabled = false;
+    btn.classList.remove('btn-danger');
+    btn.classList.add('btn-primary');
+  } else {
+    // Valid YouTube URL, not a duplicate anywhere in the vault
+    msgEl.style.display = 'none';
+    urlInput.classList.add('field-valid');
     btn.disabled = false;
     btn.classList.remove('btn-danger');
     btn.classList.add('btn-primary');
@@ -1496,13 +1523,27 @@ function deletePlaylist(id) {
   });
 }
 
+// Checks whether a playlist already contains a given video — matching not
+// just by internal video id, but also by the underlying YouTube videoId.
+// This catches the case where the same YouTube video exists as two separate
+// library entries (e.g. saved into two different collections) and prevents
+// it from being added to the same playlist twice under a different id.
+function isVideoInPlaylist(pl, v) {
+  if (!pl || !v) return false;
+  return pl.videoIds.some(id => {
+    if (id === v.id) return true;
+    const ev = state.videos.find(ev => ev.id === id);
+    return !!(ev && v.videoId && ev.videoId === v.videoId);
+  });
+}
+
 function addVideoToPlaylist(videoId, playlistId) {
   const pl = state.playlists.find(p => p.id === playlistId);
   if (!pl) return;
-  if (!pl.videoIds.includes(videoId)) {
+  const v = state.videos.find(v => v.id === videoId);
+  if (!isVideoInPlaylist(pl, v)) {
     pl.videoIds.push(videoId);
     save(); renderSidebar();
-    const v = state.videos.find(v => v.id === videoId);
     showToast(`✓ Added to "${pl.name}"`);
   } else {
     showToast(`Already in "${pl.name}"`);
@@ -1514,7 +1555,17 @@ function addVideoToPlaylist(videoId, playlistId) {
 function removeVideoFromPlaylist(videoId, playlistId) {
   const pl = state.playlists.find(p => p.id === playlistId);
   if (!pl) return;
-  pl.videoIds = pl.videoIds.filter(id => id !== videoId);
+  // Remove by internal id, and also any other entry sharing the same
+  // underlying YouTube video (covers legacy duplicate library entries).
+  const v = state.videos.find(v => v.id === videoId);
+  pl.videoIds = pl.videoIds.filter(id => {
+    if (id === videoId) return false;
+    if (v && v.videoId) {
+      const ev = state.videos.find(ev => ev.id === id);
+      if (ev && ev.videoId === v.videoId) return false;
+    }
+    return true;
+  });
   save(); renderSidebar(); renderCards();
   showToast(`✓ Removed from "${pl.name}"`);
 }
@@ -1547,8 +1598,8 @@ function openGroupPlaylistPicker(e, colId, groupName) {
   picker.innerHTML = `
     <div class="playlist-picker-title">Add "${escHtml(groupName)}" to playlist</div>
     ${state.playlists.map(pl => {
-      const allIn = groupVids.every(v => pl.videoIds.includes(v.id));
-      const someIn = !allIn && groupVids.some(v => pl.videoIds.includes(v.id));
+      const allIn = groupVids.every(v => isVideoInPlaylist(pl, v));
+      const someIn = !allIn && groupVids.some(v => isVideoInPlaylist(pl, v));
       const label = allIn ? 'All added' : someIn ? 'Add remaining' : `Add all ${groupVids.length}`;
       const checkIcon = allIn
         ? `<span class="pp-check"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm-1.5 14.5l-4-4 1.41-1.41L10.5 13.67l5.59-5.59L17.5 9.5l-7 7z"/></svg></span>`
@@ -1578,7 +1629,7 @@ function addGroupToPlaylist(colId, groupName, playlistId) {
   const groupVids = state.videos.filter(v => v.collection === colId && v.group === groupName);
   let added = 0;
   groupVids.forEach(v => {
-    if (!pl.videoIds.includes(v.id)) { pl.videoIds.push(v.id); added++; }
+    if (!isVideoInPlaylist(pl, v)) { pl.videoIds.push(v.id); added++; }
   });
   save();
   renderSidebar();
@@ -1609,8 +1660,8 @@ function openCollectionPlaylistPicker(e, colId) {
   picker.innerHTML = `
     <div class="playlist-picker-title">Add "${escHtml(col?.name || colId)}" to playlist</div>
     ${state.playlists.map(pl => {
-      const allIn = colVideos.every(v => pl.videoIds.includes(v.id));
-      const someIn = !allIn && colVideos.some(v => pl.videoIds.includes(v.id));
+      const allIn = colVideos.every(v => isVideoInPlaylist(pl, v));
+      const someIn = !allIn && colVideos.some(v => isVideoInPlaylist(pl, v));
       const label = allIn ? 'All added' : someIn ? 'Add remaining' : `Add all ${colVideos.length}`;
       const checkIcon = allIn ? `<span class="pp-check"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm-1.5 14.5l-4-4 1.41-1.41L10.5 13.67l5.59-5.59L17.5 9.5l-7 7z"/></svg></span>` : `<span class="pp-check"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></span>`;
       return `<button class="playlist-picker-item${allIn ? ' in-playlist' : ''}"
@@ -1639,7 +1690,7 @@ function addCollectionToPlaylist(colId, playlistId) {
   const colVideos = state.videos.filter(v => v.collection === colId);
   let added = 0;
   colVideos.forEach(v => {
-    if (!pl.videoIds.includes(v.id)) { pl.videoIds.push(v.id); added++; }
+    if (!isVideoInPlaylist(pl, v)) { pl.videoIds.push(v.id); added++; }
   });
   save();
   renderSidebar();
@@ -1665,7 +1716,7 @@ function openPlaylistPicker(videoId, anchorEl) {
   picker.innerHTML = `
     <div class="playlist-picker-title">Add to playlist</div>
     ${state.playlists.map(pl => {
-      const has = pl.videoIds.includes(videoId);
+      const has = isVideoInPlaylist(pl, v);
       const icon = has ? `<span class="pp-check"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm-1.5 14.5l-4-4 1.41-1.41L10.5 13.67l5.59-5.59L17.5 9.5l-7 7z"/></svg></span>` : `<span class="pp-check"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></span>`;
       return `<button class="playlist-picker-item${has ? ' in-playlist' : ''}"
         onclick="event.stopPropagation();${has ? `removeVideoFromPlaylist('${videoId}','${pl.id}')` : `addVideoToPlaylist('${videoId}','${pl.id}')`};document.querySelectorAll('.playlist-picker').forEach(e=>e.remove())">
@@ -2420,14 +2471,26 @@ function remapPlaylistIds() {
   state.playlists.forEach(pl => {
     const def = (typeof DEFAULT_PLAYLISTS !== 'undefined') && DEFAULT_PLAYLISTS.find(p => p.id === pl.id);
     if (def && def.videos && def.videos.length) {
-      const mapped = def.videos.map(dv => ytIdMap[dv.videoId]).filter(Boolean);
+      // De-dupe in case the source playlist file lists the same video twice
+      const mapped = [...new Set(def.videos.map(dv => ytIdMap[dv.videoId]).filter(Boolean))];
       if (mapped.length) { pl.videoIds = mapped; return; }
     }
     const valid = pl.videoIds.filter(id => state.videos.find(v => v.id === id));
     if (!valid.length && pl.videoIds.length) {
       const byYt = state.videos.filter(v => v.videoId && pl.videoIds.includes(v.videoId));
-      if (byYt.length) pl.videoIds = byYt.map(v => v.id);
+      if (byYt.length) pl.videoIds = [...new Set(byYt.map(v => v.id))];
     }
+    // Final safety net — de-dupe by internal id, and also by the underlying
+    // YouTube video id (covers legacy duplicate library entries that share
+    // the same YouTube video under two different internal ids)
+    const seenYt = new Set();
+    pl.videoIds = pl.videoIds.filter(id => {
+      const v = state.videos.find(v => v.id === id);
+      const key = v && v.videoId ? v.videoId : id;
+      if (seenYt.has(key)) return false;
+      seenYt.add(key);
+      return true;
+    });
   });
 }
 
@@ -3476,9 +3539,9 @@ function buildCategoryHtml(id, name, color) {
           </button>
           <div class="export-menu" id="exportMenu">
             <button class="export-menu-item" onclick="exportData()">Export as JSON</button>
-            <button class="export-menu-item" onclick="exportCollectionsJs()">Export as collections.js</button>
-            <button class="export-menu-item" onclick="exportWatchedJs()">Export as watched.js</button>
-            <button class="export-menu-item" onclick="exportPlaylistJs()">Export as playlist.js</button>
+            <button class="export-menu-item" onclick="exportCollectionsJs()" id="exportCollectionsLabel">Export as collections.js</button>
+            <button class="export-menu-item" onclick="exportWatchedJs()" id="exportWatchedLabel">Export as watched.js</button>
+            <button class="export-menu-item" onclick="exportPlaylistJs()" id="exportPlaylistLabel">Export as playlist.js</button>
             <div class="export-menu-divider"></div>
             <button class="export-menu-item export-menu-item-all" onclick="exportAllJs()">
               <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -3512,7 +3575,7 @@ function buildCategoryHtml(id, name, color) {
     </div>
     <div class="field">
       <label>YouTube URL *</label>
-      <input type="url" id="addUrl" placeholder="https://youtube.com/watch?v=..." oninput="previewUrl();checkAddDuplicate()">
+      <input type="text" id="addUrl" placeholder="https://youtube.com/watch?v=..." oninput="previewUrl();checkAddDuplicate()" autocomplete="off" autocapitalize="off" spellcheck="false">
       <div class="field-error" id="addUrlDuplicateMsg" style="display:none;">Duplicate</div>
     </div>
     <div class="field">
@@ -3830,6 +3893,22 @@ function applyAppBranding() {
   }
 }
 
+// Keeps the "Export as …" dropdown labels honest — they now show the actual
+// app-prefixed filename (e.g. "Export as music-playlist.js") instead of the
+// generic name, matching what confirmExport() actually writes to disk.
+function updateExportMenuLabels() {
+  const appName = getAppName();
+  const map = {
+    exportCollectionsLabel: appName + '-collections.js',
+    exportWatchedLabel: appName + '-watched.js',
+    exportPlaylistLabel: appName + '-playlist.js',
+  };
+  Object.entries(map).forEach(([id, filename]) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = 'Export as ' + filename;
+  });
+}
+
 // ──────────────────────────────────────────────
 // INIT
 // ──────────────────────────────────────────────
@@ -3839,3 +3918,4 @@ restoreExportFolder();
 renderSidebar();
 renderCards();
 renderCategorySwitcher();
+updateExportMenuLabels();

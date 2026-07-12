@@ -204,9 +204,9 @@
           </button>
           <div class="export-menu" id="exportMenu">
             <button class="export-menu-item" onclick="exportData()">Export as JSON</button>
-            <button class="export-menu-item" onclick="exportCollectionsJs()">Export as collections.js</button>
-            <button class="export-menu-item" onclick="exportWatchedJs()">Export as watched.js</button>
-            <button class="export-menu-item" onclick="exportPlaylistJs()">Export as playlist.js</button>
+            <button class="export-menu-item" onclick="exportCollectionsJs()" id="exportCollectionsLabel">Export as collections.js</button>
+            <button class="export-menu-item" onclick="exportWatchedJs()" id="exportWatchedLabel">Export as watched.js</button>
+            <button class="export-menu-item" onclick="exportPlaylistJs()" id="exportPlaylistLabel">Export as playlist.js</button>
             <div class="export-menu-divider"></div>
             <button class="export-menu-item export-menu-item-all" onclick="exportAllJs()">
               <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -240,7 +240,7 @@
     </div>
     <div class="field">
       <label>YouTube URL *</label>
-      <input type="url" id="addUrl" placeholder="https://youtube.com/watch?v=..." oninput="previewUrl();checkAddDuplicate()">
+      <input type="text" id="addUrl" placeholder="https://youtube.com/watch?v=..." oninput="previewUrl();checkAddDuplicate()" autocomplete="off" autocapitalize="off" spellcheck="false">
       <div class="field-error" id="addUrlDuplicateMsg" style="display:none;">Duplicate</div>
     </div>
     <div class="field">

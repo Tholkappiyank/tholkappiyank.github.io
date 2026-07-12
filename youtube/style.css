@@ -452,10 +452,14 @@
     cursor: pointer; transition: background 0.12s, color 0.12s;
   }
   .playlist-picker-item:hover { background: var(--surface); color: var(--text); }
-  /* checked state: bright white text + visible tick */
-  .playlist-picker-item.in-playlist { color: var(--text); }
+  /* Already-in-this-playlist state — left accent bar only (no background tint) */
+  .playlist-picker-item.in-playlist {
+    color: var(--indigo-bright);
+    border-left: 2px solid var(--indigo-bright);
+    padding-left: 6px;
+  }
   .playlist-picker-item .pp-check { color: var(--text-dim); opacity: 0.25; }
-  .playlist-picker-item.in-playlist .pp-check { color: #fff; opacity: 1; }
+  .playlist-picker-item.in-playlist .pp-check { color: var(--indigo-bright); opacity: 1; }
   .add-collection-btn {
     display: flex; align-items: center; gap: 8px;
     padding: 7px 10px; border-radius: var(--radius-sm);
@@ -915,7 +919,12 @@
     transition: border-color 0.2s;
   }
   .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--indigo); }
-  .field input.field-invalid { border-color: var(--red); }
+  .field input.field-invalid { border-color: var(--red); box-shadow: none; }
+  .field input.field-valid { border-color: var(--green); box-shadow: none; }
+  /* Suppress the browser's own native red "invalid URL" outline/glow (Firefox in
+     particular applies this by default to type="url" inputs) — we drive the
+     red/green border state ourselves via .field-invalid / .field-valid above. */
+  .field input:invalid { box-shadow: none; }
   .field-error {
     font-size: 11px;
     color: var(--red);
