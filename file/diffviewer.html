@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>diffkit — line-by-line file diff</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/tomorrow-night.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/csharp.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/css.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<style>
+
+  :root{
+    --bg:#0d1117;
+    --panel:#11161d;
+    --line:#1c2530;
+    --border:#232b36;
+    --text:#c9d1d9;
+    --dim:#6e7a89;
+    --add-bg:#0d2818;
+    --add-line:#238636;
+    --add-text:#7ee2a8;
+    --del-bg:#2a1215;
+    --del-line:#da3633;
+    --del-text:#ff9b93;
+    --mod-bg:#2a2410;
+    --mod-line:#d29922;
+    --accent:#4fa3ff;
+    --mono: 'JetBrains Mono','Fira Code',ui-monospace,'SF Mono',Consolas,monospace;
+    --sans: 'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -10%, rgba(79,163,255,0.08), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+  header{
+    padding:28px 32px 20px;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  .brand{display:flex;align-items:baseline;gap:10px;}
+  .brand .mark{
+    font-family:var(--mono);
+    font-weight:700;
+    font-size:20px;
+    color:var(--accent);
+    letter-spacing:-0.02em;
+  }
+  .brand .mark span{color:var(--dim);}
+  .brand .tag{
+    font-size:12.5px;
+    color:var(--dim);
+    font-family:var(--mono);
+  }
+  .stats{
+    display:flex;
+    gap:18px;
+    font-family:var(--mono);
+    font-size:12.5px;
+  }
+  .stats b{font-size:14px;}
+  .stats .add{color:var(--add-text);}
+  .stats .del{color:var(--del-text);}
+  .stats .mod{color:var(--mod-line);}
+
+  .status-banner{
+    display:none;
+    margin:14px 32px 0;
+    padding:10px 16px;
+    border-radius:8px;
+    font-family:var(--mono);
+    font-size:13px;
+    align-items:center;
+    gap:10px;
+  }
+  .status-banner.identical{
+    display:flex;
+    background:var(--add-bg);
+    border:1px solid var(--add-line);
+    color:var(--add-text);
+  }
+  .status-banner.different{
+    display:flex;
+    background:var(--mod-bg);
+    border:1px solid var(--mod-line);
+    color:var(--mod-line);
+  }
+
+  .uploaders{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1px;
+    background:var(--border);
+    border-bottom:1px solid var(--border);
+  }
+  .drop{
+    background:var(--panel);
+    padding:18px 24px;
+    position:relative;
+    transition:background .15s ease;
+  }
+  .drop.hover{background:#141c26;}
+  .drop-label{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--dim);
+    margin-bottom:8px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .drop-label .fname{color:var(--text);text-transform:none;letter-spacing:0;}
+  .filepath{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--accent);
+    margin-bottom:6px;
+    min-height:14px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .filepath:empty::before{
+    content:'No file loaded';
+    color:var(--dim);
+    opacity:.6;
+  }
+  .drop-zone{
+    border:1.5px dashed var(--border);
+    border-radius:8px;
+    padding:14px 16px;
+    font-size:13px;
+    color:var(--dim);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:var(--mono);
+  }
+  .drop-zone:hover{border-color:var(--accent);color:var(--text);}
+  .drop-zone input{display:none;}
+  .drop-zone svg{flex-shrink:0;opacity:.6;}
+  .folder-row{
+    margin-top:8px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .folder-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--dim);
+    cursor:pointer;
+    padding:5px 10px;
+    border:1px solid var(--border);
+    border-radius:6px;
+  }
+  .folder-btn:hover{border-color:var(--accent);color:var(--text);}
+  .folder-btn input{display:none;}
+  .folder-pick{
+    font-family:var(--mono);
+    font-size:11.5px;
+    background:var(--line);
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:5px 8px;
+    border-radius:6px;
+    max-width:260px;
+  }
+  textarea.fallback{
+    width:100%;
+    margin-top:10px;
+    height:64px;
+    background:var(--line);
+    border:1px solid var(--border);
+    border-radius:6px;
+    color:var(--text);
+    font-family:var(--mono);
+    font-size:12px;
+    padding:8px 10px;
+    resize:vertical;
+  }
+
+  .toolbar{
+    padding:12px 32px;
+    display:flex;
+    align-items:center;
+    gap:16px;
+    border-bottom:1px solid var(--border);
+    background:var(--panel);
+    flex-wrap:wrap;
+  }
+  .toolbar button{
+    font-family:var(--mono);
+    font-size:12.5px;
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--dim);
+    padding:7px 14px;
+    border-radius:6px;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .toolbar button:hover{border-color:var(--accent);color:var(--text);}
+  .toolbar button.active{background:var(--accent);border-color:var(--accent);color:#04101f;font-weight:600;}
+  .toolbar .sep{width:1px;height:20px;background:var(--border);}
+  .toolbar label.opt{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--dim);
+    display:flex;
+    align-items:center;
+    gap:6px;
+    cursor:pointer;
+  }
+  .toolbar select{
+    font-family:var(--mono);
+    font-size:12px;
+    background:var(--line);
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:6px 10px;
+    border-radius:6px;
+    cursor:pointer;
+  }
+  .toolbar .run{
+    margin-left:auto;
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#04101f;
+    font-weight:700;
+  }
+  .toolbar .run:hover{filter:brightness(1.1);}
+
+  main{flex:1;overflow:auto;}
+  .empty{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    height:100%;
+    color:var(--dim);
+    font-family:var(--mono);
+    font-size:13px;
+    gap:8px;
+    padding:60px 20px;
+    text-align:center;
+  }
+  .empty .big{font-size:15px;color:var(--text);}
+
+  table.diff{
+    width:100%;
+    border-collapse:collapse;
+    font-family:var(--mono);
+    font-size:12.5px;
+    line-height:1.6;
+  }
+  table.diff td{
+    padding:0 10px;
+    white-space:pre-wrap;
+    word-break:break-word;
+    vertical-align:top;
+    border-bottom:1px solid var(--line);
+  }
+  .gutter{
+    width:64px;
+    min-width:64px;
+    text-align:right;
+    color:var(--dim);
+    user-select:none;
+    border-right:1px solid var(--line);
+  }
+  .marker{
+    width:22px;
+    min-width:22px;
+    text-align:center;
+    user-select:none;
+    font-weight:700;
+  }
+  tr.add td.code{background:var(--add-bg);}
+  tr.add .marker{color:var(--add-line);}
+  tr.del td.code{background:var(--del-bg);}
+  tr.del .marker{color:var(--del-line);}
+  tr.mod-old td.code{background:var(--del-bg);}
+  tr.mod-old .marker{color:var(--del-line);}
+  tr.mod-new td.code{background:var(--add-bg);}
+  tr.mod-new .marker{color:var(--add-line);}
+  tr.ctx .code{color:var(--dim);}
+  tr:hover td.code{filter:brightness(1.15);}
+
+  .split-wrap{display:none;}
+  .split{display:grid;grid-template-columns:1fr 1fr;}
+  .split .pane{overflow-x:auto;}
+  .split .pane + .pane{border-left:1px solid var(--border);}
+
+  .unified-wrap table{table-layout:fixed;}
+  .unified-wrap td.code{width:auto;}
+
+  footer{
+    padding:10px 32px;
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--dim);
+    border-top:1px solid var(--border);
+  }
+  ::selection{background:rgba(79,163,255,.3);}
+
+  body.focus-mode header,
+  body.focus-mode .uploaders{
+    display:none;
+  }
+  body.focus-mode .toolbar{
+    padding:8px 20px;
+  }
+  body.focus-mode main{
+    font-size:15px;
+  }
+  #fullViewBtn.active{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#04101f;
+    font-weight:700;
+  }
+
+  .code .hljs{
+    background:transparent !important;
+    padding:0 !important;
+    display:inline;
+    font-family:inherit;
+    font-size:inherit;
+    color:inherit;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="mark">diff<span>kit</span></div>
+    <div class="tag">// line-by-line file comparison</div>
+  </div>
+  <div class="stats" id="stats" style="display:none;">
+    <div><b class="add" id="statAdd">0</b> added</div>
+    <div><b class="del" id="statDel">0</b> removed</div>
+    <div><b class="mod" id="statMod">0</b> modified</div>
+  </div>
+</header>
+<div class="status-banner" id="statusBanner"></div>
+
+<div class="uploaders">
+  <div class="drop" id="dropA">
+    <div class="filepath" id="pathA"></div>
+    <div class="drop-label"><span>File A (original)</span><span class="fname" id="nameA"></span></div>
+    <label class="drop-zone" id="zoneA">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>
+      <span>Drop a file, or click to browse</span>
+      <input type="file" id="fileA">
+    </label>
+    <div class="folder-row">
+      <label class="folder-btn" id="folderBtnA">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
+        Browse a folder (keeps relative path)
+        <input type="file" id="folderA" webkitdirectory>
+      </label>
+      <select class="folder-pick" id="pickA" style="display:none;"></select>
+    </div>
+    <textarea class="fallback" id="textA" placeholder="…or paste text here"></textarea>
+  </div>
+  <div class="drop" id="dropB">
+    <div class="filepath" id="pathB"></div>
+    <div class="drop-label"><span>File B (changed)</span><span class="fname" id="nameB"></span></div>
+    <label class="drop-zone" id="zoneB">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>
+      <span>Drop a file, or click to browse</span>
+      <input type="file" id="fileB">
+    </label>
+    <div class="folder-row">
+      <label class="folder-btn" id="folderBtnB">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
+        Browse a folder (keeps relative path)
+        <input type="file" id="folderB" webkitdirectory>
+      </label>
+      <select class="folder-pick" id="pickB" style="display:none;"></select>
+    </div>
+    <textarea class="fallback" id="textB" placeholder="…or paste text here"></textarea>
+  </div>
+</div>
+
+<div class="toolbar">
+  <button id="viewUnified" class="active">Unified</button>
+  <button id="viewSplit">Side-by-side</button>
+  <div class="sep"></div>
+  <label class="opt"><input type="checkbox" id="ignoreWs"> ignore whitespace</label>
+  <label class="opt"><input type="checkbox" id="hideCtx"> hide unchanged</label>
+  <div class="sep"></div>
+  <label class="opt" for="langSelect">syntax:</label>
+  <select id="langSelect">
+    <option value="auto">Auto-detect</option>
+    <option value="csharp">C#</option>
+    <option value="javascript">JavaScript</option>
+    <option value="css">CSS</option>
+    <option value="xml">HTML / XML</option>
+    <option value="json">JSON</option>
+    <option value="plaintext">Plain text</option>
+  </select>
+  <div class="sep"></div>
+  <button id="fullViewBtn" title="Expand to full screen">⛶ Full view</button>
+  <button class="run" id="runDiff">Compare ▸</button>
+</div>
+
+<main>
+  <div class="empty" id="emptyState">
+    <div class="big">Load two files to see the difference</div>
+    <div>Every line is compared and colored — green for added, red for removed, amber for modified.</div>
+  </div>
+  <div class="unified-wrap" id="unifiedWrap" style="display:none;">
+    <table class="diff" id="unifiedTable"></table>
+  </div>
+  <div class="split-wrap" id="splitWrap">
+    <div class="split">
+      <div class="pane"><table class="diff" id="splitTableA"></table></div>
+      <div class="pane"><table class="diff" id="splitTableB"></table></div>
+    </div>
+  </div>
+</main>
+
+<footer>Runs entirely in your browser — files never leave this page.</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+let contentA = "", contentB = "";
+let detectedLang = null; // auto-detected from filename extension
+
+const EXT_MAP = {
+  js:'javascript', jsx:'javascript', mjs:'javascript', ts:'javascript', tsx:'javascript',
+  cs:'csharp',
+  css:'css', scss:'css',
+  html:'xml', htm:'xml', xml:'xml',
+  json:'json'
+};
+
+function extToLang(filename){
+  if(!filename) return null;
+  const ext = filename.split('.').pop().toLowerCase();
+  return EXT_MAP[ext] || null;
+}
+
+function currentLang(){
+  const sel = $('langSelect').value;
+  if(sel !== 'auto') return sel;
+  return detectedLang || null; // null => let hljs auto-detect
+}
+
+function highlightLine(code, lang){
+  if(code === undefined || code === null || code === '') return '';
+  try{
+    if(lang && lang !== 'plaintext' && hljs.getLanguage(lang)){
+      return hljs.highlight(code, {language:lang}).value;
+    }
+    if(lang === 'plaintext') return esc(code);
+    // auto
+    return hljs.highlightAuto(code).value;
+  }catch(e){
+    return esc(code);
+  }
+}
+
+function resetResults(){
+  $('emptyState').style.display = 'flex';
+  $('unifiedWrap').style.display = 'none';
+  $('splitWrap').style.display = 'none';
+  $('unifiedTable').innerHTML = '';
+  $('splitTableA').innerHTML = '';
+  $('splitTableB').innerHTML = '';
+  $('stats').style.display = 'none';
+  const banner = $('statusBanner');
+  banner.className = 'status-banner';
+  banner.innerHTML = '';
+}
+
+function setupDrop(zoneId, fileInputId, textId, nameId, pathId, which){
+  const zone = $(zoneId), input = $(fileInputId), text = $(textId), nameEl = $(nameId), pathEl = $(pathId);
+  const container = zone.closest('.drop');
+  zone.addEventListener('click', e => {});
+  input.addEventListener('change', e => handleFile(e.target.files[0]));
+  container.addEventListener('dragover', e => { e.preventDefault(); container.classList.add('hover'); });
+  container.addEventListener('dragleave', () => container.classList.remove('hover'));
+  container.addEventListener('drop', e => {
+    e.preventDefault(); container.classList.remove('hover');
+    if(e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+  });
+  text.addEventListener('input', () => {
+    if(which==='A') contentA = text.value; else contentB = text.value;
+    pathEl.textContent = '';
+    nameEl.textContent = '';
+    resetResults();
+  });
+
+  // Folder browse: pick a whole folder, then choose a specific file from it
+  const folderInput = $('folder' + which);
+  const pickSelect = $('pick' + which);
+  if(folderInput){
+    folderInput.addEventListener('change', e => {
+      const files = Array.from(e.target.files || []).filter(f => !!f.webkitRelativePath);
+      if(!files.length) return;
+      pickSelect.innerHTML = '<option value="" disabled selected>Select a file from the folder…</option>' +
+        files.map((f,i) => `<option value="${i}">${f.webkitRelativePath}</option>`).join('');
+      pickSelect.style.display = 'inline-block';
+      pickSelect.onchange = () => {
+        const f = files[pickSelect.value];
+        if(f) handleFile(f, f.webkitRelativePath);
+      };
+    });
+  }
+
+  function handleFile(file, relPath){
+    if(!file) return;
+    resetResults();
+    nameEl.textContent = file.name;
+    pathEl.textContent = relPath || file.webkitRelativePath || file.name;
+    pathEl.title = pathEl.textContent;
+    const guessed = extToLang(file.name);
+    if(guessed){
+      detectedLang = guessed;
+      $('langSelect').value = 'auto';
+    }
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const val = ev.target.result;
+      if(which==='A'){ contentA = val; text.value = val; } else { contentB = val; text.value = val; }
+    };
+    reader.readAsText(file);
+  }
+}
+setupDrop('zoneA','fileA','textA','nameA','pathA','A');
+setupDrop('zoneB','fileB','textB','nameB','pathB','B');
+
+// Myers-ish LCS diff on lines
+function diffLines(a, b, ignoreWs){
+  const norm = s => ignoreWs ? s.replace(/\s+/g,' ').trim() : s;
+  const A = a.split('\n'), B = b.split('\n');
+  const nA = A.map(norm), nB = B.map(norm);
+  const n = A.length, m = B.length;
+  // LCS table
+  const dp = Array.from({length:n+1}, () => new Int32Array(m+1));
+  for(let i=n-1;i>=0;i--){
+    for(let j=m-1;j>=0;j--){
+      dp[i][j] = nA[i]===nB[j] ? dp[i+1][j+1]+1 : Math.max(dp[i+1][j], dp[i][j+1]);
+    }
+  }
+  const ops = [];
+  let i=0,j=0;
+  while(i<n && j<m){
+    if(nA[i]===nB[j]){ ops.push({t:'ctx', a:A[i], b:B[j]}); i++; j++; }
+    else if(dp[i+1][j] >= dp[i][j+1]){ ops.push({t:'del', a:A[i]}); i++; }
+    else { ops.push({t:'add', b:B[j]}); j++; }
+  }
+  while(i<n){ ops.push({t:'del', a:A[i]}); i++; }
+  while(j<m){ ops.push({t:'add', b:B[j]}); j++; }
+
+  // pair adjacent del+add runs into "mod" for nicer coloring
+  const merged = [];
+  for(let k=0;k<ops.length;k++){
+    if(ops[k].t==='del'){
+      let delRun=[], addRun=[];
+      while(k<ops.length && ops[k].t==='del'){ delRun.push(ops[k]); k++; }
+      while(k<ops.length && ops[k].t==='add'){ addRun.push(ops[k]); k++; }
+      k--;
+      const pairs = Math.min(delRun.length, addRun.length);
+      for(let p=0;p<pairs;p++) merged.push({t:'mod', a:delRun[p].a, b:addRun[p].b});
+      for(let p=pairs;p<delRun.length;p++) merged.push({t:'del', a:delRun[p].a});
+      for(let p=pairs;p<addRun.length;p++) merged.push({t:'add', b:addRun[p].b});
+    } else {
+      merged.push(ops[k]);
+    }
+  }
+  return merged;
+}
+
+function esc(s){ return (s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function render(){
+  if(!contentA && !contentB){ return; }
+  const ignoreWs = $('ignoreWs').checked;
+  const hideCtx = $('hideCtx').checked;
+  const ops = diffLines(contentA, contentB, ignoreWs);
+
+  let add=0, del=0, mod=0, ctx=0;
+  ops.forEach(o => { if(o.t==='add') add++; else if(o.t==='del') del++; else if(o.t==='mod') mod++; else ctx++; });
+  $('statAdd').textContent = add;
+  $('statDel').textContent = del;
+  $('statMod').textContent = mod;
+  $('stats').style.display = 'flex';
+
+  const isIdentical = (add===0 && del===0 && mod===0);
+  const banner = $('statusBanner');
+  const effectiveHideCtx = isIdentical ? false : hideCtx; // never hide lines when files match — user needs to see them to confirm
+  if(isIdentical){
+    banner.className = 'status-banner identical';
+    banner.innerHTML = `✓ Files are identical — all ${ctx} line${ctx===1?'':'s'} match exactly.`;
+    if(hideCtx){
+      banner.innerHTML += ` <span style="opacity:.75;">("hide unchanged" ignored so you can review every line below.)</span>`;
+    }
+  } else {
+    banner.className = 'status-banner different';
+    banner.innerHTML = `✕ Files differ — ${add} added, ${del} removed, ${mod} modified out of ${ops.length} compared lines.`;
+  }
+
+  $('emptyState').style.display = 'none';
+
+  const lang = currentLang();
+  const hl = code => highlightLine(code, lang);
+
+  // Unified view
+  let lnA=1, lnB=1, rowsU='';
+  ops.forEach(o=>{
+    if(o.t==='ctx'){
+      if(!effectiveHideCtx){
+        rowsU += `<tr class="ctx"><td class="gutter">${lnA}</td><td class="gutter">${lnB}</td><td class="marker"> </td><td class="code">${hl(o.a)}</td></tr>`;
+      }
+      lnA++; lnB++;
+    } else if(o.t==='del'){
+      rowsU += `<tr class="del"><td class="gutter">${lnA}</td><td class="gutter"></td><td class="marker">−</td><td class="code">${hl(o.a)}</td></tr>`;
+      lnA++;
+    } else if(o.t==='add'){
+      rowsU += `<tr class="add"><td class="gutter"></td><td class="gutter">${lnB}</td><td class="marker">+</td><td class="code">${hl(o.b)}</td></tr>`;
+      lnB++;
+    } else if(o.t==='mod'){
+      rowsU += `<tr class="mod-old"><td class="gutter">${lnA}</td><td class="gutter"></td><td class="marker">−</td><td class="code">${hl(o.a)}</td></tr>`;
+      rowsU += `<tr class="mod-new"><td class="gutter"></td><td class="gutter">${lnB}</td><td class="marker">+</td><td class="code">${hl(o.b)}</td></tr>`;
+      lnA++; lnB++;
+    }
+  });
+  $('unifiedTable').innerHTML = rowsU;
+
+  // Split view
+  let lnA2=1, lnB2=1, rowsA='', rowsB='';
+  ops.forEach(o=>{
+    if(o.t==='ctx'){
+      if(!effectiveHideCtx){
+        rowsA += `<tr class="ctx"><td class="gutter">${lnA2}</td><td class="marker"> </td><td class="code">${hl(o.a)}</td></tr>`;
+        rowsB += `<tr class="ctx"><td class="gutter">${lnB2}</td><td class="marker"> </td><td class="code">${hl(o.b)}</td></tr>`;
+      }
+      lnA2++; lnB2++;
+    } else if(o.t==='del'){
+      rowsA += `<tr class="del"><td class="gutter">${lnA2}</td><td class="marker">−</td><td class="code">${hl(o.a)}</td></tr>`;
+      rowsB += `<tr><td class="gutter"></td><td class="marker"></td><td class="code"></td></tr>`;
+      lnA2++;
+    } else if(o.t==='add'){
+      rowsA += `<tr><td class="gutter"></td><td class="marker"></td><td class="code"></td></tr>`;
+      rowsB += `<tr class="add"><td class="gutter">${lnB2}</td><td class="marker">+</td><td class="code">${hl(o.b)}</td></tr>`;
+      lnB2++;
+    } else if(o.t==='mod'){
+      rowsA += `<tr class="mod-old"><td class="gutter">${lnA2}</td><td class="marker">−</td><td class="code">${hl(o.a)}</td></tr>`;
+      rowsB += `<tr class="mod-new"><td class="gutter">${lnB2}</td><td class="marker">+</td><td class="code">${hl(o.b)}</td></tr>`;
+      lnA2++; lnB2++;
+    }
+  });
+  $('splitTableA').innerHTML = rowsA;
+  $('splitTableB').innerHTML = rowsB;
+}
+
+$('langSelect').addEventListener('change', render);
+
+$('runDiff').addEventListener('click', render);
+$('ignoreWs').addEventListener('change', render);
+$('hideCtx').addEventListener('change', render);
+
+$('viewUnified').addEventListener('click', () => {
+  $('viewUnified').classList.add('active');
+  $('viewSplit').classList.remove('active');
+  $('unifiedWrap').style.display = 'block';
+  $('splitWrap').style.display = 'none';
+});
+function activateSplitView(){
+  $('viewSplit').classList.add('active');
+  $('viewUnified').classList.remove('active');
+  $('splitWrap').style.display = 'block';
+  $('unifiedWrap').style.display = 'none';
+}
+$('viewSplit').addEventListener('click', activateSplitView);
+
+$('fullViewBtn').addEventListener('click', () => {
+  const active = document.body.classList.toggle('focus-mode');
+  $('fullViewBtn').classList.toggle('active', active);
+  $('fullViewBtn').textContent = active ? '⛶ Exit full view' : '⛶ Full view';
+  if(active){
+    // Full view always shows both files line-by-line, side by side —
+    // run a comparison first if one hasn't happened yet.
+    if(!$('stats') || $('stats').style.display === 'none'){
+      if(contentA || contentB) render();
+    }
+    activateSplitView();
+  }
+  // Also try the browser Fullscreen API for an even bigger canvas, where allowed.
+  if(active && document.documentElement.requestFullscreen){
+    document.documentElement.requestFullscreen().catch(()=>{});
+  } else if(!active && document.fullscreenElement){
+    document.exitFullscreen().catch(()=>{});
+  }
+});
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape' && document.body.classList.contains('focus-mode')){
+    document.body.classList.remove('focus-mode');
+    $('fullViewBtn').classList.remove('active');
+    $('fullViewBtn').textContent = '⛶ Full view';
+  }
+});
+</script>
+</body>
+</html>
