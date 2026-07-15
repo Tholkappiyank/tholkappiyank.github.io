@@ -226,7 +226,19 @@
     position: relative; overflow: hidden; min-width: 0;
   }
   .sidebar-item:hover { background: var(--surface); color: var(--text); }
-  .sidebar-item.active { background: var(--indigo-glow); color: var(--indigo-bright); }
+  /* Selected item uses the normal (non-selected) style; selection is shown by the tick at the start */
+  .sidebar-item.active { color: var(--text-muted); }
+  /* Tick mark shown at the start of the selected item — absolutely positioned in the same
+     left slot as the drag handle so it never shifts the dot/name alignment */
+  .selected-tick {
+    position: absolute; left: 5px; top: 50%; transform: translateY(-50%);
+    color: var(--indigo-bright);
+    display: none; align-items: center;
+    z-index: 2; pointer-events: none;
+  }
+  .sidebar-item.active .selected-tick { display: flex; }
+  /* on hover of a draggable selected item, swap the tick for the drag handle */
+  .sidebar-item.draggable.active:hover .selected-tick { display: none; }
   /* SVG icons in library items — fixed 14px slot so text aligns with collection items */
   .sidebar-item > svg { width: 14px; height: 14px; flex-shrink: 0; }
   /* collection color — circle, same 14px as icon slot */
@@ -259,15 +271,8 @@
   }
   /* zero-count: hide the circle but keep space so layout doesn't shift */
   .sidebar-item .count.count-empty { visibility: hidden; }
-  .sidebar-item.active .count {
-    background: rgba(92,107,192,0.3);
-    color: var(--indigo-bright);
-    border-color: rgba(92,107,192,0.4);
-    opacity: 0.9;
-  }
-  /* hide count on hover, and whenever the item is active — action buttons take its place instead */
+  /* hide count on hover — action buttons take its place instead */
   .sidebar-item:hover .count { visibility: hidden; }
-  .sidebar-item.active .count { visibility: hidden; }
   .sidebar-divider {
     height: 1px; background: var(--border-subtle); margin: 6px 16px 9px;
   }
@@ -934,7 +939,7 @@
     right: 8px; top: 50%; transform: translateY(-50%);
   }
   .sidebar-item:hover .col-actions { opacity: 1; }
-  .sidebar-item.active .col-actions { opacity: 1; }
+
   /* hide count circle on hover — show action buttons instead (use visibility to avoid layout shift) */
   .col-action-btn {
     background: transparent; border: none;

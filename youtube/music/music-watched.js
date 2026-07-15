@@ -1,19 +1,22 @@
 // --------------------------------------------------------------
 // WATCHED HISTORY
-// Exported from TubeVault on 7/15/2026, 11:41:51 AM
+// Exported from TubeVault on 7/15/2026, 10:32:02 PM
 //
 // WATCHED_VIDEO_IDS: YouTube video IDs marked as watched.
 // To restore: replace music-watched.js with this file and clear localStorage.
 // --------------------------------------------------------------
 
 const WATCHED_VIDEO_IDS = [
+  'UH3bfZ6Rb9E', // Persian & Spanish Fusion Relaxing Music 4K | Persian Gulf & 
+  'hUfuDyhxHT8', // Persian Trance 🌙 Mystical Middle Eastern Deep Trance Mix fo
+  'MgWrkGfDn-o', // Azhagiya Asura 4K Song | Whistle Movie Songs | D. Imman | Vi
+  '4deZ7o3zfmI', // Idhayam | Once More |Arjun Das,Aditi Shankar |Hesham Abdul W
+  '6B2jvf81LxE', // Pirai Thedum Iravilae Tamil Video Song | Mayakkam Enna | G.V
   'lZORMUufA_Y', // 3 - Idhazhin Oram Video | Dhanush, Shruti | Anirudh
   'Bm9lLpmPM0A', // Pattampoochi Lyric Video | Vishwanath and Sons | Suriya, Mam
   'dR9B_gPxjkk', // Kiliye Kiliye - Video Song | Lokah Chapter 1: Chandra | Kaly
   'PjT12Ce0Kw8', // Mukkala Mukkabala Video Song | Kadhalan Movie Songs | Prabhu
-  '8eYG5QGZAZs', // Jawan: Hayyoda (Tamil) | Shahrukh Khan | Atlee | Anirudh | N
   'mNcmezwxWTI', // Thottu Thottu Pesum Sulthana Song | Ethirum Puthirum (1999) 
-  'U1JLtpJTe84', // Vazhithunaiye - Video Song | Dragon | Pradeep Ranganathan, K
   'Hho8U12gf1Y', // Kadhalikka Neramillai - Yennai Izhukkuthadi Video | Feat. AR
   'paDG3S3UmQM', // Don - Private Party Music Video | Sivakarthikeyan, Priyanka 
   'jZEA2mMwL1k', // Mutta Kalakki Music Video | Youth | Ken Karunaas | Suraj Ven
@@ -51,6 +54,7 @@ const WATCHED_VIDEO_IDS = [
   'MTKBYTaMHvY', // Germaniyin Senthen Malare
   'vIDl1E26FpU', // Azhagu Aayiram
   '5ATSSUZuZNY', // Paruvame Puthiya Paadal Paadu
+  '8eYG5QGZAZs', // Jawan: Hayyoda (Tamil) | Shahrukh Khan | Atlee | Anirudh | N
+  'U1JLtpJTe84', // Vazhithunaiye - Video Song | Dragon | Pradeep Ranganathan, K
   'bWlsbVfEnII', // Naanayam - Naan Pogiren Video | Prasanna, Sibi Raj | James V
-  '4deZ7o3zfmI', // Idhayam | Once More |Arjun Das,Aditi Shankar |Hesham Abdul W
 ];
