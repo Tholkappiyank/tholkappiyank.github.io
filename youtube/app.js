@@ -473,11 +473,6 @@ function getFilteredVideos() {
   if (currentFilter === 'all') { /* all */ }
   else if (currentFilter === 'recent') { vids = vids.filter(v => now - v.added < 7*24*3600*1000); }
   else if (currentFilter === 'watched') { vids = vids.filter(v => v.watched); }
-  else if (currentFilter.startsWith('playlist:')) {
-    const plId = currentFilter.slice(9);
-    const pl = state.playlists.find(p => p.id === plId);
-    vids = pl ? vids.filter(v => pl.videoIds.includes(v.id)) : [];
-  }
   else { vids = vids.filter(v => v.collection === currentFilter); }
 
   if (searchQuery) {
@@ -685,12 +680,11 @@ function renderGroupedByTitle(vids, colId, colColor, nested = false, expanded = 
 
 function renderCard(v) {
   const col = state.collections.find(c => c.id === v.collection);
-  const isPlaylistView = currentFilter.startsWith('playlist:');
   // In single-collection view, don't show the collection tag — group header handles it
-  const showColTag = currentFilter === 'all' || currentFilter === 'recent' || currentFilter === 'watched' || isPlaylistView;
+  const showColTag = currentFilter === 'all' || currentFilter === 'recent' || currentFilter === 'watched';
   // Build breadcrumb: Collection / Group
   const colPath = col ? (v.group ? `${col.name} / ${v.group}` : col.name) : (v.collection ? '' : (v.group ? v.group : ''));
-  const colTag = (showColTag && colPath) ? `<span class="card-collection-tag" title="${colPath}"><span class="tag-dot" style="background:${col ? col.color : 'var(--text-dim)'}"></span>${colPath}</span>` : '';
+  const colTag = (showColTag && colPath) ? `<span class="card-collection-tag" title="${escHtml(colPath)}"><span class="tag-dot" style="background:${col ? col.color : 'var(--text-dim)'}"></span>${escHtml(colPath)}</span>` : '';
   const noteHtml = v.note ? `<div class="card-note" id="note-text-${v.id}">${escHtml(v.note)}</div>` : '';
   const watchedStyle = v.watched ? 'opacity:0.6;' : '';
 
@@ -743,9 +737,6 @@ function renderCard(v) {
             <line x1="3" y1="18" x2="3.01" y2="18"/>
           </svg>
         </button>
-        ${isPlaylistView ? `<button class="card-action-btn danger" onclick="removeFromCurrentPlaylist('${v.id}')" title="Remove from playlist">
-          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>` : ''}
         <button class="card-action-btn danger" onclick="deleteVideo('${v.id}')" title="Delete video">
           <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
         </button>
@@ -889,15 +880,7 @@ function filterByCollection(id, btn) {
 
   currentFilter = id;
   const titles = { all: 'All Videos', recent: 'Recently Added', watched: 'Watched' };
-  const playBtn = document.getElementById('playPlaylistBtn');
-  if (titles[id]) {
-    document.getElementById('sectionTitle').textContent = titles[id];
-    if (playBtn) playBtn.style.display = 'none';
-  } else {
-    const col = state.collections.find(c => c.id === id);
-    document.getElementById('sectionTitle').textContent = col ? col.name : 'Collection';
-    if (playBtn) playBtn.style.display = 'none';
-  }
+  document.getElementById('sectionTitle').textContent = titles[id] || (state.collections.find(c => c.id === id)?.name || 'Collection');
   renderCards();
 }
 
@@ -928,9 +911,10 @@ async function quickAdd() {
   const col = state.collections.find(c => c.id === colId);
   const group = state.lastUsedGroup || '';
 
-  const existing = state.videos.find(v => v.videoId === videoId && (v.collection || '') === (colId || '') && (v.group || '') === (group || ''));
+  const existing = state.videos.find(v => v.videoId === videoId);
   if (existing) {
-    const location = col ? (group ? `${col.name} / ${group}` : col.name) : (group || 'Uncollected');
+    const existingCol = state.collections.find(c => c.id === existing.collection);
+    const location = existingCol ? (existing.group ? `${existingCol.name} / ${existing.group}` : existingCol.name) : (existing.group || 'Uncollected');
     const title = existing.title || 'Untitled';
     showConfirm('Duplicate Found', `"${title}" already exists in "${location}".`, 'OK', null);
     return;
@@ -1470,12 +1454,6 @@ function removeVideoFromPlaylist(videoId, playlistId) {
   showToast(`✓ Removed from "${pl.name}"`);
 }
 
-function removeFromCurrentPlaylist(videoId) {
-  if (!currentFilter.startsWith('playlist:')) return;
-  const plId = currentFilter.slice(9);
-  removeVideoFromPlaylist(videoId, plId);
-}
-
 // Shows a playlist picker to add all videos in a GROUP to a chosen playlist
 function openGroupPlaylistPicker(e, colId, groupName) {
   e.stopPropagation();
@@ -1839,7 +1817,7 @@ function exportData() {
 // Exports the current collections + videos as a ready-to-paste
 // collections.js file, nested as collection -> groups -> videos
 // (matching the structure of the bundled collections.js).
-function exportCollectionsJs() {
+function buildCollectionsJsExport() {
   const colorsBlock = `const COLLECTION_COLORS = [\n` +
     chunk(COLLECTION_COLORS, 4).map(row => `  ${row.map(c => jsStr(c)).join(', ')}`).join(',\n') +
     `\n];`;
@@ -1993,16 +1971,24 @@ ${collectionsBlock}
     return detail;
   }).join('\n\n');
 
+  return { fileName, fileContents, details: colDetails };
+}
+
+function doExportCollectionsJs() {
+  const { fileName, fileContents } = buildCollectionsJsExport();
+  saveToFolderOrDownload(fileName, fileContents, 'text/javascript').then(saved => {
+    showToast(saved ? ('✓ Saved ' + fileName + ' to folder') : ('✓ Exported as ' + fileName));
+  });
+}
+
+function exportCollectionsJs() {
   closeExportMenu();
+  const { fileName, details } = buildCollectionsJsExport();
   showExportConfirm(
     'Export Collections',
     'Export your collections and videos as a JavaScript file.',
-    'File: ' + fileName + '\nContains: ' + state.collections.length + ' collection(s), ' + state.videos.length + ' video(s)' + (colDetails ? '\n\n' + colDetails : ''),
-    () => {
-      saveToFolderOrDownload(fileName, fileContents, 'text/javascript').then(saved => {
-        showToast(saved ? ('✓ Saved ' + fileName + ' to folder') : ('✓ Exported as ' + fileName));
-      });
-    }
+    'File: ' + fileName + '\nContains: ' + state.collections.length + ' collection(s), ' + state.videos.length + ' video(s)' + (details ? '\n\n' + details : ''),
+    () => doExportCollectionsJs()
   );
 }
 
@@ -2018,7 +2004,7 @@ function jsStr(str) {
   return "'" + String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n') + "'";
 }
 
-function exportWatchedJs() {
+function buildWatchedJsExport() {
   // Collect unique YouTube videoIds of all watched videos
   const watchedVideoIds = [...new Set(
     state.videos.filter(v => v.watched && v.videoId).map(v => v.videoId)
@@ -2056,22 +2042,30 @@ function exportWatchedJs() {
   '];\n';
 
   const n = watchedVideoIds.length;
+  return { fileName, fileContents, n: n };
+}
+
+function doExportWatchedJs() {
+  const exp = buildWatchedJsExport();
+  saveToFolderOrDownload(exp.fileName, exp.fileContents, 'text/javascript').then(saved => {
+    const dest = saved ? ('to folder') : ('as ' + exp.fileName);
+    if (exp.n === 0) showToast('\u26a0\ufe0f No watched videos — exported empty ' + exp.fileName);
+    else showToast('\u2713 Saved ' + exp.n + ' watched video' + (exp.n !== 1 ? 's' : '') + ' ' + dest);
+  });
+}
+
+function exportWatchedJs() {
   closeExportMenu();
+  const exp = buildWatchedJsExport();
   showExportConfirm(
     'Export Watched',
     'Export your watched video history as a JavaScript file.',
-    'File: ' + fileName + '\nContains: ' + n + ' watched video(s)',
-    () => {
-      saveToFolderOrDownload(fileName, fileContents, 'text/javascript').then(saved => {
-        const dest = saved ? ('to folder') : ('as ' + fileName);
-        if (n === 0) showToast('\u26a0\ufe0f No watched videos — exported empty ' + fileName);
-        else showToast('\u2713 Saved ' + n + ' watched video' + (n !== 1 ? 's' : '') + ' ' + dest);
-      });
-    }
+    'File: ' + exp.fileName + '\nContains: ' + exp.n + ' watched video(s)',
+    () => doExportWatchedJs()
   );
 }
 
-function exportPlaylistJs() {
+function buildPlaylistJsExport() {
   const SEP = '// ' + '-'.repeat(62);
 
   const blocks = state.playlists.map(function(pl) {
@@ -2122,16 +2116,24 @@ function exportPlaylistJs() {
   const n = state.playlists.length;
   const totalVideos = state.playlists.reduce((sum, pl) => sum + pl.videoIds.length, 0);
   const playlistDetails = state.playlists.map(pl => '• ' + pl.name + ' (' + pl.videoIds.length + ' videos)').join('\n');
+  return { fileName, fileContents, details: playlistDetails, n: n, totalVideos: totalVideos };
+}
+
+function doExportPlaylistJs() {
+  const exp = buildPlaylistJsExport();
+  saveToFolderOrDownload(exp.fileName, exp.fileContents, 'text/javascript').then(saved => {
+    showToast('\u2713 ' + (saved ? 'Saved' : 'Exported') + ' ' + exp.n + ' playlist' + (exp.n !== 1 ? 's' : '') + ' ' + (saved ? 'to folder' : ('as ' + exp.fileName)));
+  });
+}
+
+function exportPlaylistJs() {
   closeExportMenu();
+  const exp = buildPlaylistJsExport();
   showExportConfirm(
     'Export Playlists',
     'Export your playlists as a JavaScript file.',
-    'File: ' + fileName + '\n\nPlaylists: ' + n + '\nTotal videos: ' + totalVideos + '\n\n' + playlistDetails,
-    () => {
-      saveToFolderOrDownload(fileName, fileContents, 'text/javascript').then(saved => {
-        showToast('\u2713 ' + (saved ? 'Saved' : 'Exported') + ' ' + n + ' playlist' + (n !== 1 ? 's' : '') + ' ' + (saved ? 'to folder' : ('as ' + fileName)));
-      });
-    }
+    'File: ' + exp.fileName + '\n\nPlaylists: ' + exp.n + '\nTotal videos: ' + exp.totalVideos + '\n\n' + exp.details,
+    () => doExportPlaylistJs()
   );
 }
 
@@ -2148,9 +2150,9 @@ function exportAllJs() {
     'Export all configuration files as JavaScript.',
     'Files: ' + names.collections + ', ' + names.playlist + ', ' + names.watched,
     () => {
-      exportCollectionsJs();
-      setTimeout(function() { exportPlaylistJs(); }, 300);
-      setTimeout(function() { exportWatchedJs(); }, 600);
+      doExportCollectionsJs();
+      setTimeout(doExportPlaylistJs, 300);
+      setTimeout(doExportWatchedJs, 600);
       setTimeout(function() {
         const dest = exportFolderHandle ? 'to folder' : 'as downloads';
         showToast('\u2713 Exported ' + names.collections + ', ' + names.playlist + ' & ' + names.watched + ' ' + dest);
@@ -2901,132 +2903,9 @@ function closePvView(restoreAll) {
   ) || document.querySelectorAll('.sidebar-item')[0];
   if (allBtn) allBtn.classList.add('active');
   document.getElementById('sectionTitle').textContent = 'All Videos';
-  const playBtn = document.getElementById('playPlaylistBtn');
-  if (playBtn) playBtn.style.display = 'none';
   renderCards();
 }
 
-// ──────────────────────────────────────────────
-// PLAYLIST PLAYER
-let playlistPlayer = {
-  active: false,
-  plId: null,
-  order: [],    // array of video IDs in play order
-  index: 0,     // current position in order
-  mode: 'sequential', // 'sequential' | 'random'
-};
-
-function startPlaylistPlayer() {
-  if (!currentFilter.startsWith('playlist:')) return;
-  const plId = currentFilter.slice(9);
-  const pl = state.playlists.find(p => p.id === plId);
-  if (!pl || !pl.videoIds.length) { showToast('⚠️ Playlist is empty'); return; }
-
-  playlistPlayer.plId = plId;
-  playlistPlayer.active = true;
-  playlistPlayer.mode = playlistPlayer.mode || 'sequential';
-  buildPlayOrder(pl);
-  playlistPlayer.index = 0;
-  updatePlayerBar();
-  openCurrentPlaylistVideo();
-}
-
-function buildPlayOrder(pl) {
-  const ids = [...pl.videoIds];
-  if (playlistPlayer.mode === 'random') {
-    // Fisher-Yates shuffle
-    for (let i = ids.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [ids[i], ids[j]] = [ids[j], ids[i]];
-    }
-  }
-  playlistPlayer.order = ids;
-}
-
-function openCurrentPlaylistVideo() {
-  const order = playlistPlayer.order;
-  if (!order.length) return;
-  const idx = Math.max(0, Math.min(playlistPlayer.index, order.length - 1));
-  playlistPlayer.index = idx;
-  const vid = state.videos.find(v => v.id === order[idx]);
-  if (!vid) { playlistStep(1); return; } // skip deleted videos
-  markWatched(vid.id);
-  window.open(getWatchUrl(vid.videoId, vid.playlistId), '_blank');
-  updatePlayerBar();
-  // Highlight the current card
-  document.querySelectorAll('.video-card').forEach(el => el.classList.remove('pp-active'));
-  const card = document.getElementById('card-' + vid.id);
-  if (card) {
-    card.classList.add('pp-active');
-    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-}
-
-function playlistStep(dir) {
-  const order = playlistPlayer.order;
-  if (!order.length) return;
-  let next = playlistPlayer.index + dir;
-  if (next < 0) next = order.length - 1;
-  if (next >= order.length) next = 0;
-  playlistPlayer.index = next;
-  openCurrentPlaylistVideo();
-}
-
-function setPlaylistMode(mode) {
-  if (playlistPlayer.mode === mode) return;
-  playlistPlayer.mode = mode;
-  const pl = state.playlists.find(p => p.id === playlistPlayer.plId);
-  if (pl) buildPlayOrder(pl);
-  playlistPlayer.index = 0;
-  updatePlayerBar();
-  showToast(mode === 'random' ? '🔀 Random play on' : '➡️ Sequential play on');
-}
-
-function updatePlayerBar() {
-  const bar = document.getElementById('playlistPlayerBar');
-  if (!bar) return;
-  const pl = state.playlists.find(p => p.id === playlistPlayer.plId);
-  if (!pl || !playlistPlayer.active) {
-    bar.style.display = 'none';
-    document.querySelector('.main')?.classList.remove('has-player-bar');
-    return;
-  }
-
-  bar.style.display = 'flex';
-  document.querySelector('.main')?.classList.add('has-player-bar');
-
-  // Playlist name + dot
-  document.getElementById('ppbName').textContent = pl.name;
-  document.getElementById('ppbDot').style.background = pl.color || '#78909C';
-
-  // Current video title
-  const order = playlistPlayer.order;
-  const idx = playlistPlayer.index;
-  const currentVid = order.length ? state.videos.find(v => v.id === order[idx]) : null;
-  const titleEl = document.getElementById('ppbVideoTitle');
-  if (titleEl) titleEl.textContent = currentVid ? (currentVid.title || currentVid.url || '—') : '—';
-
-  // Counter: current / total
-  document.getElementById('ppbTrack').textContent = order.length
-    ? `${idx + 1} / ${order.length}`
-    : '0 / 0';
-
-  // Mode buttons — toggle active class
-  const seqBtn = document.getElementById('ppbSeqBtn');
-  const rndBtn = document.getElementById('ppbRndBtn');
-  if (seqBtn && rndBtn) {
-    seqBtn.classList.toggle('active', playlistPlayer.mode === 'sequential');
-    rndBtn.classList.toggle('active', playlistPlayer.mode === 'random');
-  }
-}
-
-function closePlaylistPlayer() {
-  playlistPlayer.active = false;
-  document.querySelectorAll('.video-card').forEach(el => el.classList.remove('pp-active'));
-  const bar = document.getElementById('playlistPlayerBar');
-  if (bar) bar.style.display = 'none';
-  document.querySelector('.main')?.classList.remove('has-player-bar');
-}
 
 // ──────────────────────────────────────────────
 // CATEGORY SWITCHER (sidebar-bottom text menu)

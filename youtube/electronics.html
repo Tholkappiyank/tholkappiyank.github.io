@@ -183,10 +183,6 @@
     <div class="section-header">
       <span class="section-title" id="sectionTitle">All Videos</span>
       <span class="section-count" id="sectionCount">0 videos</span>
-      <button class="btn btn-primary" id="playPlaylistBtn" onclick="startPlaylistPlayer()" style="display:none;padding:5px 12px;font-size:12px;gap:6px;">
-        <svg width="11" height="11" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        Play
-      </button>
       <div class="section-header-right">
         <!-- Export folder location label -->
         <div class="export-location-wrap" id="exportLocationWrap" style="display:none;">
@@ -457,71 +453,6 @@
   </div>
 </div>
 
-<!-- PLAYLIST PLAYER BAR -->
-<div class="playlist-player-bar" id="playlistPlayerBar" style="display:none;">
-
-  <!-- Left: playlist name + current video info -->
-  <div class="ppb-left">
-    <span class="ppb-dot" id="ppbDot"></span>
-    <div class="ppb-info">
-      <span class="ppb-playlist-name" id="ppbName">Playlist</span>
-      <span class="ppb-video-title" id="ppbVideoTitle">—</span>
-    </div>
-  </div>
-
-  <!-- Centre: mode selectors + playback controls -->
-  <div class="ppb-centre">
-    <!-- Mode group -->
-    <div class="ppb-mode-group">
-      <!-- Sequential -->
-      <button class="ppb-mode-btn active" id="ppbSeqBtn" onclick="setPlaylistMode('sequential')" title="Sequential — play in order">
-        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <line x1="5" y1="12" x2="19" y2="12"/>
-          <polyline points="15 8 19 12 15 16"/>
-        </svg>
-        <span>Sequential</span>
-      </button>
-      <!-- Random -->
-      <button class="ppb-mode-btn" id="ppbRndBtn" onclick="setPlaylistMode('random')" title="Random — shuffle order">
-        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <polyline points="16 3 21 3 21 8"/>
-          <line x1="4" y1="20" x2="21" y2="3"/>
-          <polyline points="21 16 21 21 16 21"/>
-          <line x1="15" y1="15" x2="21" y2="21"/>
-        </svg>
-        <span>Random</span>
-      </button>
-    </div>
-
-    <!-- Playback controls -->
-    <div class="ppb-controls">
-      <button class="ppb-btn" onclick="playlistStep(-1)" title="Previous">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/>
-        </svg>
-      </button>
-      <button class="ppb-btn ppb-play" onclick="openCurrentPlaylistVideo()" title="Open in YouTube">
-        <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-      </button>
-      <button class="ppb-btn" onclick="playlistStep(1)" title="Next">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/>
-        </svg>
-      </button>
-    </div>
-  </div>
-
-  <!-- Right: counter + close -->
-  <div class="ppb-right">
-    <span class="ppb-track" id="ppbTrack">1 / 5</span>
-    <button class="ppb-btn ppb-close" onclick="closePlaylistPlayer()" title="Stop playlist">
-      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-      </svg>
-    </button>
-  </div>
-
-</div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
