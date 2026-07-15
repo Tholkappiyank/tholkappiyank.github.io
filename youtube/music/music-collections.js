@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
-// Exported from TubeVault on 01/07/2026, 21:32:34
+// Exported from TubeVault on 7/15/2026, 11:41:45 AM
 //
 // STRUCTURE — easy to browse/edit in any JSON editor:
 //   DEFAULT_COLLECTIONS
@@ -9,7 +9,7 @@
 //          └─ ungrouped: [ ...videos ]   (videos with no sub-group)
 //
 // To apply this snapshot:
-//   1. Replace your existing collections.js with this file
+//   1. Replace your existing music-collections.js with this file
 //   2. Clear the app's localStorage (or open in a private window)
 //      so the new defaults are picked up on next load
 // ──────────────────────────────────────────────────────────────
@@ -39,6 +39,74 @@ const DEFAULT_COLLECTIONS = [
     name: 'Music',
     color: '#EC407A',
     groups: {
+      'Humming': [
+        {
+          url: 'https://www.youtube.com/watch?v=hUfuDyhxHT8&list=RDhUfuDyhxHT8&start_radio=1&t=5409s',
+          videoId: 'hUfuDyhxHT8',
+          playlistId: 'RDhUfuDyhxHT8',
+          title: 'Persian Trance 🌙 Mystical Middle Eastern Deep Trance Mix for Work, Study & Meditation',
+          channel: 'Persian Focus Temple',
+          note: ''
+        },
+      ],
+      'Daily Routine - Melody': [
+        {
+          url: 'https://www.youtube.com/watch?v=MgWrkGfDn-o&list=RDWOxan-rN4Cw&index=13',
+          videoId: 'MgWrkGfDn-o',
+          playlistId: 'RDWOxan-rN4Cw',
+          title: 'Azhagiya Asura 4K Song | Whistle Movie Songs | D. Imman | Vikramaditya | Sherin | Gayathri Raguram',
+          channel: 'API Tamil Songs',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=4deZ7o3zfmI&list=RDWOxan-rN4Cw&index=12',
+          videoId: '4deZ7o3zfmI',
+          playlistId: 'RDWOxan-rN4Cw',
+          title: 'Idhayam | Once More |Arjun Das,Aditi Shankar |Hesham Abdul Wahab |Vineeth |Vignesh Srikanth |Yuvaraj',
+          channel: 'Think Music India',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=6B2jvf81LxE&list=RDWOxan-rN4Cw&index=5',
+          videoId: '6B2jvf81LxE',
+          playlistId: 'RDWOxan-rN4Cw',
+          title: 'Pirai Thedum Iravilae Tamil Video Song | Mayakkam Enna | G.V. Prakash | Dhanush, Richa',
+          channel: 'Rajshri Tamil',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=bWlsbVfEnII&list=RDWOxan-rN4Cw&index=4',
+          videoId: 'bWlsbVfEnII',
+          playlistId: 'RDWOxan-rN4Cw',
+          title: 'Naanayam - Naan Pogiren Video | Prasanna, Sibi Raj | James Vasanthan',
+          channel: 'SonyMusicSouthVEVO',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=xIO4LFjl1SI&list=RDWOxan-rN4Cw&index=3',
+          videoId: 'xIO4LFjl1SI',
+          playlistId: 'RDWOxan-rN4Cw',
+          title: 'Nenjukkule Official Full Song - Kadal - AR Rahman',
+          channel: 'Sony Music India',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=pVkDZueTBpY&list=RDWOxan-rN4Cw&index=2',
+          videoId: 'pVkDZueTBpY',
+          playlistId: 'RDWOxan-rN4Cw',
+          title: 'Maragatha Naanayam | Nee Kavithaigala Song with Lyrics | Aadhi, Nikki Galrani | Dhibu Ninan Thomas',
+          channel: 'Think Music India',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=WOxan-rN4Cw&list=RDWOxan-rN4Cw&start_radio=1',
+          videoId: 'WOxan-rN4Cw',
+          playlistId: 'RDWOxan-rN4Cw',
+          title: 'Kandaangi Kandaangi - Video Song | 4K | Jilla Movie | Vijay | Kajal Agarwal | D.Imman | Star Music',
+          channel: 'Star Music India',
+          note: ''
+        },
+      ],
       'Daily Routine': [
         {
           url: 'https://www.youtube.com/watch?v=lZORMUufA_Y&list=RDlZORMUufA_Y&start_radio=1',
@@ -113,26 +181,10 @@ const DEFAULT_COLLECTIONS = [
           note: ''
         },
         {
-          url: 'https://www.youtube.com/watch?v=bWlsbVfEnII&list=RDjZEA2mMwL1k&index=11',
-          videoId: 'bWlsbVfEnII',
-          playlistId: 'RDjZEA2mMwL1k',
-          title: 'Naanayam - Naan Pogiren Video | Prasanna, Sibi Raj | James Vasanthan',
-          channel: 'SonyMusicSouthVEVO',
-          note: ''
-        },
-        {
           url: 'https://www.youtube.com/watch?v=paDG3S3UmQM',
           videoId: 'paDG3S3UmQM',
           title: 'Don - Private Party Music Video | Sivakarthikeyan, Priyanka Mohan | Anirudh | Jonita Gandhi | Cibi',
           channel: 'Sony Music South',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=4deZ7o3zfmI&list=RDjZEA2mMwL1k&index=2',
-          videoId: '4deZ7o3zfmI',
-          playlistId: 'RDjZEA2mMwL1k',
-          title: 'Idhayam | Once More |Arjun Das,Aditi Shankar |Hesham Abdul Wahab |Vineeth |Vignesh Srikanth |Yuvaraj',
-          channel: 'Think Music India',
           note: ''
         },
         {

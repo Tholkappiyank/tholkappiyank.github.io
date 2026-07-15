@@ -1,9 +1,9 @@
 // --------------------------------------------------------------
 // PLAYLIST CONFIG
-// Exported from TubeVault on 01/07/2026, 21:32:50
+// Exported from TubeVault on 7/15/2026, 11:41:57 AM
 //
 // Each playlist: id, name, color, videoIds, videos (full details)
-// To apply as defaults: replace playlist.js and clear localStorage.
+// To apply as defaults: replace music-playlist.js and clear localStorage.
 // --------------------------------------------------------------
 
 const DEFAULT_PLAYLISTS = [
@@ -11,7 +11,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mqq9bpw24iah',
     name: 'Veena',
     color: '#26A69A',
-    videoIds: ['mr1uzf6nmx21', 'mr1uzf6n00ux', 'mr1uzf6n5mwp', 'mr1uzf6ni55l', 'mr1uzf6npzma', 'mr1uzf6njd67', 'mr1uzf6n8a2p', 'mr1uzf6nfiif', 'mr1uzf6n77i5', 'mr1uzf6nkr6o', 'mr1uzf6nlhfy', 'mr1uzf6ny5ls', 'mr1uzf6nmwwc', 'mr1uzf6nc7lm', 'mr1uzf6nrzy3', 'mr1uzf6nqw31', 'mr1uzf6n1l4o', 'mr1uzf6n6jko', 'mr1uzf6nefsy', 'mr1uzf6nu8ha', 'mr1uzf6nwtg7', 'mr1uzf6nldew', 'mr1uzf6nsn7j'],
+    videoIds: ['mrkeji70ynz7', 'mrkeji700r9r', 'mrkeji70bmr2', 'mrkeji70lik1', 'mrkeji70zoh3', 'mrkeji70yzr7', 'mrkeji7061tz', 'mrkeji70l1wy', 'mrkeji708pby', 'mrkeji70t2tl', 'mrkeji703lmt', 'mrkeji70eai1', 'mrkeji70g6bu', 'mrkeji70e1w3', 'mrkeji70a6rp', 'mrkeji70irpk', 'mrkeji70q6ln', 'mrkeji70kvqq', 'mrkeji70w51s', 'mrkeji70zwip', 'mrkeji70tp8j', 'mrkeji70wsi5', 'mrkeji70pxjv'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=vIDl1E26FpU&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=2',
@@ -225,7 +225,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mr22a2y3jmrh',
     name: 'Daily Routine',
     color: '#AB47BC',
-    videoIds: ['mr226c570497', 'mr224sg1gvs7', 'mr220rrpfl53', 'mr21rutepflu', 'mr20uyztixjo', 'mr20o9rzyjjd', 'mr20hngmoprv', 'mr1zxdpyubj7', 'mr1zt1kdwzef', 'mr1zqxnbldw9', 'mr22c6agmk0h', 'mr22h2t68erg', 'mr28e4d2dwzf', 'mr285oitm09y', 'mr27wd3qduh4', 'mr27vjdxhh5r', 'mr27ubbcvg8a', 'mr27u4it166u', 'mr27sy80b43z', 'mr27sdcz88dc', 'mr25ffquayyv', 'mr22lby8m5zb', 'mr22kzmoe2ok', 'mr29ke4sp1em'],
+    videoIds: ['mrkeji70bgaq', 'mrkeji70kwp3', 'mrkeji70f3vn', 'mrkeji70p10i', 'mrkeji703rc4', 'mrkeji70qxbv', 'mrkeji70njmk', 'mrkeji70y43v', 'mrkeji70u984', 'mrkeji708rxo', 'mrkeji70p6pd', 'mrkeji70nbcf', 'mrkeji70tdr6', 'mrkeji70z34r', 'mrkeji70hfkt', 'mrkeji702vn8', 'mrkeji70lpgw', 'mrkeji701s84', 'mrkeji70maf2', 'mrkeji70z6ce', 'mrkeji70on41', 'mrkeji707u11', 'mrkeji70oxun', 'mrkeji70tyjk'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=eF9LRFbkHLQ&list=RDKUN5Uf9mObQ&index=27',
@@ -408,28 +408,10 @@ const DEFAULT_PLAYLISTS = [
       note: ''
     },
     {
-      url: 'https://www.youtube.com/watch?v=bWlsbVfEnII&list=RDjZEA2mMwL1k&index=11',
-      videoId: 'bWlsbVfEnII',
-      playlistId: 'RDjZEA2mMwL1k',
-      title: 'Naanayam - Naan Pogiren Video | Prasanna, Sibi Raj | James Vasanthan',
-      channel: 'SonyMusicSouthVEVO',
-      collectionPath: 'Music / Daily Routine',
-      note: ''
-    },
-    {
       url: 'https://www.youtube.com/watch?v=paDG3S3UmQM',
       videoId: 'paDG3S3UmQM',
       title: 'Don - Private Party Music Video | Sivakarthikeyan, Priyanka Mohan | Anirudh | Jonita Gandhi | Cibi',
       channel: 'Sony Music South',
-      collectionPath: 'Music / Daily Routine',
-      note: ''
-    },
-    {
-      url: 'https://www.youtube.com/watch?v=4deZ7o3zfmI&list=RDjZEA2mMwL1k&index=2',
-      videoId: '4deZ7o3zfmI',
-      playlistId: 'RDjZEA2mMwL1k',
-      title: 'Idhayam | Once More |Arjun Das,Aditi Shankar |Hesham Abdul Wahab |Vineeth |Vignesh Srikanth |Yuvaraj',
-      channel: 'Think Music India',
       collectionPath: 'Music / Daily Routine',
       note: ''
     },
@@ -440,6 +422,94 @@ const DEFAULT_PLAYLISTS = [
       title: '3 - Idhazhin Oram Video | Dhanush, Shruti | Anirudh',
       channel: 'SonyMusicSouthVEVO',
       collectionPath: 'Music / Daily Routine',
+      note: ''
+    }
+    ]
+  },
+  {
+    id: 'mrkqs7vie0fe',
+    name: 'Daily Routine - Melody',
+    color: '#66BB6A',
+    videoIds: ['mrkupihbcu1h', 'mrkukhs0qxv8', 'mrkrhfqd55jj', 'mrkraqg4pjbu', 'mrkr2wef1z3q', 'mrkqrbe501v5', 'mrkqlbmmai4a'],
+    videos: [
+    {
+      url: 'https://www.youtube.com/watch?v=MgWrkGfDn-o&list=RDWOxan-rN4Cw&index=13',
+      videoId: 'MgWrkGfDn-o',
+      playlistId: 'RDWOxan-rN4Cw',
+      title: 'Azhagiya Asura 4K Song | Whistle Movie Songs | D. Imman | Vikramaditya | Sherin | Gayathri Raguram',
+      channel: 'API Tamil Songs',
+      collectionPath: 'Music / Daily Routine - Melody',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=4deZ7o3zfmI&list=RDWOxan-rN4Cw&index=12',
+      videoId: '4deZ7o3zfmI',
+      playlistId: 'RDWOxan-rN4Cw',
+      title: 'Idhayam | Once More |Arjun Das,Aditi Shankar |Hesham Abdul Wahab |Vineeth |Vignesh Srikanth |Yuvaraj',
+      channel: 'Think Music India',
+      collectionPath: 'Music / Daily Routine - Melody',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=6B2jvf81LxE&list=RDWOxan-rN4Cw&index=5',
+      videoId: '6B2jvf81LxE',
+      playlistId: 'RDWOxan-rN4Cw',
+      title: 'Pirai Thedum Iravilae Tamil Video Song | Mayakkam Enna | G.V. Prakash | Dhanush, Richa',
+      channel: 'Rajshri Tamil',
+      collectionPath: 'Music / Daily Routine - Melody',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=bWlsbVfEnII&list=RDWOxan-rN4Cw&index=4',
+      videoId: 'bWlsbVfEnII',
+      playlistId: 'RDWOxan-rN4Cw',
+      title: 'Naanayam - Naan Pogiren Video | Prasanna, Sibi Raj | James Vasanthan',
+      channel: 'SonyMusicSouthVEVO',
+      collectionPath: 'Music / Daily Routine - Melody',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=xIO4LFjl1SI&list=RDWOxan-rN4Cw&index=3',
+      videoId: 'xIO4LFjl1SI',
+      playlistId: 'RDWOxan-rN4Cw',
+      title: 'Nenjukkule Official Full Song - Kadal - AR Rahman',
+      channel: 'Sony Music India',
+      collectionPath: 'Music / Daily Routine - Melody',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=pVkDZueTBpY&list=RDWOxan-rN4Cw&index=2',
+      videoId: 'pVkDZueTBpY',
+      playlistId: 'RDWOxan-rN4Cw',
+      title: 'Maragatha Naanayam | Nee Kavithaigala Song with Lyrics | Aadhi, Nikki Galrani | Dhibu Ninan Thomas',
+      channel: 'Think Music India',
+      collectionPath: 'Music / Daily Routine - Melody',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=WOxan-rN4Cw&list=RDWOxan-rN4Cw&start_radio=1',
+      videoId: 'WOxan-rN4Cw',
+      playlistId: 'RDWOxan-rN4Cw',
+      title: 'Kandaangi Kandaangi - Video Song | 4K | Jilla Movie | Vijay | Kajal Agarwal | D.Imman | Star Music',
+      channel: 'Star Music India',
+      collectionPath: 'Music / Daily Routine - Melody',
+      note: ''
+    }
+    ]
+  },
+  {
+    id: 'mrlk1tk2ny6u',
+    name: 'Humming',
+    color: '#29B6F6',
+    videoIds: ['mrlk2lblc9yb'],
+    videos: [
+    {
+      url: 'https://www.youtube.com/watch?v=hUfuDyhxHT8&list=RDhUfuDyhxHT8&start_radio=1&t=5409s',
+      videoId: 'hUfuDyhxHT8',
+      playlistId: 'RDhUfuDyhxHT8',
+      title: 'Persian Trance 🌙 Mystical Middle Eastern Deep Trance Mix for Work, Study & Meditation',
+      channel: 'Persian Focus Temple',
+      collectionPath: 'Music / Humming',
       note: ''
     }
     ]
