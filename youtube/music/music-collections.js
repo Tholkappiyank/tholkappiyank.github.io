@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
-// Exported from TubeVault on 7/15/2026, 10:32:02 PM
+// Exported from TubeVault on 7/15/2026, 11:13:59 PM
 //
 // STRUCTURE — easy to browse/edit in any JSON editor:
 //   DEFAULT_COLLECTIONS
@@ -39,6 +39,16 @@ const DEFAULT_COLLECTIONS = [
     name: 'Music',
     color: '#EC407A',
     groups: {
+      'Other Lang': [
+        {
+          url: 'https://www.youtube.com/watch?v=PgCliOxl41o&list=RDPgCliOxl41o&start_radio=1',
+          videoId: 'PgCliOxl41o',
+          playlistId: 'RDPgCliOxl41o',
+          title: 'YouTube Video',
+          channel: '',
+          note: 'Yes'
+        },
+      ],
       'Daily Routine - Melody': [
         {
           url: 'https://www.youtube.com/watch?v=UmyOwP4-eEU&list=PLvGJzgY6LDpA0QVcvaKkR4DyckjNAgGRn&index=48',
@@ -645,7 +655,74 @@ const DEFAULT_COLLECTIONS = [
     name: 'Music -English',
     color: '#FFA726',
     groups: {
+      'Instrumental': [
+        {
+          url: 'https://www.youtube.com/watch?v=_SywaUbg5wU',
+          videoId: '_SywaUbg5wU',
+          title: 'AFRICA - Toto x Peter Bence (Piano Cover)',
+          channel: 'Peter Bence',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=GmtTDvNcXcU&list=RDGmtTDvNcXcU&start_radio=1',
+          videoId: 'GmtTDvNcXcU',
+          playlistId: 'RDGmtTDvNcXcU',
+          title: 'Despacito (Piano Cover) - Peter Bence',
+          channel: 'Peter Bence',
+          note: ''
+        },
+      ],
+      'Albums': [
+        {
+          url: 'https://www.youtube.com/watch?v=8N_Yro5QeCE&list=RD1__CAdTJ5JU&index=2',
+          videoId: '8N_Yro5QeCE',
+          playlistId: 'RD1__CAdTJ5JU',
+          title: 'Selena Gomez - Feel Me (Live from the Revival Tour)',
+          channel: 'SelenaGomezVEVO',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=MhQKe-aERsU&list=RDMhQKe-aERsU&start_radio=1',
+          videoId: 'MhQKe-aERsU',
+          playlistId: 'RDMhQKe-aERsU',
+          title: 'Ed Sheeran - Shape Of You ( cover by J.Fla )',
+          channel: 'JFlaMusic',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=WcIcVapfqXw&list=RDWcIcVapfqXw&start_radio=1',
+          videoId: 'WcIcVapfqXw',
+          playlistId: 'RDWcIcVapfqXw',
+          title: 'Rema, Selena Gomez - Calm Down (Official Music Video)',
+          channel: 'SelenaGomezVEVO',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=60ItHLz5WEA&list=RDOcGe6Hy8qOE&index=3',
+          videoId: '60ItHLz5WEA',
+          playlistId: 'RDOcGe6Hy8qOE',
+          title: 'Alan Walker - Faded',
+          channel: 'Alan Walker',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=euCqAq6BRa4&list=RDOcGe6Hy8qOE&index=2',
+          videoId: 'euCqAq6BRa4',
+          playlistId: 'RDOcGe6Hy8qOE',
+          title: 'DJ Snake - Let Me Love You (Official Music Video) ft. Justin Bieber',
+          channel: 'DJSnakeVEVO',
+          note: ''
+        },
+      ],
       'English - Lyrics': [
+        {
+          url: 'https://www.youtube.com/watch?v=1__CAdTJ5JU&list=RD1__CAdTJ5JU&start_radio=1',
+          videoId: '1__CAdTJ5JU',
+          playlistId: 'RD1__CAdTJ5JU',
+          title: 'Tones and I - Dance Monkey (Lyrics)',
+          channel: 'Royal Music',
+          note: ''
+        },
         {
           url: 'https://www.youtube.com/watch?v=OcGe6Hy8qOE&list=RDOcGe6Hy8qOE&start_radio=1',
           videoId: 'OcGe6Hy8qOE',
