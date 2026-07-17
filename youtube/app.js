@@ -2922,13 +2922,38 @@ function closePvView(restoreAll) {
 // ──────────────────────────────────────────────
 const APPS_REGISTRY_KEY = 'tholsstudio_categories';
 
-// The three categories that ship with the project. Custom ones created
-// via "Create category…" are layered on top of this list.
-const BUILTIN_APPS = [
+// Fallback category list (used on file:// where categories.json can't be
+// fetched, and as the initial value before the fetch resolves).
+const FALLBACK_BUILTIN_APPS = [
   { id: 'music',       name: 'Music',       color: '#EC407A', file: 'music.html' },
   { id: 'electronics', name: 'Electronics', color: '#29B6F6', file: 'electronics.html' },
   { id: 'astrology',   name: 'Astrology',   color: '#AB47BC', file: 'astrology.html' },
 ];
+
+// Replaced at runtime by loadBuiltinApps() (from categories.json). Starts as
+// the fallback so the switcher works even before/without the fetch.
+let BUILTIN_APPS = FALLBACK_BUILTIN_APPS.map(a => ({ ...a }));
+
+// Loads the category list from categories.json. Over HTTP this keeps the
+// switcher in sync with build.js; on file:// it fails silently and the
+// fallback list stays in place. Re-renders the switcher if already drawn.
+function loadBuiltinApps() {
+  return fetch('categories.json')
+    .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(data => {
+      const list = Array.isArray(data) ? data : data.collections;
+      if (!Array.isArray(list) || !list.length) throw new Error('no collections');
+      BUILTIN_APPS = list.map(c => ({
+        id: c.id,
+        name: c.name || c.id,
+        color: c.color || '#5C6BC0',
+        file: (c.id || 'category') + '.html',
+      }));
+      const wrap = document.getElementById('categorySwitcher');
+      if (wrap) renderCategorySwitcher();
+    })
+    .catch(() => { /* keep fallback */ });
+}
 
 function getAppsRegistry() {
   let custom = [];
@@ -3193,4 +3218,5 @@ restoreExportFolder();
 renderSidebar();
 renderCards();
 renderCategorySwitcher();
+loadBuiltinApps();
 updateExportMenuLabels();

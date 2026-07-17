@@ -6,7 +6,7 @@
 //
 // Single source of truth for the category pages is `page-template.html`
 // (a full page with {{PLACEHOLDER}} tokens). This script:
-//   1. Generates the 3 built-in category pages (music/electronics/astrology).
+//   1. Generates one page per category listed in categories.json.
 //      The .html pages stay at the repo root; each category's JS files
 //      (config seeds + page-template.js) are written into a <id>/ folder, so
 //      e.g. music.html references music/music-collections.js and
@@ -28,11 +28,46 @@ const path = require('path');
 
 const DIR = __dirname;
 
-const APPS = [
-  { id: 'music',       label: 'Music',       color: '#EC407A' },
-  { id: 'electronics', label: 'Electronics', color: '#29B6F6' },
-  { id: 'astrology',   label: 'Astrology',   color: '#AB47BC' },
-];
+// Categories are listed in categories.json — the same "collections" shape as
+// the per-category *-collections.js files: { collections: [ { id, name, color,
+// groups, ungrouped }, ... ] }. That file is the single source of truth for
+// which category pages get built (groups/ungrouped are ignored here).
+const CATEGORIES_FILE = path.join(DIR, 'categories.json');
+
+function loadCategories() {
+  if (!fs.existsSync(CATEGORIES_FILE)) {
+    console.error('ERROR: categories.json not found next to build.js');
+    process.exit(1);
+  }
+  let data;
+  try {
+    data = JSON.parse(fs.readFileSync(CATEGORIES_FILE, 'utf8'));
+  } catch (e) {
+    console.error('ERROR: categories.json is not valid JSON: ' + e.message);
+    process.exit(1);
+  }
+  const list = Array.isArray(data) ? data : data.collections;
+  if (!Array.isArray(list)) {
+    console.error('ERROR: categories.json must contain a "collections" array');
+    process.exit(1);
+  }
+  const apps = [];
+  list.forEach((c, idx) => {
+    const id = c.id;
+    const label = c.name || id;
+    const color = c.color || '#5C6BC0';
+    if (!id || !/^[a-z0-9-]+$/i.test(id)) {
+      console.warn(`! Skipping invalid category on entry ${idx + 1}: "${id}"`);
+      return;
+    }
+    apps.push({ id, label, color });
+  });
+  if (!apps.length) {
+    console.error('ERROR: categories.json contained no valid categories');
+    process.exit(1);
+  }
+  return apps;
+}
 
 // dir is the subfolder each category's JS lives in (e.g. "music/").
 function configScriptTags(id, dir) {
@@ -68,7 +103,8 @@ function main() {
   }
   const template = fs.readFileSync(templatePath, 'utf8');
 
-  // 1) Built-in category pages (HTML at root, JS in <id>/ folders)
+  // 1) Category pages from categories.json (HTML at root, JS in <id>/ folders)
+  const APPS = loadCategories();
   APPS.forEach(app => {
     app.dir = app.id + '/';
     const html = render(template, app);

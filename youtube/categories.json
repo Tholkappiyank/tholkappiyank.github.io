@@ -1,0 +1,7 @@
+{
+  "collections": [
+    { "id": "music",       "name": "Music",       "color": "#EC407A" },
+    { "id": "electronics", "name": "Electronics", "color": "#29B6F6" },
+    { "id": "astrology",   "name": "Astrology",   "color": "#AB47BC" }
+  ]
+}

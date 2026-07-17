@@ -92,9 +92,46 @@ If you prefer a script / CI step, `build.js` does the same thing:
 node build.js
 ```
 
-It regenerates `music.html`, `electronics.html`, `astrology.html`,
-`tests.html`, and `page-template.js` from `page-template.html`. No dependencies
-required (plain Node).
+It reads the category list from `categories.json` (the same `collections`
+shape as the per-category `*-collections.js` files) and regenerates
+`music.html`, `electronics.html`, `astrology.html`, `tests.html`, and each
+`page-template.js` from `page-template.html`. No dependencies required
+(plain Node).
+
+To add a category, append an entry to the `collections` array in
+`categories.json` and re-run `node build.js` (e.g.
+`{ "id": "cooking", "name": "Cooking", "color": "#FFA726", "groups": {}, "ungrouped": [] }`).
+To remove one, delete its entry — or use `node delete-category.js <id> --force`
+to also remove the generated files.
+
+---
+
+## 6. Deleting a category (removes files)
+
+`maintain.html` can only *download* pages — it can never delete anything from
+the repo. To actually remove a category's generated artifacts, use the
+terminal script:
+
+```bash
+node delete-category.js <id> [--force]
+```
+
+It removes `<id>.html` (at the root) and the `<id>/` folder (JS seeds +
+`page-template.js`). It is interactive by default — it lists the files and
+asks you to type the id to confirm — and `--force` skips the prompt.
+
+Guards (refuses and exits non-zero):
+- unknown / missing id,
+- invalid ids (only letters, digits, dashes),
+- the built-in categories (`music` / `electronics` / `astrology`) and `test`
+  — those are shipped pages; remove a built-in by editing `categories.json`
+  first.
+
+> If the category was created in the app (via "Create category…"), it is also
+> recorded in the shared `localStorage` registry (`tholsstudio_categories`).
+> `delete-category.js` only touches the repo's files; clear that registry entry
+> in the browser (or remove it from the in-app category switcher) so the deleted
+> page stops showing up in the category menu.
 
 ---
 
