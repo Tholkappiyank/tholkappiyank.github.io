@@ -3,6 +3,7 @@
     { "id": "music", "name": "music", "color": "#EC407A" },
     { "id": "electronics", "name": "electronics", "color": "#29B6F6" },
     { "id": "astrology",   "name": "astrology",   "color": "#AB47BC" },
-    { "id": "finance",   "name": "finance",   "color": "#AB46BC" }
+    { "id": "finance",   "name": "finance",   "color": "#AB46BC" },
+	{ "id": "cooking",   "name": "finance",   "color": "#AB64BC" }
   ]
 }
