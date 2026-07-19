@@ -1,8 +1,8 @@
 {
   "collections": [
-    { "id": "selnagomez", "name": "SelenaGomez", "color": "#EC407A" },
-    { "id": "music-english", "name": "Music-English", "color": "#29B6F6" },
-    { "id": "music-tamil",   "name": "Music-Tamil",   "color": "#AB47BC" },
-    { "id": "Humming",   "name": "CSharp",   "color": "#AB46BC" }
+    { "id": "music", "name": "music", "color": "#EC407A" },
+    { "id": "electronics", "name": "electronics", "color": "#29B6F6" },
+    { "id": "astrology",   "name": "astrology",   "color": "#AB47BC" },
+    { "id": "finance",   "name": "finance",   "color": "#AB46BC" }
   ]
 }
