@@ -62,17 +62,10 @@ function extractVideoId(url) {
       if (/^[A-Za-z0-9_-]{11}$/.test(id)) return id;
     }
     if (u.hostname.includes('youtube.com')) {
-      if (u.pathname.startsWith('/shorts/')) {
-        const id = u.pathname.split('/')[2];
-        if (id && /^[A-Za-z0-9_-]{11}$/.test(id)) return id;
-      }
+      if (u.pathname.startsWith('/shorts/')) return u.pathname.split('/')[2];
       // e.g. https://www.youtube.com/watch?v=fjOdtSu4Lm4&list=PLxxxx
       const v = u.searchParams.get('v');
-      // A real YouTube video id is always exactly 11 chars from this
-      // alphabet — validating here (like the youtu.be branch already did)
-      // means videoId can never carry HTML/JS-breaking characters forward
-      // into anything that renders it later.
-      if (v && /^[A-Za-z0-9_-]{11}$/.test(v)) return v;
+      if (v) return v;
     }
   } catch {}
   // fallback regex — handles v=, youtu.be/, or shorts/ followed by an 11-char ID
@@ -86,37 +79,21 @@ function extractPlaylistId(url) {
   try {
     const u = new URL(url);
     const list = u.searchParams.get('list');
-    // Real YouTube playlist ids are alphanumeric/-/_ only, and comfortably
-    // under 100 chars — same bound the fallback regex below already used,
-    // now applied to this branch too so a crafted "list=" value can't smuggle
-    // arbitrary characters through unvalidated.
-    if (list && /^[A-Za-z0-9_-]{1,100}$/.test(list)) return list;
+    if (list) return list;
   } catch {}
   // fallback regex
   const m = url.match(/[?&]list=([A-Za-z0-9_-]+)/);
   return m ? m[1] : null;
 }
 
-// videoId/playlistId are validated to a safe charset by extractVideoId()/
-// extractPlaylistId() above for anything added through the UI — but videos
-// seeded from a *-collections.js file (see seedData()) carry a videoId
-// straight from that file, bypassing those checks. escHtml() here means
-// these URL-builders are safe to embed in src=/href= regardless of where
-// the videoId/playlistId came from, not just the normal add/import path.
 function getThumbnail(videoId) {
-  return `https://img.youtube.com/vi/${escHtml(videoId)}/mqdefault.jpg`;
+  return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
 }
 
 function getWatchUrl(videoId, playlistId) {
   return playlistId
-    ? `https://www.youtube.com/watch?v=${escHtml(videoId)}&list=${escHtml(playlistId)}`
-    : `https://www.youtube.com/watch?v=${escHtml(videoId)}`;
-}
-
-// Same reasoning as getThumbnail()/getWatchUrl() above — used for the
-// iframe fallback in pvPlayIndex().
-function getEmbedUrl(videoId) {
-  return `https://www.youtube.com/embed/${escHtml(videoId)}?autoplay=1&rel=0&enablejsapi=1`;
+    ? `https://www.youtube.com/watch?v=${videoId}&list=${playlistId}`
+    : `https://www.youtube.com/watch?v=${videoId}`;
 }
 
 function isYouTubeUrl(url) {
@@ -146,8 +123,6 @@ function renderSidebar() {
     btn.className = 'sidebar-item draggable';
     btn.dataset.index = index;
     btn.dataset.colId = col.id;
-    btn.dataset.action = 'filter-collection';
-    btn.dataset.filter = col.id;
     btn.draggable = true;
     if (currentFilter === col.id) btn.classList.add('active');
 
@@ -164,17 +139,26 @@ function renderSidebar() {
       <span class="col-name">${escHtml(col.name)}</span>
       <span class="count">${count}</span>
       <span class="col-actions" id="col-actions-${col.id}">
-        <button class="col-action-btn" title="Add collection to playlist" data-action="open-collection-playlist-picker" data-id="${escHtml(col.id)}">
+        <button class="col-action-btn" title="Add collection to playlist" onclick="openCollectionPlaylistPicker(event,'${col.id}')">
           <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
         </button>
-        <button class="col-action-btn" title="Rename" data-action="rename-collection" data-id="${escHtml(col.id)}">
+        <button class="col-action-btn" title="Rename" onclick="startRename(event,'${col.id}')">
           <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
-        <button class="col-action-btn danger" title="Delete collection" data-action="delete-collection" data-id="${escHtml(col.id)}">
+        <button class="col-action-btn danger" title="Delete collection" onclick="deleteCollection(event,'${col.id}')">
           <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
         </button>
       </span>
     `;
+
+    // Click to filter (ignore if drag started)
+    btn.addEventListener('click', (e) => {
+      if (btn.classList.contains('was-dragging')) {
+        btn.classList.remove('was-dragging');
+        return;
+      }
+      filterByCollection(col.id, btn);
+    });
 
     list.appendChild(btn);
   });
@@ -240,8 +224,6 @@ function renderPlaylistsSidebar() {
     const btn = document.createElement('button');
     btn.className = 'sidebar-item draggable' + (isActive ? ' active' : '');
     btn.dataset.index = index;
-    btn.dataset.action = 'filter-playlist-row';
-    btn.dataset.filter = `playlist:${pl.id}`;
     btn.draggable = true;
     const dotColor = pl.color || '#78909C';
     btn.innerHTML = `
@@ -257,16 +239,25 @@ function renderPlaylistsSidebar() {
       <span class="col-name">${escHtml(pl.name)}</span>
       <span class="count${count ? '' : ' count-empty'}">${count}</span>
       <span class="col-actions" id="pl-actions-${pl.id}">
-        <button class="col-action-btn" data-mousedown-action="stop-propagation" data-action="rename-playlist" data-id="${escHtml(pl.id)}" title="Rename playlist">
+        <button class="col-action-btn" onmousedown="event.stopPropagation()" onclick="event.stopPropagation();startPlaylistRename(event,'${pl.id}')" title="Rename playlist">
           <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
-        <button class="col-action-btn" data-mousedown-action="stop-propagation" data-action="clear-playlist" data-id="${escHtml(pl.id)}" title="Clear all items">
+        <button class="col-action-btn" onmousedown="event.stopPropagation()" onclick="event.stopPropagation();clearPlaylist('${pl.id}')" title="Clear all items">
           <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
         </button>
-        <button class="col-action-btn danger" data-mousedown-action="stop-propagation" data-action="delete-playlist" data-id="${escHtml(pl.id)}" title="Delete playlist">
+        <button class="col-action-btn danger" onmousedown="event.stopPropagation()" onclick="event.stopPropagation();deletePlaylist('${pl.id}')" title="Delete playlist">
           <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
         </button>
       </span>`;
+
+    btn.addEventListener('click', (e) => {
+      if (btn.classList.contains('was-dragging')) {
+        btn.classList.remove('was-dragging');
+        return;
+      }
+      if (btn.querySelector('.col-rename-input')) return;
+      filterByCollection(`playlist:${pl.id}`, btn);
+    });
 
     list.appendChild(btn);
   });
@@ -340,17 +331,16 @@ function startRename(e, colId) {
     <span class="col-rename-wrap">
       <input class="col-rename-input" id="rename-input-${colId}"
         value="${escHtml(col.name)}"
-        maxlength="40">
-      <button class="col-rename-confirm" id="rename-confirm-${colId}">✓</button>
+        maxlength="40"
+        onkeydown="handleRenameKey(event,'${colId}')"
+        onblur="cancelRename('${colId}')">
+      <button class="col-rename-confirm" onmousedown="confirmRename(event,'${colId}')">✓</button>
     </span>
   `;
   // Prevent dragging while renaming
   btn.draggable = false;
 
   const input = document.getElementById(`rename-input-${colId}`);
-  input.addEventListener('keydown', (e) => handleRenameKey(e, colId));
-  input.addEventListener('blur', () => cancelRename(colId));
-  document.getElementById(`rename-confirm-${colId}`).addEventListener('mousedown', (e) => confirmRename(e, colId));
   input.focus();
   input.select();
 }
@@ -400,15 +390,14 @@ function startPlaylistRename(e, plId) {
     <span class="col-rename-wrap">
       <input class="col-rename-input" id="pl-rename-input-${plId}"
         value="${escHtml(pl.name)}"
-        maxlength="40">
-      <button class="col-rename-confirm" id="pl-rename-confirm-${plId}">✓</button>
+        maxlength="40"
+        onkeydown="handlePlaylistRenameKey(event,'${plId}')"
+        onblur="cancelPlaylistRename('${plId}')">
+      <button class="col-rename-confirm" onmousedown="confirmPlaylistRename(event,'${plId}')">✓</button>
     </span>
   `;
 
   const input = document.getElementById(`pl-rename-input-${plId}`);
-  input.addEventListener('keydown', (e) => handlePlaylistRenameKey(e, plId));
-  input.addEventListener('blur', () => cancelPlaylistRename(plId));
-  document.getElementById(`pl-rename-confirm-${plId}`).addEventListener('mousedown', (e) => confirmPlaylistRename(e, plId));
   input.focus();
   input.select();
 }
@@ -570,7 +559,7 @@ function buildCollectionBlock(colId, colName, colColor, colVids, isFirst, expand
   const chevClass = isExpanded ? 'group-chevron chev-up' : 'group-chevron collapsed';
   const bodyClass = isExpanded ? 'group-body' : 'group-body collapsed';
   let html = `<div class="group-section" style="${dividerStyle}">`;
-  html += `<div class="group-header group-header--collection" data-action="toggle-group" data-key="${colKey}">
+  html += `<div class="group-header group-header--collection" onclick="toggleGroup('${colKey}')">
     <span class="${chevClass}" id="chev-${colKey}">
       <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
     </span>
@@ -627,7 +616,7 @@ function renderGroupedByTitle(vids, colId, colColor, nested = false, expanded = 
     const gChevClass = gIsExpanded ? 'group-chevron chev-up' : 'group-chevron collapsed';
     const gBodyClass = gIsExpanded ? 'group-body' : 'group-body collapsed';
     html += `<div class="group-section">
-      <div class="group-header" data-action="toggle-group" data-key="${gKey}">
+      <div class="group-header" onclick="toggleGroup('${gKey}')">
         <span class="${gChevClass}" id="chev-${gKey}">
           <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
         </span>
@@ -637,14 +626,14 @@ function renderGroupedByTitle(vids, colId, colColor, nested = false, expanded = 
             <span class="group-count">${gVids.length}</span>
             <div class="group-header-line"></div>
           </div>
-          <div class="group-header-actions">
-            <button class="group-action-btn" data-action="open-group-playlist-picker" data-col-id="${escHtml(colId)}" data-group="${escHtml(gName)}" title="Add group to playlist">
+          <div class="group-header-actions" onclick="event.stopPropagation()">
+            <button class="group-action-btn" onclick="openGroupPlaylistPicker(event,'${escAttr(colId)}','${escAttr(gName)}')" title="Add group to playlist">
               <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
             </button>
-            <button class="group-action-btn" data-action="rename-group" data-col-id="${escHtml(colId)}" data-group="${escHtml(gName)}" title="Rename group">
+            <button class="group-action-btn" onclick="renameGroupPrompt('${escAttr(colId)}','${escAttr(gName)}')" title="Rename group">
               <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
             </button>
-            <button class="group-action-btn danger" data-action="delete-group" data-col-id="${escHtml(colId)}" data-group="${escHtml(gName)}" title="Delete group">
+            <button class="group-action-btn danger" onclick="deleteGroupPrompt('${escAttr(colId)}','${escAttr(gName)}')" title="Delete group">
               <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
             </button>
           </div>
@@ -681,7 +670,7 @@ function renderGroupedByTitle(vids, colId, colColor, nested = false, expanded = 
   // Add new group button (only in single-collection view)
   if (!nested) {
     html += `<div class="add-group-row" id="addGroupRow-${colId}">
-      <button class="add-collection-btn" data-action="open-group-modal" data-col-id="${escHtml(colId)}">
+      <button class="add-collection-btn" onclick="openGroupModal('${escAttr(colId)}')">
         <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         New group
       </button>
@@ -704,7 +693,7 @@ function renderCard(v) {
   return `
 <div class="video-card${currentView === 'list' ? ' list-view' : ''}" id="card-${v.id}" style="${watchedStyle}">
   <div class="card-thumb">
-    <img src="${getThumbnail(v.videoId)}" alt="" loading="lazy" data-action="thumb-error">
+    <img src="${getThumbnail(v.videoId)}" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
     <div class="card-thumb-placeholder" style="display:none;">
       <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" opacity="0.3">
         <path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.4a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/>
@@ -712,7 +701,7 @@ function renderCard(v) {
       </svg>
     </div>
     <div class="card-play-overlay">
-      <a href="${getWatchUrl(v.videoId, v.playlistId)}" target="_blank" class="play-btn" data-action="mark-watched" data-id="${escHtml(v.id)}">
+      <a href="${getWatchUrl(v.videoId, v.playlistId)}" target="_blank" class="play-btn" onclick="markWatched('${v.id}')">
         <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
       </a>
     </div>
@@ -720,29 +709,29 @@ function renderCard(v) {
   <div class="card-body">
     ${colTag}
     <div class="card-title-row">
-      <div class="card-title" id="title-${v.id}" data-action="start-title-edit" data-id="${escHtml(v.id)}" title="Click to edit title">${escHtml(v.title || 'Untitled Video')}</div>
-      <button class="card-title-edit-btn" data-mousedown-action="start-title-edit-btn" data-id="${escHtml(v.id)}" title="Edit title">
+      <div class="card-title" id="title-${v.id}" onclick="event.stopPropagation();startTitleEdit('${v.id}')" title="Click to edit title">${escHtml(v.title || 'Untitled Video')}</div>
+      <button class="card-title-edit-btn" onmousedown="event.stopPropagation();event.preventDefault();startTitleEdit('${v.id}')" title="Edit title">
         <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
       </button>
     </div>
     ${v.channel ? `<div class="card-channel">${escHtml(v.channel)}</div>` : ''}
     ${noteHtml}
-    <textarea class="note-edit" id="note-edit-${v.id}" rows="2" placeholder="Add a note…" data-action="save-note" data-id="${escHtml(v.id)}">${escHtml(v.note||'')}</textarea>
+    <textarea class="note-edit" id="note-edit-${v.id}" rows="2" placeholder="Add a note…" onblur="saveNote('${v.id}', this.value)">${escHtml(v.note||'')}</textarea>
     <div class="card-meta">
       <div class="card-actions">
-        <button class="card-action-btn" data-action="open-move-group-modal" data-id="${escHtml(v.id)}" title="Move to group">
+        <button class="card-action-btn" onclick="openMoveGroupModal('${v.id}')" title="Move to group">
           <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
         </button>
-        <button class="card-action-btn" data-action="toggle-note" data-id="${escHtml(v.id)}" title="Edit note">
+        <button class="card-action-btn" onclick="toggleNote('${v.id}')" title="Edit note">
           <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
-        <button class="card-action-btn" data-action="copy-url" data-id="${escHtml(v.id)}" title="Copy URL">
+        <button class="card-action-btn" onclick="copyUrl('${v.url}')" title="Copy URL">
           <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
         </button>
-        <button class="card-action-btn" data-action="toggle-watched" data-id="${escHtml(v.id)}" title="${v.watched ? 'Mark unwatched' : 'Mark watched'}">
+        <button class="card-action-btn" onclick="toggleWatched('${v.id}')" title="${v.watched ? 'Mark unwatched' : 'Mark watched'}">
           <svg width="12" height="12" fill="${v.watched ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         </button>
-        <button class="card-action-btn" data-action="open-playlist-picker" data-id="${escHtml(v.id)}" title="Add to playlist">
+        <button class="card-action-btn" onclick="openPlaylistPicker('${v.id}', this)" title="Add to playlist">
           <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
             <line x1="8" y1="18" x2="21" y2="18"/>
@@ -750,7 +739,7 @@ function renderCard(v) {
             <line x1="3" y1="18" x2="3.01" y2="18"/>
           </svg>
         </button>
-        <button class="card-action-btn danger" data-action="delete-video" data-id="${escHtml(v.id)}" title="Delete video">
+        <button class="card-action-btn danger" onclick="deleteVideo('${v.id}')" title="Delete video">
           <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
         </button>
       </div>
@@ -870,12 +859,9 @@ function saveMoveGroup() {
 function escHtml(str) {
   return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-// escAttr() used to live here — it escaped a value for use as a single-quoted
-// JS string argument inside a double-quoted onclick="..."-style attribute.
-// Now that nothing in this file builds markup that way (see EVENT WIRING,
-// near the bottom of this file), there's no longer a context that function's
-// escaping rules were even for, so it's been removed rather than kept
-// around unused.
+function escAttr(str) {
+  return String(str||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
+}
 
 // ──────────────────────────────────────────────
 // ACTIONS
@@ -1262,7 +1248,7 @@ function renderColorPicker() {
   cp.innerHTML = COLLECTION_COLORS.map(c => `
     <div class="color-chip ${c === state.selectedColor ? 'selected' : ''}"
       style="background:${c}"
-      data-action="select-color" data-target="collection" data-color="${c}"></div>
+      onclick="selectColor('${c}')"></div>
   `).join('');
 }
 
@@ -1374,7 +1360,7 @@ function renderPlaylistColorPicker() {
   cp.innerHTML = COLLECTION_COLORS.map(c => `
     <div class="color-chip ${c === state.selectedPlaylistColor ? 'selected' : ''}"
       style="background:${c}"
-      data-action="select-color" data-target="playlist" data-color="${c}"></div>
+      onclick="selectPlaylistColor('${c}')"></div>
   `).join('');
 }
 
@@ -1498,20 +1484,14 @@ function openGroupPlaylistPicker(e, colId, groupName) {
       const checkIcon = allIn
         ? `<span class="pp-check"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm-1.5 14.5l-4-4 1.41-1.41L10.5 13.67l5.59-5.59L17.5 9.5l-7 7z"/></svg></span>`
         : `<span class="pp-check"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></span>`;
-      return `<button class="playlist-picker-item${allIn ? ' in-playlist' : ''}" data-pl-id="${escHtml(pl.id)}">
+      return `<button class="playlist-picker-item${allIn ? ' in-playlist' : ''}"
+        onclick="event.stopPropagation();addGroupToPlaylist('${escAttr(colId)}','${escAttr(groupName)}','${pl.id}');document.querySelectorAll('.playlist-picker').forEach(e=>e.remove())">
         ${checkIcon}
         ${escHtml(pl.name)} <span style="opacity:0.5;font-size:10px;margin-left:4px;">${label}</span>
       </button>`;
     }).join('')}`;
 
   document.body.appendChild(picker);
-  picker.querySelectorAll('.playlist-picker-item').forEach(btn => {
-    btn.addEventListener('click', (event) => {
-      event.stopPropagation();
-      addGroupToPlaylist(colId, groupName, btn.dataset.plId);
-      document.querySelectorAll('.playlist-picker').forEach(el => el.remove());
-    });
-  });
   const rect = e.currentTarget.getBoundingClientRect();
   picker.style.cssText = `position:fixed;z-index:9999;top:${rect.bottom + 4}px;left:${rect.left}px`;
   setTimeout(() => {
@@ -1564,20 +1544,14 @@ function openCollectionPlaylistPicker(e, colId) {
       const someIn = !allIn && colVideos.some(v => isVideoInPlaylist(pl, v));
       const label = allIn ? 'All added' : someIn ? 'Add remaining' : `Add all ${colVideos.length}`;
       const checkIcon = allIn ? `<span class="pp-check"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm-1.5 14.5l-4-4 1.41-1.41L10.5 13.67l5.59-5.59L17.5 9.5l-7 7z"/></svg></span>` : `<span class="pp-check"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></span>`;
-      return `<button class="playlist-picker-item${allIn ? ' in-playlist' : ''}" data-pl-id="${escHtml(pl.id)}">
+      return `<button class="playlist-picker-item${allIn ? ' in-playlist' : ''}"
+        onclick="event.stopPropagation();addCollectionToPlaylist('${colId}','${pl.id}');document.querySelectorAll('.playlist-picker').forEach(e=>e.remove())">
         ${checkIcon}
         ${escHtml(pl.name)} <span style="opacity:0.5;font-size:10px;margin-left:4px;">${label}</span>
       </button>`;
     }).join('')}`;
 
   document.body.appendChild(picker);
-  picker.querySelectorAll('.playlist-picker-item').forEach(btn => {
-    btn.addEventListener('click', (event) => {
-      event.stopPropagation();
-      addCollectionToPlaylist(colId, btn.dataset.plId);
-      document.querySelectorAll('.playlist-picker').forEach(el => el.remove());
-    });
-  });
   const anchorEl = e.currentTarget;
   const rect = anchorEl.getBoundingClientRect();
   picker.style.cssText = `position:fixed;z-index:9999;top:${rect.bottom + 4}px;left:${rect.left}px`;
@@ -1624,21 +1598,14 @@ function openPlaylistPicker(videoId, anchorEl) {
     ${state.playlists.map(pl => {
       const has = isVideoInPlaylist(pl, v);
       const icon = has ? `<span class="pp-check"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm-1.5 14.5l-4-4 1.41-1.41L10.5 13.67l5.59-5.59L17.5 9.5l-7 7z"/></svg></span>` : `<span class="pp-check"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></span>`;
-      return `<button class="playlist-picker-item${has ? ' in-playlist' : ''}" data-pl-id="${escHtml(pl.id)}" data-in-playlist="${has}">
+      return `<button class="playlist-picker-item${has ? ' in-playlist' : ''}"
+        onclick="event.stopPropagation();${has ? `removeVideoFromPlaylist('${videoId}','${pl.id}')` : `addVideoToPlaylist('${videoId}','${pl.id}')`};document.querySelectorAll('.playlist-picker').forEach(e=>e.remove())">
         ${icon}
         ${escHtml(pl.name)}
       </button>`;
     }).join('')}`;
 
   document.body.appendChild(picker);
-  picker.querySelectorAll('.playlist-picker-item').forEach(btn => {
-    btn.addEventListener('click', (event) => {
-      event.stopPropagation();
-      if (btn.dataset.inPlaylist === 'true') removeVideoFromPlaylist(videoId, btn.dataset.plId);
-      else addVideoToPlaylist(videoId, btn.dataset.plId);
-      document.querySelectorAll('.playlist-picker').forEach(el => el.remove());
-    });
-  });
 
   // Position relative to anchor
   const rect = anchorEl.getBoundingClientRect();
@@ -2697,9 +2664,9 @@ function pvRenderList() {
     }
     const col = state.collections.find(c => c.id === v.collection);
     const path = col ? (v.group ? `${col.name} / ${v.group}` : col.name) : (v.group || '');
-    const thumb = getThumbnail(v.videoId);
+    const thumb = `https://img.youtube.com/vi/${v.videoId}/mqdefault.jpg`;
     const isActive = i === pvState.index;
-    return `<div class="pv-track${isActive ? ' active' : ''}" data-action="pv-track-click" data-index="${i}" id="pvt-${i}" draggable="true" data-pv-index="${i}">
+    return `<div class="pv-track${isActive ? ' active' : ''}" onclick="pvTrackClick(event, ${i})" id="pvt-${i}" draggable="true" data-pv-index="${i}">
       <span class="pv-track-drag-handle" title="Drag to reorder">
         <svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor">
           <rect x="0" y="0" width="1.5" height="1.5" rx="0.5"/>
@@ -2720,7 +2687,7 @@ function pvRenderList() {
       <span class="pv-track-play-icon">
         <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
       </span>
-      <img class="pv-track-thumb" src="${thumb}" loading="lazy" data-action="pv-thumb-error">
+      <img class="pv-track-thumb" src="${thumb}" loading="lazy" onerror="this.style.visibility='hidden'">
       <div class="pv-track-info">
         <div class="pv-track-title" title="${escHtml(v.title || v.url || '')}">${escHtml(v.title || v.url || 'Untitled')}</div>
         ${path ? `<div class="pv-track-path">${escHtml(path)}</div>` : ''}
@@ -2736,9 +2703,10 @@ function pvRenderList() {
   pvAttachTrackDrag();
 }
 
-function pvTrackClick(el, i) {
-  if (el.classList.contains('was-dragging')) {
-    el.classList.remove('was-dragging');
+function pvTrackClick(event, i) {
+  const track = event.currentTarget;
+  if (track.classList.contains('was-dragging')) {
+    track.classList.remove('was-dragging');
     return;
   }
   pvPlayIndex(i);
@@ -2853,7 +2821,7 @@ function pvPlayIndex(i) {
     });
   } else {
     if (container) container.innerHTML =
-      `<iframe src="${getEmbedUrl(v.videoId)}"
+      `<iframe src="https://www.youtube.com/embed/${v.videoId}?autoplay=1&rel=0&enablejsapi=1"
        style="width:100%;height:100%;border:none;position:absolute;inset:0;" allowfullscreen
        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
     if (!ytReady) {
@@ -3045,25 +3013,23 @@ function renderCategorySwitcher(apps) {
   const current = apps.find(a => a.id === myId) || { name: APP_LABEL || 'Category', color: APP_COLOR || 'var(--indigo)' };
 
   wrap.innerHTML = `
-    <button class="category-toggle-btn" id="categoryToggleBtn">
+    <button class="category-toggle-btn" id="categoryToggleBtn" onclick="toggleCategoryMenu()">
       <span class="category-toggle-dot" style="background:${current.color}"></span>
       <span class="category-toggle-label">${escHtml(current.name)}</span>
       <svg class="category-toggle-chev" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
     </button>
     <div class="category-menu" id="categoryMenu">
       ${apps.map(a => `
-        <a class="category-menu-item${a.id === myId ? ' active' : ''}" href="${escHtml(a.file)}">
+        <a class="category-menu-item${a.id === myId ? ' active' : ''}" href="${escAttr(a.file)}">
           <span class="category-menu-dot" style="background:${a.color}"></span>${escHtml(a.name)}
         </a>`).join('')}
       <div class="category-menu-divider"></div>
-      <button class="category-menu-item category-menu-create" id="categoryMenuCreateBtn">
+      <button class="category-menu-item category-menu-create" onclick="openCreateCategoryModal()">
         <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Create category…
       </button>
     </div>
   `;
-  document.getElementById('categoryToggleBtn').addEventListener('click', toggleCategoryMenu);
-  document.getElementById('categoryMenuCreateBtn').addEventListener('click', openCreateCategoryModal);
 }
 
 function toggleCategoryMenu() {
@@ -3105,7 +3071,7 @@ function renderCategoryColorPicker() {
   cp.innerHTML = COLLECTION_COLORS.map(c => `
     <div class="color-chip ${c === state.selectedCategoryColor ? 'selected' : ''}"
       style="background:${c}"
-      data-action="select-color" data-target="category" data-color="${c}"></div>
+      onclick="selectCategoryColor('${c}')"></div>
   `).join('');
 }
 
@@ -3215,31 +3181,31 @@ const WATCHED_VIDEO_IDS = [];
 `;
 }
 
+// Full standalone HTML page for a brand-new category — mirrors the
+// structure of music.html / electronics.html / astrology.html.
+function configScriptTags(id, dir) {
+  dir = dir || '';
+  return '<script src="' + dir + id + '-collections.js"></script>\n' +
+         '<script src="' + dir + id + '-playlist.js"></script>\n' +
+         '<script src="' + dir + id + '-watched.js"></script>';
+}
+
 // Builds a full standalone category page from the shared PAGE_TEMPLATE
 // (generated by build.js -> page-template.js), keeping runtime category
-// creation in lock-step with the built-in pages. Token substitution itself
-// goes through TemplateTokens.renderTemplate (template-tokens.js) — the same
-// renderer build.js uses — instead of a second, separately-maintained
-// .replace() chain here, so the two can't quietly drift apart again. No
-// fetch: works on GitHub Pages and when opened via file://.
+// creation in lock-step with the three built-in pages. No fetch: works on
+// GitHub Pages and when opened via file://.
 function buildCategoryHtml(id, name, color) {
   if (typeof PAGE_TEMPLATE === 'undefined') {
     showToast('⚠️ page-template.js missing — category page not generated');
     return '';
   }
-  if (typeof TemplateTokens === 'undefined') {
-    showToast('⚠️ template-tokens.js missing — category page not generated');
-    return '';
-  }
   const dir = id + '/';
-  // getAppsRegistry() already returns {id, name, color, file} entries, and
-  // by the time this runs the new category has already been saved into it
-  // (see createCategory()), so the page's own switcher fallback includes
-  // itself alongside every other known category.
-  return TemplateTokens.renderTemplate(PAGE_TEMPLATE, {
-    id, label: name, color, dir,
-    builtinApps: getAppsRegistry(),
-  });
+  return PAGE_TEMPLATE
+    .replace(/\{\{APP_NAME\}\}/g, id)
+    .replace(/\{\{APP_LABEL\}\}/g, name)
+    .replace(/\{\{APP_COLOR\}\}/g, color)
+    .replace(/\{\{JS_DIR\}\}/g, dir)
+    .replace(/\{\{SCRIPT_TAGS\}\}/g, configScriptTags(id, dir));
 }
 
 
@@ -3277,188 +3243,9 @@ function updateExportMenuLabels() {
 }
 
 // ──────────────────────────────────────────────
-// EVENT WIRING — every interaction in the app dispatches through here.
-//
-// There are no inline on*="..." attributes left anywhere in this file or in
-// page-template.html. Elements carry data-action (or data-mousedown-action)
-// instead, naming a handler below; a small number of one-off elements that
-// are freshly created and immediately looked up by a unique id (the rename
-// inputs, the floating playlist pickers, the category switcher) are wired
-// directly with addEventListener right where they're built, the same way
-// startTitleEdit() already did before this file had any of this — that
-// part didn't need to change.
-//
-// Everything else goes through ONE listener per event type, attached to
-// document.body a single time, down at the bottom of this file. Because
-// that listener lives on an element that's never destroyed or replaced,
-// setting it up once is enough: re-rendering the sidebar/cards/track list
-// (which happens on nearly every state change here) never needs to
-// re-wire anything, and can never accumulate duplicate listeners the way
-// attaching a listener inside a render function would (see makeSortable()'s
-// container-level dragover/drop listeners for the shape of that problem —
-// not touched here, since drag-and-drop was never wired via on*="..." in
-// the first place). renderLocationPicker() already used this exact
-// closest()-based dispatch pattern for its own body.onclick; everything
-// below just extends the same idea to the rest of the app.
-//
-// Each handler receives (el, event): `el` is the closest element carrying
-// the matching data-action — the direct replacement for `this` in the old
-// inline-attribute code, and for event.currentTarget, which would
-// otherwise (incorrectly) resolve to document.body here.
-function dispatchEl(event, attr) {
-  const el = event.target.closest(`[${attr}]`);
-  return el && document.body.contains(el) ? el : null;
-}
-
-const CLICK_ACTIONS = {
-  'open-import-modal': () => openImportModal(),
-  'open-add-modal': () => openAddModal(),
-  'toggle-sidebar-section': (el) => toggleSidebarSection(el.dataset.section, el.querySelector('.section-chev')),
-  'filter-collection': (el) => {
-    if (el.classList.contains('was-dragging')) { el.classList.remove('was-dragging'); return; }
-    filterByCollection(el.dataset.filter, el);
-  },
-  'filter-playlist-row': (el) => {
-    if (el.classList.contains('was-dragging')) { el.classList.remove('was-dragging'); return; }
-    if (el.querySelector('.col-rename-input')) return;
-    filterByCollection(el.dataset.filter, el);
-  },
-  'start-new-collection': () => startNewCollection(),
-  'open-playlist-modal': () => openPlaylistModal(),
-  'pv-set-mode': (el) => pvSetMode(el.dataset.mode),
-  'pv-toggle-autoplay': () => pvToggleAutoplay(),
-  'pv-track-click': (el) => pvTrackClick(el, parseInt(el.dataset.index, 10)),
-  'close-pv-view': () => closePvView(),
-  'toggle-location-picker': () => toggleLocationPicker(),
-  'quick-add': () => quickAdd(),
-  'clear-export-folder': () => clearExportFolder(),
-  'browse-export-folder': () => browseExportFolder(),
-  'toggle-export-menu': () => toggleExportMenu(),
-  'export-data': () => exportData(),
-  'export-collections-js': () => exportCollectionsJs(),
-  'export-watched-js': () => exportWatchedJs(),
-  'export-playlist-js': () => exportPlaylistJs(),
-  'export-all-js': () => exportAllJs(),
-  'set-view': (el) => setView(el.dataset.view),
-  'close-modal': (el) => closeModal(el.dataset.modal),
-  'save-video': () => saveVideo(),
-  'save-collection': () => saveCollection(),
-  'save-playlist': () => savePlaylist(),
-  'save-group': () => saveGroup(),
-  'confirm-export': () => confirmExport(),
-  'import-urls': () => importUrls(),
-  'save-move-group': () => saveMoveGroup(),
-  'create-category': () => createCategory(),
-  'close-confirm-modal': () => closeConfirmModal(),
-  'confirm-ok': () => confirmOk(),
-  'open-collection-playlist-picker': (el, event) => openCollectionPlaylistPicker(event, el.dataset.id),
-  'rename-collection': (el, event) => startRename(event, el.dataset.id),
-  'delete-collection': (el, event) => deleteCollection(event, el.dataset.id),
-  'rename-playlist': (el, event) => startPlaylistRename(event, el.dataset.id),
-  'clear-playlist': (el) => clearPlaylist(el.dataset.id),
-  'delete-playlist': (el) => deletePlaylist(el.dataset.id),
-  'toggle-group': (el) => toggleGroup(el.dataset.key),
-  'open-group-playlist-picker': (el, event) => openGroupPlaylistPicker(event, el.dataset.colId, el.dataset.group),
-  'rename-group': (el) => renameGroupPrompt(el.dataset.colId, el.dataset.group),
-  'delete-group': (el) => deleteGroupPrompt(el.dataset.colId, el.dataset.group),
-  'open-group-modal': (el) => openGroupModal(el.dataset.colId),
-  'mark-watched': (el) => markWatched(el.dataset.id),
-  'start-title-edit': (el, event) => { event.stopPropagation(); startTitleEdit(el.dataset.id); },
-  'open-move-group-modal': (el) => openMoveGroupModal(el.dataset.id),
-  'toggle-note': (el) => toggleNote(el.dataset.id),
-  'copy-url': (el) => {
-    const v = state.videos.find(v => v.id === el.dataset.id);
-    if (v) copyUrl(v.url);
-  },
-  'toggle-watched': (el) => toggleWatched(el.dataset.id),
-  'open-playlist-picker': (el) => openPlaylistPicker(el.dataset.id, el),
-  'delete-video': (el) => deleteVideo(el.dataset.id),
-  'select-color': (el) => {
-    const SETTERS = { collection: selectColor, playlist: selectPlaylistColor, category: selectCategoryColor };
-    SETTERS[el.dataset.target]?.(el.dataset.color);
-  },
-};
-
-const INPUT_ACTIONS = {
-  'search-input': () => handleSearch(),
-  'pv-search-input': () => pvHandleSearch(),
-  'add-url-input': () => { previewUrl(); checkAddDuplicate(); },
-  'add-group-new-input': () => checkAddDuplicate(),
-};
-
-const CHANGE_ACTIONS = {
-  'add-collection-change': () => { refreshGroupSelect('addCollection', 'addGroup'); checkAddDuplicate(); },
-  'add-group-change': () => checkAddDuplicate(),
-  'import-collection-change': () => refreshGroupSelect('importCollection', 'importGroup'),
-};
-
-// Each of these mirrors the original onkeydown="if(event.key==='Enter') fn()"
-// — only Enter is handled; every other key is ignored, same as before.
-const KEYDOWN_ACTIONS = {
-  'quick-add-keydown': (el, event) => { if (event.key === 'Enter') quickAdd(); },
-  'playlist-name-keydown': (el, event) => { if (event.key === 'Enter') savePlaylist(); },
-  'group-name-keydown': (el, event) => { if (event.key === 'Enter') saveGroup(); },
-  'category-name-keydown': (el, event) => { if (event.key === 'Enter') createCategory(); },
-};
-
-// blur doesn't bubble, so this is wired on the bubbling 'focusout' event
-// instead — same moment, just delegable.
-const FOCUSOUT_ACTIONS = {
-  'save-note': (el) => saveNote(el.dataset.id, el.value),
-};
-
-// error doesn't bubble either; handled below via a capture-phase listener,
-// which (unlike bubble-phase) still reaches document.body for these.
-const ERROR_ACTIONS = {
-  'thumb-error': (el) => { el.style.display = 'none'; el.nextElementSibling.style.display = 'flex'; },
-  'pv-thumb-error': (el) => { el.style.visibility = 'hidden'; },
-};
-
-const MOUSEDOWN_ACTIONS = {
-  'stop-propagation': (el, event) => event.stopPropagation(),
-  'start-title-edit-btn': (el, event) => {
-    event.stopPropagation();
-    event.preventDefault();
-    startTitleEdit(el.dataset.id);
-  },
-};
-
-function wireDelegatedEvents() {
-  document.body.addEventListener('click', (event) => {
-    const el = dispatchEl(event, 'data-action');
-    if (el) CLICK_ACTIONS[el.dataset.action]?.(el, event);
-  });
-  document.body.addEventListener('input', (event) => {
-    const el = dispatchEl(event, 'data-action');
-    if (el) INPUT_ACTIONS[el.dataset.action]?.(el, event);
-  });
-  document.body.addEventListener('change', (event) => {
-    const el = dispatchEl(event, 'data-action');
-    if (el) CHANGE_ACTIONS[el.dataset.action]?.(el, event);
-  });
-  document.body.addEventListener('keydown', (event) => {
-    const el = dispatchEl(event, 'data-action');
-    if (el) KEYDOWN_ACTIONS[el.dataset.action]?.(el, event);
-  });
-  document.body.addEventListener('focusout', (event) => {
-    const el = dispatchEl(event, 'data-action');
-    if (el) FOCUSOUT_ACTIONS[el.dataset.action]?.(el, event);
-  });
-  document.body.addEventListener('error', (event) => {
-    const el = dispatchEl(event, 'data-action');
-    if (el) ERROR_ACTIONS[el.dataset.action]?.(el, event);
-  }, true); // capture phase — 'error' doesn't bubble
-  document.body.addEventListener('mousedown', (event) => {
-    const el = dispatchEl(event, 'data-mousedown-action');
-    if (el) MOUSEDOWN_ACTIONS[el.dataset.mousedownAction]?.(el, event);
-  });
-}
-
-// ──────────────────────────────────────────────
 // INIT
 // ──────────────────────────────────────────────
 applyAppBranding();
-wireDelegatedEvents();
 seedData();
 restoreExportFolder();
 renderSidebar();

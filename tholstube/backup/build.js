@@ -25,7 +25,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const { renderTemplate } = require('./template-tokens.js');
 
 const DIR = __dirname;
 
@@ -53,11 +52,6 @@ function loadCategories() {
     process.exit(1);
   }
   const apps = [];
-  // Tracks ids/display-names we've already seen so copy-paste duplicates
-  // (like a second category accidentally keeping the first one's "name")
-  // get caught here instead of shipping quietly into generated pages.
-  const seenIds = new Map();    // lowercased id -> entry number that used it first
-  const seenLabels = new Map(); // lowercased display name -> id that used it first
   list.forEach((c, idx) => {
     const id = c.id;
     const label = c.name || id;
@@ -66,33 +60,6 @@ function loadCategories() {
       console.warn(`! Skipping invalid category on entry ${idx + 1}: "${id}"`);
       return;
     }
-
-    // Duplicate id is fatal: the second entry would silently overwrite the
-    // first one's generated <id>.html / <id>/ folder.
-    const idKey = id.toLowerCase();
-    if (seenIds.has(idKey)) {
-      console.error(
-        `ERROR: duplicate category id "${id}" (categories.json entries ${seenIds.get(idKey)} and ${idx + 1}). ` +
-        `Every category needs a unique id, or the second one overwrites the first one's page.`
-      );
-      process.exit(1);
-    }
-    seenIds.set(idKey, idx + 1);
-
-    // Duplicate display name is only ever a warning — two categories can
-    // legitimately want the same look, but it's usually a copy/paste slip
-    // (e.g. a category whose "name" field still says the old category's
-    // name), so flag it without blocking the build.
-    const labelKey = label.toLowerCase();
-    if (seenLabels.has(labelKey)) {
-      console.warn(
-        `! "${id}" and "${seenLabels.get(labelKey)}" both display as "${label}" — ` +
-        `double check that's intentional (not blocking the build).`
-      );
-    } else {
-      seenLabels.set(labelKey, id);
-    }
-
     apps.push({ id, label, color });
   });
   if (!apps.length) {
@@ -100,6 +67,16 @@ function loadCategories() {
     process.exit(1);
   }
   return apps;
+}
+
+// dir is the subfolder each category's JS lives in (e.g. "music/").
+function configScriptTags(id, dir) {
+  dir = dir || '';
+  return [
+    `<script src="${dir}${id}-collections.js"></script>`,
+    `<script src="${dir}${id}-playlist.js"></script>`,
+    `<script src="${dir}${id}-watched.js"></script>`,
+  ].join('\n');
 }
 
 // Generates the three per-category seed files (collections / playlist /
@@ -154,6 +131,20 @@ const WATCHED_VIDEO_IDS = [];
 `;
 }
 
+// Builds the inline <script> that defines window.__BUILTIN_APPS__ — the
+// file:// fallback list for the in-app category switcher. Sourced from
+// categories.json so it never drifts from the build manifest. Injected into
+// every generated page (before app.js) by the {{BUILTIN_APPS_JS}} token.
+function buildBuiltinAppsJs(apps) {
+  const list = apps.map(a => ({
+    id: a.id,
+    name: a.label,
+    color: a.color,
+    file: `${a.id}.html`,
+  }));
+  return `<script>window.__BUILTIN_APPS__ = ${JSON.stringify(list)};</script>`;
+}
+
 // Writes the three seed files into the category's <id>/ folder — but only if
 // they don't already exist, so re-running build.js never clobbers a category's
 // curated collections / videos / playlists / watched history (source data built
@@ -176,6 +167,22 @@ function writeCategorySeeds(app) {
   });
 }
 
+// Injected into every generated page (before app.js) via {{BUILTIN_APPS_JS}}.
+// Holds the file:// fallback for the in-app category switcher, sourced from
+// categories.json so it never drifts from the build manifest.
+let BUILTIN_APPS_JS = '';
+
+function render(template, app) {
+  const dir = app.dir || '';
+  return template
+    .replace(/\{\{APP_NAME\}\}/g, app.id)
+    .replace(/\{\{APP_LABEL\}\}/g, app.label)
+    .replace(/\{\{APP_COLOR\}\}/g, app.color)
+    .replace(/\{\{JS_DIR\}\}/g, dir)
+    .replace(/\{\{SCRIPT_TAGS\}\}/g, configScriptTags(app.id, dir))
+    .replace(/\{\{BUILTIN_APPS_JS\}\}/g, BUILTIN_APPS_JS);
+}
+
 function writeFileEnsureDir(file, contents) {
   const dir = path.dirname(file);
   if (dir && dir !== '.' && !fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
@@ -192,16 +199,13 @@ function main() {
 
   // 1) Category pages from categories.json (HTML at root, JS in <id>/ folders)
   const APPS = loadCategories();
-  // Built once from the manifest and reused for every page's {{BUILTIN_APPS_JS}}
-  // token — the file:// fallback list for the in-app category switcher, so it
-  // can't drift between pages (every page embeds the same, full list).
-  const builtinApps = APPS.map(a => ({
-    id: a.id, name: a.label, color: a.color, file: `${a.id}.html`,
-  }));
+  // Generated once from the manifest — the file:// fallback for the in-app
+  // category switcher, injected via {{BUILTIN_APPS_JS}} so it can't drift.
+  BUILTIN_APPS_JS = buildBuiltinAppsJs(APPS);
 
   APPS.forEach(app => {
     app.dir = app.id + '/';
-    const html = renderTemplate(template, { id: app.id, label: app.label, color: app.color, dir: app.dir, builtinApps });
+    const html = render(template, app);
     fs.writeFileSync(path.join(DIR, `${app.id}.html`), html);
     console.log(`✓ generated ${app.id}.html`);
 
@@ -218,7 +222,7 @@ function main() {
 
   // 2) Self-contained feature test page (HTML at root, JS in test/ folder)
   const testApp = { id: 'test', label: 'Test', color: '#5C6BC0', dir: 'test/' };
-  let testHtml = renderTemplate(template, { id: testApp.id, label: testApp.label, color: testApp.color, dir: testApp.dir, builtinApps });
+  let testHtml = render(template, testApp);
   testHtml = testHtml.replace('</body>', '<script src="tests.js"></script>\n</body>');
   fs.writeFileSync(path.join(DIR, 'tests.html'), testHtml);
   writeFileEnsureDir(
