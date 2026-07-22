@@ -26,14 +26,14 @@
     <span class="search-icon">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
     </span>
-    <input type="text" placeholder="Search videos, channels, notes…" id="searchInput" oninput="handleSearch()">
+    <input type="text" placeholder="Search videos, channels, notes…" id="searchInput" data-action="search-input">
   </div>
   <div class="topbar-actions">
-    <button class="btn btn-ghost" onclick="openImportModal()">
+    <button class="btn btn-ghost" data-action="open-import-modal">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Import
     </button>
-    <button class="btn btn-primary" onclick="openAddModal()">
+    <button class="btn btn-primary" data-action="open-add-modal">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Add Video
     </button>
@@ -46,12 +46,12 @@
   <div class="sidebar" id="sidebar">
     <div class="sidebar-resizer" id="sidebarResizer" title="Drag to resize · Double-click to reset"></div>
     <div class="sidebar-section">
-      <div class="sidebar-label sidebar-label-toggle" onclick="toggleSidebarSection('librarySection', this.querySelector('.section-chev'))">
+      <div class="sidebar-label sidebar-label-toggle" data-action="toggle-sidebar-section" data-section="librarySection">
         Library
         <svg class="section-chev chev-up" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
       </div>
       <div id="librarySection">
-      <button class="sidebar-item active" onclick="filterByCollection('all', this)">
+      <button class="sidebar-item active" data-action="filter-collection" data-filter="all">
         <span class="selected-tick" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
@@ -59,7 +59,7 @@
         <span class="col-name">All Videos</span>
         <span class="count" id="count-all">0</span>
       </button>
-      <button class="sidebar-item" onclick="filterByCollection('recent', this)">
+      <button class="sidebar-item" data-action="filter-collection" data-filter="recent">
         <span class="selected-tick" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
@@ -67,7 +67,7 @@
         <span class="col-name">Recently Added</span>
         <span class="count" id="count-recent">0</span>
       </button>
-      <button class="sidebar-item" onclick="filterByCollection('watched', this)">
+      <button class="sidebar-item" data-action="filter-collection" data-filter="watched">
         <span class="selected-tick" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
@@ -81,14 +81,14 @@
     <div class="sidebar-divider"></div>
 
     <div class="sidebar-section">
-      <div class="sidebar-label sidebar-label-toggle" onclick="toggleSidebarSection('collectionsSection', this.querySelector('.section-chev'))">
+      <div class="sidebar-label sidebar-label-toggle" data-action="toggle-sidebar-section" data-section="collectionsSection">
         Collections
         <svg class="section-chev chev-up" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
       </div>
       <div id="collectionsSection">
       <div id="collectionsList"></div>
       <div style="padding: 0 0 0 0; margin-top: 4px;">
-        <button class="add-collection-btn" onclick="startNewCollection()">
+        <button class="add-collection-btn" data-action="start-new-collection">
           <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           New collection
         </button>
@@ -99,14 +99,14 @@
     <div class="sidebar-divider"></div>
 
     <div class="sidebar-section">
-      <div class="sidebar-label sidebar-label-toggle" onclick="toggleSidebarSection('playlistsSection', this.querySelector('.section-chev'))">
+      <div class="sidebar-label sidebar-label-toggle" data-action="toggle-sidebar-section" data-section="playlistsSection">
         Playlists
         <svg class="section-chev chev-up" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
       </div>
       <div id="playlistsSection">
         <div id="playlistsList"></div>
         <div style="padding:0; margin-top:4px;">
-          <button class="add-collection-btn" onclick="openPlaylistModal()">
+          <button class="add-collection-btn" data-action="open-playlist-modal">
             <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             New playlist
           </button>
@@ -132,13 +132,13 @@
           </div>
         </div>
         <div class="pv-list-modes">
-          <button class="pv-mode-btn active" id="pvSeqBtn" onclick="pvSetMode('sequential')" title="Sequential">
+          <button class="pv-mode-btn active" id="pvSeqBtn" data-action="pv-set-mode" data-mode="sequential" title="Sequential">
             <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="15 8 19 12 15 16"/></svg>
           </button>
-          <button class="pv-mode-btn" id="pvRndBtn" onclick="pvSetMode('random')" title="Random">
+          <button class="pv-mode-btn" id="pvRndBtn" data-action="pv-set-mode" data-mode="random" title="Random">
             <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
           </button>
-          <button class="pv-mode-btn active" id="pvAutoBtn" onclick="pvToggleAutoplay()" title="Auto-play next">
+          <button class="pv-mode-btn active" id="pvAutoBtn" data-action="pv-toggle-autoplay" title="Auto-play next">
             <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/><line x1="19" y1="3" x2="19" y2="21"/></svg>
           </button>
         </div>
@@ -147,14 +147,14 @@
         <span class="pv-search-icon">
           <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
         </span>
-        <input type="text" id="pvSearchInput" placeholder="Search this playlist…" oninput="pvHandleSearch()">
+        <input type="text" id="pvSearchInput" placeholder="Search this playlist…" data-action="pv-search-input">
       </div>
       <div class="pv-tracks" id="pvTracks"></div>
     </div>
 
     <!-- Right panel: iframe player -->
     <div class="pv-player" id="pvPlayer">
-      <button class="pv-close-btn" onclick="closePvView()" title="Close playlist view">
+      <button class="pv-close-btn" data-action="close-pv-view" title="Close playlist view">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
       <div id="pvIframeContainer" style="width:100%;height:100%;"></div>
@@ -165,7 +165,7 @@
   <div class="main" id="mainView">
     <!-- Quick add bar -->
     <div class="add-url-location" id="quickAddLocation" style="position:relative;">
-      <button class="browse-location-btn" onclick="toggleLocationPicker()" title="Choose collection / group to save into">
+      <button class="browse-location-btn" data-action="toggle-location-picker" title="Choose collection / group to save into">
         <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h3l2 2h7a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
       </button>
       <span class="add-url-location-dot" id="quickAddLocationDot"></span>
@@ -178,8 +178,8 @@
     </div>
     <div class="add-url-bar">
       <svg width="16" height="16" fill="none" stroke="var(--text-dim)" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
-      <input type="text" id="quickAddInput" placeholder="Paste a YouTube URL and press Enter to save…" onkeydown="if(event.key==='Enter') quickAdd()">
-      <button class="btn btn-primary" onclick="quickAdd()" style="flex-shrink:0;">Save</button>
+      <input type="text" id="quickAddInput" placeholder="Paste a YouTube URL and press Enter to save…" data-action="quick-add-keydown">
+      <button class="btn btn-primary" data-action="quick-add" style="flex-shrink:0;">Save</button>
     </div>
 
     <!-- Section header -->
@@ -191,33 +191,33 @@
         <div class="export-location-wrap" id="exportLocationWrap" style="display:none;">
           <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h3l2 2h7a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
           <span id="exportLocationLabel">No folder selected</span>
-          <button class="export-location-clear" onclick="clearExportFolder()" title="Clear folder">×</button>
+          <button class="export-location-clear" data-action="clear-export-folder" title="Clear folder">×</button>
         </div>
         <!-- Browse folder button -->
-        <button class="btn-icon" onclick="browseExportFolder()" title="Select export folder">
+        <button class="btn-icon" data-action="browse-export-folder" title="Select export folder">
           <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h3l2 2h7a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
         </button>
         <div class="export-dropdown" id="exportDropdown">
-          <button class="btn-icon" onclick="toggleExportMenu()" title="Export">
+          <button class="btn-icon" data-action="toggle-export-menu" title="Export">
             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.29"/></svg>
           </button>
           <div class="export-menu" id="exportMenu">
-            <button class="export-menu-item" onclick="exportData()">Export as JSON</button>
-            <button class="export-menu-item" onclick="exportCollectionsJs()" id="exportCollectionsLabel">Export as collections.js</button>
-            <button class="export-menu-item" onclick="exportWatchedJs()" id="exportWatchedLabel">Export as watched.js</button>
-            <button class="export-menu-item" onclick="exportPlaylistJs()" id="exportPlaylistLabel">Export as playlist.js</button>
+            <button class="export-menu-item" data-action="export-data">Export as JSON</button>
+            <button class="export-menu-item" data-action="export-collections-js" id="exportCollectionsLabel">Export as collections.js</button>
+            <button class="export-menu-item" data-action="export-watched-js" id="exportWatchedLabel">Export as watched.js</button>
+            <button class="export-menu-item" data-action="export-playlist-js" id="exportPlaylistLabel">Export as playlist.js</button>
             <div class="export-menu-divider"></div>
-            <button class="export-menu-item export-menu-item-all" onclick="exportAllJs()">
+            <button class="export-menu-item export-menu-item-all" data-action="export-all-js">
               <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               Export All JS Files
             </button>
           </div>
         </div>
         <div class="view-toggle">
-          <button class="view-btn active" id="gridBtn" onclick="setView('grid')" title="Grid view">
+          <button class="view-btn active" id="gridBtn" data-action="set-view" data-view="grid" title="Grid view">
             <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
           </button>
-          <button class="view-btn" id="listBtn" onclick="setView('list')" title="List view">
+          <button class="view-btn" id="listBtn" data-action="set-view" data-view="list" title="List view">
             <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="2"/><rect x="3" y="11" width="18" height="2"/><rect x="3" y="18" width="18" height="2"/></svg>
           </button>
         </div>
@@ -235,11 +235,11 @@
     <div class="modal-title">
       <svg width="18" height="18" fill="none" stroke="var(--indigo-bright)" stroke-width="2" viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.4a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>
       Add YouTube Video
-      <button class="modal-close" onclick="closeModal('addModal')">×</button>
+      <button class="modal-close" data-action="close-modal" data-modal="addModal">×</button>
     </div>
     <div class="field">
       <label>YouTube URL *</label>
-      <input type="text" id="addUrl" placeholder="https://youtube.com/watch?v=..." oninput="previewUrl();checkAddDuplicate()" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <input type="text" id="addUrl" placeholder="https://youtube.com/watch?v=..." data-action="add-url-input" autocomplete="off" autocapitalize="off" spellcheck="false">
       <div class="field-error" id="addUrlDuplicateMsg" style="display:none;">Duplicate</div>
     </div>
     <div class="field">
@@ -248,17 +248,17 @@
     </div>
     <div class="field">
       <label>Collection</label>
-      <select id="addCollection" onchange="refreshGroupSelect('addCollection','addGroup');checkAddDuplicate()">
+      <select id="addCollection" data-action="add-collection-change">
         <option value="">— No collection —</option>
       </select>
     </div>
     <div class="field">
       <label>Group / Topic <span style="color:var(--text-dim);font-weight:400;">(optional sub-section)</span></label>
       <div style="display:flex;gap:8px;">
-        <select id="addGroup" style="flex:1;" onchange="checkAddDuplicate()">
+        <select id="addGroup" style="flex:1;" data-action="add-group-change">
           <option value="">— No group —</option>
         </select>
-        <input type="text" id="addGroupNew" placeholder="Or type new group…" style="flex:1;" oninput="checkAddDuplicate()">
+        <input type="text" id="addGroupNew" placeholder="Or type new group…" style="flex:1;" data-action="add-group-new-input">
       </div>
     </div>
     <div class="field">
@@ -266,8 +266,8 @@
       <textarea id="addNote" placeholder="Your thoughts, timestamps, why you saved this…"></textarea>
     </div>
     <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
-      <button class="btn btn-ghost" onclick="closeModal('addModal')">Cancel</button>
-      <button class="btn btn-primary" id="saveVideoBtn" onclick="saveVideo()">Save to Vault</button>
+      <button class="btn btn-ghost" data-action="close-modal" data-modal="addModal">Cancel</button>
+      <button class="btn btn-primary" id="saveVideoBtn" data-action="save-video">Save to Vault</button>
     </div>
   </div>
 </div>
@@ -277,7 +277,7 @@
   <div class="modal" style="width:360px;">
     <div class="modal-title">
       New Collection
-      <button class="modal-close" onclick="closeModal('collectionModal')">×</button>
+      <button class="modal-close" data-action="close-modal" data-modal="collectionModal">×</button>
     </div>
     <div class="field">
       <label>Collection name</label>
@@ -288,8 +288,8 @@
       <div class="color-picker-row" id="colorPicker"></div>
     </div>
     <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
-      <button class="btn btn-ghost" onclick="closeModal('collectionModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveCollection()">Create</button>
+      <button class="btn btn-ghost" data-action="close-modal" data-modal="collectionModal">Cancel</button>
+      <button class="btn btn-primary" data-action="save-collection">Create</button>
     </div>
   </div>
 </div>
@@ -299,20 +299,20 @@
   <div class="modal" style="width:360px;">
     <div class="modal-title">
       New Playlist
-      <button class="modal-close" onclick="closeModal('playlistModal')">×</button>
+      <button class="modal-close" data-action="close-modal" data-modal="playlistModal">×</button>
     </div>
     <div class="field">
       <label>Playlist name</label>
       <input type="text" id="playlistName" placeholder="e.g. Watch Later, Favourites…"
-        onkeydown="if(event.key==='Enter') savePlaylist()">
+        data-action="playlist-name-keydown">
     </div>
     <div class="field">
       <label>Color</label>
       <div class="color-picker-row" id="playlistColorPicker"></div>
     </div>
     <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
-      <button class="btn btn-ghost" onclick="closeModal('playlistModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="savePlaylist()">Create</button>
+      <button class="btn btn-ghost" data-action="close-modal" data-modal="playlistModal">Cancel</button>
+      <button class="btn btn-primary" data-action="save-playlist">Create</button>
     </div>
   </div>
 </div>
@@ -323,16 +323,16 @@
     <div class="modal-title">
       <svg width="16" height="16" fill="none" stroke="var(--indigo-bright)" stroke-width="2" viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
       New Group
-      <button class="modal-close" onclick="closeModal('groupModal')">×</button>
+      <button class="modal-close" data-action="close-modal" data-modal="groupModal">×</button>
     </div>
     <div class="field">
       <label>Group name</label>
       <input type="text" id="groupName" placeholder="e.g. Physics, AI, Shaders…"
-        onkeydown="if(event.key==='Enter') saveGroup()">
+        data-action="group-name-keydown">
     </div>
     <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
-      <button class="btn btn-ghost" onclick="closeModal('groupModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveGroup()">Create</button>
+      <button class="btn btn-ghost" data-action="close-modal" data-modal="groupModal">Cancel</button>
+      <button class="btn btn-primary" data-action="save-group">Create</button>
     </div>
   </div>
 </div>
@@ -343,13 +343,13 @@
     <div class="modal-title">
       <svg width="18" height="18" fill="none" stroke="var(--indigo-bright)" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       <span id="exportConfirmTitle">Export</span>
-      <button class="modal-close" onclick="closeModal('exportConfirmModal')">×</button>
+      <button class="modal-close" data-action="close-modal" data-modal="exportConfirmModal">×</button>
     </div>
     <p id="exportConfirmMessage" style="margin:0;font-size:13px;color:var(--text-muted);line-height:1.6;"></p>
     <div id="exportConfirmDetails" style="font-size:12px;color:var(--text);background:var(--surface-raised);padding:14px 16px;border-radius:8px;border-left:3px solid var(--indigo);margin-top:14px;white-space:pre-wrap;line-height:1.7;font-family:var(--mono);"></div>
     <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px;">
-      <button class="btn btn-ghost" onclick="closeModal('exportConfirmModal')">Cancel</button>
-      <button class="btn btn-primary" id="exportConfirmBtn" onclick="confirmExport()">Export</button>
+      <button class="btn btn-ghost" data-action="close-modal" data-modal="exportConfirmModal">Cancel</button>
+      <button class="btn btn-primary" id="exportConfirmBtn" data-action="confirm-export">Export</button>
     </div>
   </div>
 </div>
@@ -359,7 +359,7 @@
   <div class="modal">
     <div class="modal-title">
       Import URLs
-      <button class="modal-close" onclick="closeModal('importModal')">×</button>
+      <button class="modal-close" data-action="close-modal" data-modal="importModal">×</button>
     </div>
     <div class="field">
       <label>Paste YouTube URLs (one per line)</label>
@@ -367,7 +367,7 @@
     </div>
     <div class="field">
       <label>Add to collection (optional)</label>
-      <select id="importCollection" onchange="refreshGroupSelect('importCollection','importGroup')">
+      <select id="importCollection" data-action="import-collection-change">
         <option value="">— No collection —</option>
       </select>
     </div>
@@ -379,8 +379,8 @@
       </div>
     </div>
     <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
-      <button class="btn btn-ghost" onclick="closeModal('importModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="importUrls()">Import All</button>
+      <button class="btn btn-ghost" data-action="close-modal" data-modal="importModal">Cancel</button>
+      <button class="btn btn-primary" data-action="import-urls">Import All</button>
     </div>
   </div>
 </div>
@@ -391,7 +391,7 @@
     <div class="modal-title">
       <svg width="16" height="16" fill="none" stroke="var(--indigo-bright)" stroke-width="2" viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
       Move to Group
-      <button class="modal-close" onclick="closeModal('moveGroupModal')">×</button>
+      <button class="modal-close" data-action="close-modal" data-modal="moveGroupModal">×</button>
     </div>
     <div style="font-size:12px;color:var(--text-muted);background:var(--surface-raised);padding:8px 12px;border-radius:6px;border-left:2px solid var(--indigo);" id="moveGroupVideoTitle"></div>
     <div class="field">
@@ -405,8 +405,8 @@
       <input type="text" id="moveGroupNewInput" placeholder="Type new group name…">
     </div>
     <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
-      <button class="btn btn-ghost" onclick="closeModal('moveGroupModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveMoveGroup()">Move</button>
+      <button class="btn btn-ghost" data-action="close-modal" data-modal="moveGroupModal">Cancel</button>
+      <button class="btn btn-primary" data-action="save-move-group">Move</button>
     </div>
   </div>
 </div>
@@ -417,12 +417,12 @@
     <div class="modal-title">
       <svg width="16" height="16" fill="none" stroke="var(--indigo-bright)" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       New Category
-      <button class="modal-close" onclick="closeModal('createCategoryModal')">×</button>
+      <button class="modal-close" data-action="close-modal" data-modal="createCategoryModal">×</button>
     </div>
     <div class="field">
       <label>Category name</label>
       <input type="text" id="newCategoryName" placeholder="e.g. Cooking, Gaming, Fitness…"
-        onkeydown="if(event.key==='Enter') createCategory()">
+        data-action="category-name-keydown">
     </div>
     <div class="field">
       <label>Color</label>
@@ -432,8 +432,8 @@
       This downloads 4 starter files (a new page + 3 config files). Save them into the same folder as your other TholsStudio pages, then open the new page from there.
     </p>
     <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
-      <button class="btn btn-ghost" onclick="closeModal('createCategoryModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="createCategory()">Create &amp; Download</button>
+      <button class="btn btn-ghost" data-action="close-modal" data-modal="createCategoryModal">Cancel</button>
+      <button class="btn btn-primary" data-action="create-category">Create &amp; Download</button>
     </div>
   </div>
 </div>
@@ -446,12 +446,12 @@
   <div class="modal" style="width:380px;">
     <div class="modal-title">
       <span id="confirmTitle">Confirm</span>
-      <button class="modal-close" onclick="closeConfirmModal()">×</button>
+      <button class="modal-close" data-action="close-confirm-modal">×</button>
     </div>
     <p id="confirmMessage" style="margin:0 0 20px;font-size:13px;color:var(--text-muted);line-height:1.6;"></p>
     <div style="display:flex;gap:10px;justify-content:flex-end;">
-      <button class="btn btn-ghost" onclick="closeConfirmModal()">Cancel</button>
-      <button class="btn btn-danger" id="confirmOkBtn" onclick="confirmOk()">Delete</button>
+      <button class="btn btn-ghost" data-action="close-confirm-modal">Cancel</button>
+      <button class="btn btn-danger" id="confirmOkBtn" data-action="confirm-ok">Delete</button>
     </div>
   </div>
 </div>
@@ -469,7 +469,8 @@
 <script src="finance/finance-collections.js"></script>
 <script src="finance/finance-playlist.js"></script>
 <script src="finance/finance-watched.js"></script>
-<script>window.__BUILTIN_APPS__ = [{"id":"music","name":"music","color":"#EC407A","file":"music.html"},{"id":"electronics","name":"electronics","color":"#29B6F6","file":"electronics.html"},{"id":"astrology","name":"astrology","color":"#AB47BC","file":"astrology.html"},{"id":"finance","name":"finance","color":"#AB46BC","file":"finance.html"},{"id":"cooking","name":"finance","color":"#AB64BC","file":"cooking.html"}];</script>
+<script>window.__BUILTIN_APPS__ = [{"id":"music","name":"music","color":"#EC407A","file":"music.html"},{"id":"electronics","name":"electronics","color":"#29B6F6","file":"electronics.html"},{"id":"astrology","name":"astrology","color":"#AB47BC","file":"astrology.html"},{"id":"finance","name":"finance","color":"#AB46BC","file":"finance.html"},{"id":"cooking","name":"cooking","color":"#AB64BC","file":"cooking.html"}];</script>
+<script src="template-tokens.js"></script>
 <script src="app.js"></script>
 
 </body>
