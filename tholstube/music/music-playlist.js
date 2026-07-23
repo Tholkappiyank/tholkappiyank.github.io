@@ -1,6 +1,6 @@
 // --------------------------------------------------------------
 // PLAYLIST CONFIG
-// Exported from TubeVault on 7/15/2026, 11:14:00 PM
+// Exported from TubeVault on 7/24/2026, 5:13:03 AM
 //
 // Each playlist: id, name, color, videoIds, videos (full details)
 // To apply as defaults: replace music-playlist.js and clear localStorage.
@@ -11,7 +11,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mqq9bpw24iah',
     name: 'Veena',
     color: '#26A69A',
-    videoIds: ['mrkeji70ynz7', 'mrkeji700r9r', 'mrkeji70bmr2', 'mrkeji70lik1', 'mrkeji70zoh3', 'mrkeji70yzr7', 'mrkeji7061tz', 'mrkeji70l1wy', 'mrkeji708pby', 'mrkeji70t2tl', 'mrkeji703lmt', 'mrkeji70eai1', 'mrkeji70g6bu', 'mrkeji70e1w3', 'mrkeji70a6rp', 'mrkeji70irpk', 'mrkeji70q6ln', 'mrkeji70kvqq', 'mrkeji70w51s', 'mrkeji70zwip', 'mrkeji70tp8j', 'mrkeji70wsi5', 'mrkeji70pxjv'],
+    videoIds: ['mry2bdaynjsw', 'mry2bday1l3a', 'mry2bdayuam3', 'mry2bday7wap', 'mry2bdayvgao', 'mry2bdaycabv', 'mry2bday85u6', 'mry2bdayxu4c', 'mry2bdayd3wu', 'mry2bday8bil', 'mry2bdayvz28', 'mry2bdayk32j', 'mry2bday0vml', 'mry2bdayjg1f', 'mry2bday52m7', 'mry2bdayq3vc', 'mry2bday9sk1', 'mry2bdayeovj', 'mry2bday9zd9', 'mry2bday49mq', 'mry2bday24lo', 'mry2bdayu1qv', 'mry2bday10jq'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=vIDl1E26FpU&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=2',
@@ -225,7 +225,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mr22a2y3jmrh',
     name: 'Daily Routine',
     color: '#AB47BC',
-    videoIds: ['mrkeji70bgaq', 'mrkeji70kwp3', 'mrkeji70f3vn', 'mrkeji70p10i', 'mrkeji703rc4', 'mrkeji70qxbv', 'mrkeji70njmk', 'mrkeji70y43v', 'mrkeji70u984', 'mrkeji708rxo', 'mrkeji70p6pd', 'mrkeji70nbcf', 'mrkeji70tdr6', 'mrkeji70z34r', 'mrkeji70hfkt', 'mrkeji702vn8', 'mrkeji701s84', 'mrkeji70maf2', 'mrkeji70z6ce', 'mrkeji70on41', 'mrkeji707u11', 'mrkeji70oxun', 'mrkeji70tyjk', 'mrm5tqefh5tr'],
+    videoIds: ['mry2bday8hpr', 'mry2bdayoual', 'mry2bdaywo1r', 'mry2bdayf2dp', 'mry2bday6f64', 'mry2bdaymli7', 'mry2bdayhni1', 'mry2bdaylycy', 'mry2bday5qq3', 'mry2bdayscy0', 'mry2bdayow50', 'mry2bdaywgty', 'mry2bdayerlc', 'mry2bday7d9g', 'mry2bdaygvnm', 'mry2bdayrzsh', 'mry2bdayx71l', 'mry2bdaymrqw', 'mry2bdaycb2k', 'mry2bdayjptc', 'mry2bdaykwny'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=eF9LRFbkHLQ&list=RDKUN5Uf9mObQ&index=27',
@@ -421,7 +421,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mrkqs7vie0fe',
     name: 'Daily Routine - Melody',
     color: '#66BB6A',
-    videoIds: ['mrkupihbcu1h', 'mrkukhs0qxv8', 'mrkrhfqd55jj', 'mrkraqg4pjbu', 'mrkr2wef1z3q', 'mrkqrbe501v5', 'mrkqlbmmai4a', 'mrm8xxu7zfpn', 'mrm8ruey1qbd', 'mrm8nvfn7yzh', 'mrm8ilhu0m9u', 'mrm7qxy8tm4e', 'mrm7ermreof9', 'mrm73ubbpus7', 'mrm6xvzn5hlq', 'mrm6qs2rhf0z', 'mrm6la4cmca5', 'mrm6f7ls856k', 'mrm6en1ha1k9', 'mrm65nop3xer', 'mrm5rkbqdvkc', 'mrm5gysgpba3'],
+    videoIds: ['mry2bdaycaqu', 'mry2bdaysib7', 'mry2bday5j56', 'mry2bday2zvb', 'mry2bdaye30x', 'mry2bdayuyem', 'mry2bdayu4bf', 'mry2bdaxthjs', 'mry2bdaxhoi1', 'mry2bdax0p4l', 'mry2bdayf4di', 'mry2bdayauki', 'mry2bdayjujx', 'mry2bdayqz3e', 'mry2bdaynsek', 'mry2bdaycmi1', 'mry2bdayjmom', 'mry2bday8srp', 'mry2bdaysqwm', 'mry2bdaymtf0', 'mry2bdayz73e', 'mry2bdayg6b9'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=MgWrkGfDn-o&list=RDWOxan-rN4Cw&index=13',
@@ -627,7 +627,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mrlk1tk2ny6u',
     name: 'Humming',
     color: '#29B6F6',
-    videoIds: ['mrlk2lblc9yb', 'mrlwuizn5dwh', 'mrm98fsa8dep'],
+    videoIds: ['mry2bday03cg', 'mry2bdaydyvl', 'mry2bdayu4j6', 'mry5azu483et', 'mry59vcna0bq'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=hUfuDyhxHT8&list=RDhUfuDyhxHT8&start_radio=1&t=5409s',
@@ -639,21 +639,151 @@ const DEFAULT_PLAYLISTS = [
       note: ''
     },
     {
-      url: 'https://www.youtube.com/watch?v=UH3bfZ6Rb9E&list=RDUH3bfZ6Rb9E&start_radio=1',
-      videoId: 'UH3bfZ6Rb9E',
-      playlistId: 'RDUH3bfZ6Rb9E',
-      title: 'Persian & Spanish Fusion Relaxing Music 4K | Persian Gulf & Spanish Beaches | Guitar & Santur',
-      channel: 'WolfRelaxMusicHub',
-      collectionPath: 'Music / Humming',
-      note: ''
-    },
-    {
       url: 'https://www.youtube.com/watch?v=MnBbHXu8IyA&list=RD9fyOu2dxgOY&index=11',
       videoId: 'MnBbHXu8IyA',
       playlistId: 'RD9fyOu2dxgOY',
       title: 'Innisai Alapadaiye ❤️ | Heavenly Vibes from Varalaaru | A.R. Rahman Tribute',
       channel: 'Prabhu Musiq Vibez',
       collectionPath: 'Music / Humming',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=Y9oCBRDjKjY&t=1612s',
+      videoId: 'Y9oCBRDjKjY',
+      title: '',
+      channel: '',
+      collectionPath: 'Music / Humming',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=7Yb8-bVy8E0&list=RD7Yb8-bVy8E0&start_radio=1&t=246s',
+      videoId: '7Yb8-bVy8E0',
+      playlistId: 'RD7Yb8-bVy8E0',
+      title: '',
+      channel: '',
+      collectionPath: 'Music / Humming',
+      note: ''
+    }
+    ]
+  },
+  {
+    id: 'mry3rf1xoxry',
+    name: 'Music - Western Instrumental',
+    color: '#FF7043',
+    videoIds: ['mry3vo0z39oi', 'mry2bdayc22a', 'mry2bdayngv4'],
+    videos: [
+    {
+      url: 'https://www.youtube.com/watch?v=UH3bfZ6Rb9E&list=RDUH3bfZ6Rb9E',
+      videoId: 'UH3bfZ6Rb9E',
+      playlistId: 'RDUH3bfZ6Rb9E',
+      title: 'Persian & Spanish Fusion Relaxing Music 4K | Persian Gulf & Spanish Beaches | Guitar & Santur',
+      channel: 'WolfRelaxMusicHub',
+      collectionPath: 'Music -English / Instrumental',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=GmtTDvNcXcU&list=RDGmtTDvNcXcU&start_radio=1',
+      videoId: 'GmtTDvNcXcU',
+      playlistId: 'RDGmtTDvNcXcU',
+      title: 'Despacito (Piano Cover) - Peter Bence',
+      channel: 'Peter Bence',
+      collectionPath: 'Music -English / Instrumental',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=_SywaUbg5wU',
+      videoId: '_SywaUbg5wU',
+      title: 'AFRICA - Toto x Peter Bence (Piano Cover)',
+      channel: 'Peter Bence',
+      collectionPath: 'Music -English / Instrumental',
+      note: ''
+    }
+    ]
+  },
+  {
+    id: 'mry3s20iasmn',
+    name: 'Music - Lyrics',
+    color: '#EC407A',
+    videoIds: ['mry2bdaycjjd', 'mry2bdayfevs', 'mry2bdayml0w', 'mry2bdaynvis', 'mry2bdayhz6z', 'mry2bdayk10q', 'mry2bdaylz23'],
+    videos: [
+    {
+      url: 'https://www.youtube.com/watch?v=1__CAdTJ5JU&list=RD1__CAdTJ5JU&start_radio=1',
+      videoId: '1__CAdTJ5JU',
+      playlistId: 'RD1__CAdTJ5JU',
+      title: 'Tones and I - Dance Monkey (Lyrics)',
+      channel: 'Royal Music',
+      collectionPath: 'Music -English / English - Lyrics',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=OcGe6Hy8qOE&list=RDOcGe6Hy8qOE&start_radio=1',
+      videoId: 'OcGe6Hy8qOE',
+      playlistId: 'RDOcGe6Hy8qOE',
+      title: 'Ed Sheeran - Shape of You (Lyrics)',
+      channel: 'Pizza Music',
+      collectionPath: 'Music -English / English - Lyrics',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=mY9fNwGE7YA&list=RDmY9fNwGE7YA&start_radio=1',
+      videoId: 'mY9fNwGE7YA',
+      playlistId: 'RDmY9fNwGE7YA',
+      title: 'Sia - Cheap Thrills (Lyrics) ft. Sean Paul',
+      channel: '7clouds',
+      collectionPath: 'Music -English / English - Lyrics',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=czWcyZRAMtk&list=RDczWcyZRAMtk&start_radio=1',
+      videoId: 'czWcyZRAMtk',
+      playlistId: 'RDczWcyZRAMtk',
+      title: 'Shakira - Waka Waka (This Time For Africa) (Lyrics)',
+      channel: '7clouds',
+      collectionPath: 'Music -English / English - Lyrics',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=qdpXxGPqW-Y&list=RDoS07d8Gr4tw&index=2',
+      videoId: 'qdpXxGPqW-Y',
+      playlistId: 'RDoS07d8Gr4tw',
+      title: 'Alan Walker - Faded (Lyrics)',
+      channel: '7clouds',
+      collectionPath: 'Music -English / English - Lyrics',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=oS07d8Gr4tw&list=RDoS07d8Gr4tw&start_radio=1',
+      videoId: 'oS07d8Gr4tw',
+      playlistId: 'RDoS07d8Gr4tw',
+      title: 'Sia - Unstoppable (Lyrics)',
+      channel: '7clouds',
+      collectionPath: 'Music -English / English - Lyrics',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=dtiafgbsQl4&list=RDdtiafgbsQl4&start_radio=1',
+      videoId: 'dtiafgbsQl4',
+      playlistId: 'RDdtiafgbsQl4',
+      title: 'YouTube Video',
+      channel: '',
+      collectionPath: 'Music -English / English - Lyrics',
+      note: 'Collection'
+    }
+    ]
+  },
+  {
+    id: 'mry5i90u4w6x',
+    name: 'Music - Album',
+    color: '#EF5350',
+    videoIds: ['mry5hdh1y5n7'],
+    videos: [
+    {
+      url: 'https://www.youtube.com/watch?v=Dg9ePUDm4Vs&list=RDDg9ePUDm4Vs&start_radio=1',
+      videoId: 'Dg9ePUDm4Vs',
+      playlistId: 'RDDg9ePUDm4Vs',
+      title: 'Positive Energy 2026 🌞 Feel Good Deep House Music for Morning Focus | ChillMorning Vibes',
+      channel: 'ChillMorning Vibes',
+      collectionPath: 'Music -English / Albums',
       note: ''
     }
     ]

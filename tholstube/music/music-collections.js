@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
-// Exported from TubeVault on 7/15/2026, 11:13:59 PM
+// Exported from TubeVault on 7/24/2026, 5:13:03 AM
 //
 // STRUCTURE — easy to browse/edit in any JSON editor:
 //   DEFAULT_COLLECTIONS
@@ -39,6 +39,39 @@ const DEFAULT_COLLECTIONS = [
     name: 'Music',
     color: '#EC407A',
     groups: {
+      'Humming': [
+        {
+          url: 'https://www.youtube.com/watch?v=Y9oCBRDjKjY&t=1612s',
+          videoId: 'Y9oCBRDjKjY',
+          title: '',
+          channel: '',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=7Yb8-bVy8E0&list=RD7Yb8-bVy8E0&start_radio=1&t=246s',
+          videoId: '7Yb8-bVy8E0',
+          playlistId: 'RD7Yb8-bVy8E0',
+          title: '',
+          channel: '',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=MnBbHXu8IyA&list=RD9fyOu2dxgOY&index=11',
+          videoId: 'MnBbHXu8IyA',
+          playlistId: 'RD9fyOu2dxgOY',
+          title: 'Innisai Alapadaiye ❤️ | Heavenly Vibes from Varalaaru | A.R. Rahman Tribute',
+          channel: 'Prabhu Musiq Vibez',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=hUfuDyhxHT8&list=RDhUfuDyhxHT8&start_radio=1&t=5409s',
+          videoId: 'hUfuDyhxHT8',
+          playlistId: 'RDhUfuDyhxHT8',
+          title: 'Persian Trance 🌙 Mystical Middle Eastern Deep Trance Mix for Work, Study & Meditation',
+          channel: 'Persian Focus Temple',
+          note: ''
+        },
+      ],
       'Other Lang': [
         {
           url: 'https://www.youtube.com/watch?v=PgCliOxl41o&list=RDPgCliOxl41o&start_radio=1',
@@ -264,32 +297,6 @@ const DEFAULT_COLLECTIONS = [
           playlistId: 'RDWOxan-rN4Cw',
           title: 'Kandaangi Kandaangi - Video Song | 4K | Jilla Movie | Vijay | Kajal Agarwal | D.Imman | Star Music',
           channel: 'Star Music India',
-          note: ''
-        },
-      ],
-      'Humming': [
-        {
-          url: 'https://www.youtube.com/watch?v=MnBbHXu8IyA&list=RD9fyOu2dxgOY&index=11',
-          videoId: 'MnBbHXu8IyA',
-          playlistId: 'RD9fyOu2dxgOY',
-          title: 'Innisai Alapadaiye ❤️ | Heavenly Vibes from Varalaaru | A.R. Rahman Tribute',
-          channel: 'Prabhu Musiq Vibez',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=UH3bfZ6Rb9E&list=RDUH3bfZ6Rb9E&start_radio=1',
-          videoId: 'UH3bfZ6Rb9E',
-          playlistId: 'RDUH3bfZ6Rb9E',
-          title: 'Persian & Spanish Fusion Relaxing Music 4K | Persian Gulf & Spanish Beaches | Guitar & Santur',
-          channel: 'WolfRelaxMusicHub',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=hUfuDyhxHT8&list=RDhUfuDyhxHT8&start_radio=1&t=5409s',
-          videoId: 'hUfuDyhxHT8',
-          playlistId: 'RDhUfuDyhxHT8',
-          title: 'Persian Trance 🌙 Mystical Middle Eastern Deep Trance Mix for Work, Study & Meditation',
-          channel: 'Persian Focus Temple',
           note: ''
         },
       ],
@@ -657,6 +664,22 @@ const DEFAULT_COLLECTIONS = [
     groups: {
       'Instrumental': [
         {
+          url: 'https://www.youtube.com/watch?v=iSi9Sb2qiN0&list=RDiSi9Sb2qiN0&start_radio=1',
+          videoId: 'iSi9Sb2qiN0',
+          playlistId: 'RDiSi9Sb2qiN0',
+          title: 'Mediterranean Cha-Cha Groove | Flamenco Accordion Banjo Flute & Sax Fusion',
+          channel: 'FlameVolk',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=UH3bfZ6Rb9E&list=RDUH3bfZ6Rb9E',
+          videoId: 'UH3bfZ6Rb9E',
+          playlistId: 'RDUH3bfZ6Rb9E',
+          title: 'Persian & Spanish Fusion Relaxing Music 4K | Persian Gulf & Spanish Beaches | Guitar & Santur',
+          channel: 'WolfRelaxMusicHub',
+          note: ''
+        },
+        {
           url: 'https://www.youtube.com/watch?v=_SywaUbg5wU',
           videoId: '_SywaUbg5wU',
           title: 'AFRICA - Toto x Peter Bence (Piano Cover)',
@@ -673,6 +696,14 @@ const DEFAULT_COLLECTIONS = [
         },
       ],
       'Albums': [
+        {
+          url: 'https://www.youtube.com/watch?v=Dg9ePUDm4Vs&list=RDDg9ePUDm4Vs&start_radio=1',
+          videoId: 'Dg9ePUDm4Vs',
+          playlistId: 'RDDg9ePUDm4Vs',
+          title: 'Positive Energy 2026 🌞 Feel Good Deep House Music for Morning Focus | ChillMorning Vibes',
+          channel: 'ChillMorning Vibes',
+          note: ''
+        },
         {
           url: 'https://www.youtube.com/watch?v=8N_Yro5QeCE&list=RD1__CAdTJ5JU&index=2',
           videoId: '8N_Yro5QeCE',
