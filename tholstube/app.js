@@ -1471,7 +1471,7 @@ function removeVideoFromPlaylist(videoId, playlistId) {
 }
 
 // Shows a playlist picker to add all videos in a GROUP to a chosen playlist
-function openGroupPlaylistPicker(e, colId, groupName) {
+function openGroupPlaylistPicker(e, colId, groupName, anchorEl) {
   e.stopPropagation();
   document.querySelectorAll('.playlist-picker').forEach(el => el.remove());
 
@@ -1512,7 +1512,7 @@ function openGroupPlaylistPicker(e, colId, groupName) {
       document.querySelectorAll('.playlist-picker').forEach(el => el.remove());
     });
   });
-  const rect = e.currentTarget.getBoundingClientRect();
+  const rect = anchorEl.getBoundingClientRect();
   picker.style.cssText = `position:fixed;z-index:9999;top:${rect.bottom + 4}px;left:${rect.left}px`;
   setTimeout(() => {
     const pr = picker.getBoundingClientRect();
@@ -1539,7 +1539,7 @@ function addGroupToPlaylist(colId, groupName, playlistId) {
 }
 
 // Shows a playlist picker to add ALL videos in a collection to a chosen playlist
-function openCollectionPlaylistPicker(e, colId) {
+function openCollectionPlaylistPicker(e, colId, anchorEl) {
   e.stopPropagation();
   document.querySelectorAll('.playlist-picker').forEach(el => el.remove());
 
@@ -1578,7 +1578,6 @@ function openCollectionPlaylistPicker(e, colId) {
       document.querySelectorAll('.playlist-picker').forEach(el => el.remove());
     });
   });
-  const anchorEl = e.currentTarget;
   const rect = anchorEl.getBoundingClientRect();
   picker.style.cssText = `position:fixed;z-index:9999;top:${rect.bottom + 4}px;left:${rect.left}px`;
   setTimeout(() => {
@@ -3351,14 +3350,14 @@ const CLICK_ACTIONS = {
   'create-category': () => createCategory(),
   'close-confirm-modal': () => closeConfirmModal(),
   'confirm-ok': () => confirmOk(),
-  'open-collection-playlist-picker': (el, event) => openCollectionPlaylistPicker(event, el.dataset.id),
+  'open-collection-playlist-picker': (el, event) => openCollectionPlaylistPicker(event, el.dataset.id, el),
   'rename-collection': (el, event) => startRename(event, el.dataset.id),
   'delete-collection': (el, event) => deleteCollection(event, el.dataset.id),
   'rename-playlist': (el, event) => startPlaylistRename(event, el.dataset.id),
   'clear-playlist': (el) => clearPlaylist(el.dataset.id),
   'delete-playlist': (el) => deletePlaylist(el.dataset.id),
   'toggle-group': (el) => toggleGroup(el.dataset.key),
-  'open-group-playlist-picker': (el, event) => openGroupPlaylistPicker(event, el.dataset.colId, el.dataset.group),
+  'open-group-playlist-picker': (el, event) => openGroupPlaylistPicker(event, el.dataset.colId, el.dataset.group, el),
   'rename-group': (el) => renameGroupPrompt(el.dataset.colId, el.dataset.group),
   'delete-group': (el) => deleteGroupPrompt(el.dataset.colId, el.dataset.group),
   'open-group-modal': (el) => openGroupModal(el.dataset.colId),

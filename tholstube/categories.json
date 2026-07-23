@@ -4,6 +4,6 @@
     { "id": "electronics", "name": "electronics", "color": "#29B6F6" },
     { "id": "astrology",   "name": "astrology",   "color": "#AB47BC" },
     { "id": "finance",   "name": "finance",   "color": "#AB46BC" },
-	{ "id": "cooking",   "name": "cooking",   "color": "#AB64BC" }
+	  { "id": "cooking",   "name": "cooking",   "color": "#AB64BC" }
   ]
 }
