@@ -152,7 +152,6 @@ function renderSidebar() {
     if (currentFilter === col.id) btn.classList.add('active');
 
     btn.innerHTML = `
-      <span class="selected-tick" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
       <span class="drag-handle" title="Drag to reorder">
         <svg width="12" height="10" viewBox="0 0 12 10" fill="currentColor">
           <rect x="0" y="0" width="12" height="1.5" rx="1"/>
@@ -245,7 +244,6 @@ function renderPlaylistsSidebar() {
     btn.draggable = true;
     const dotColor = pl.color || '#78909C';
     btn.innerHTML = `
-      <span class="selected-tick" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
       <span class="drag-handle" title="Drag to reorder">
         <svg width="12" height="10" viewBox="0 0 12 10" fill="currentColor">
           <rect x="0" y="0" width="12" height="1.5" rx="1"/>

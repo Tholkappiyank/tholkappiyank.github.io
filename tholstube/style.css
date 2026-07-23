@@ -237,12 +237,6 @@
     z-index: 2; pointer-events: none;
   }
   .sidebar-item.active .selected-tick { display: flex; }
-  /* on hover of a draggable selected item, swap the tick for the drag handle */
-  .sidebar-item.draggable.active:hover .selected-tick { display: none; }
-  /* Playlist rows: keep showing the tick on hover instead of swapping to the
-     drag handle (scoped to the playlist list only, via #playlistsList) */
-  #playlistsList .sidebar-item.draggable.active:hover .selected-tick { display: flex; }
-  #playlistsList .sidebar-item.draggable.active:hover .drag-handle { opacity: 0; }
   /* SVG icons in library items — fixed 14px slot so text aligns with collection items */
   .sidebar-item > svg { width: 14px; height: 14px; flex-shrink: 0; }
   /* collection color — circle, same 14px as icon slot */
@@ -910,7 +904,7 @@
   ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
 
   /* ── SIDEBAR DRAG AND DROP ── */
-  .sidebar-item.draggable { cursor: pointer; }
+  .sidebar-item.draggable { cursor: grab; }
   .sidebar-item.dragging { opacity: 0.35; background: var(--surface) !important; cursor: grabbing; }
   .sidebar-item.drag-over-top { border-top: 2px solid var(--indigo-bright); margin-top: -2px; }
   .sidebar-item.drag-over-bottom { border-bottom: 2px solid var(--indigo-bright); margin-bottom: -2px; }
