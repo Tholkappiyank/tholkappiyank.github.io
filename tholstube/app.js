@@ -1469,6 +1469,16 @@ function removeVideoFromPlaylist(videoId, playlistId) {
 }
 
 // Shows a playlist picker to add all videos in a GROUP to a chosen playlist
+// Check icon shown per-row in the "add to playlist" picker — a plain tick
+// when every video is already in that playlist, an empty ring when it isn't.
+// Shared by the three openXPlaylistPicker functions below instead of each
+// keeping its own copy of this markup.
+function pickerCheckIcon(isIn) {
+  return isIn
+    ? `<span class="pp-check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>`
+    : `<span class="pp-check"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></span>`;
+}
+
 function openGroupPlaylistPicker(e, colId, groupName, anchorEl) {
   e.stopPropagation();
   document.querySelectorAll('.playlist-picker').forEach(el => el.remove());
@@ -1493,14 +1503,12 @@ function openGroupPlaylistPicker(e, colId, groupName, anchorEl) {
       const allIn = groupVids.every(v => isVideoInPlaylist(pl, v));
       const someIn = !allIn && groupVids.some(v => isVideoInPlaylist(pl, v));
       const label = allIn ? 'All added' : someIn ? 'Add remaining' : `Add all ${groupVids.length}`;
-      const checkIcon = allIn
-        ? `<span class="pp-check"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm-1.5 14.5l-4-4 1.41-1.41L10.5 13.67l5.59-5.59L17.5 9.5l-7 7z"/></svg></span>`
-        : `<span class="pp-check"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></span>`;
       return `<button class="playlist-picker-item${allIn ? ' in-playlist' : ''}" data-pl-id="${escHtml(pl.id)}">
-        ${checkIcon}
+        ${pickerCheckIcon(allIn)}
         ${escHtml(pl.name)} <span style="opacity:0.5;font-size:10px;margin-left:4px;">${label}</span>
       </button>`;
     }).join('')}`;
+
 
   document.body.appendChild(picker);
   picker.querySelectorAll('.playlist-picker-item').forEach(btn => {
@@ -1561,9 +1569,8 @@ function openCollectionPlaylistPicker(e, colId, anchorEl) {
       const allIn = colVideos.every(v => isVideoInPlaylist(pl, v));
       const someIn = !allIn && colVideos.some(v => isVideoInPlaylist(pl, v));
       const label = allIn ? 'All added' : someIn ? 'Add remaining' : `Add all ${colVideos.length}`;
-      const checkIcon = allIn ? `<span class="pp-check"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm-1.5 14.5l-4-4 1.41-1.41L10.5 13.67l5.59-5.59L17.5 9.5l-7 7z"/></svg></span>` : `<span class="pp-check"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></span>`;
       return `<button class="playlist-picker-item${allIn ? ' in-playlist' : ''}" data-pl-id="${escHtml(pl.id)}">
-        ${checkIcon}
+        ${pickerCheckIcon(allIn)}
         ${escHtml(pl.name)} <span style="opacity:0.5;font-size:10px;margin-left:4px;">${label}</span>
       </button>`;
     }).join('')}`;
@@ -1620,9 +1627,8 @@ function openPlaylistPicker(videoId, anchorEl) {
     <div class="playlist-picker-title">Add to playlist</div>
     ${state.playlists.map(pl => {
       const has = isVideoInPlaylist(pl, v);
-      const icon = has ? `<span class="pp-check"><svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm-1.5 14.5l-4-4 1.41-1.41L10.5 13.67l5.59-5.59L17.5 9.5l-7 7z"/></svg></span>` : `<span class="pp-check"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></span>`;
       return `<button class="playlist-picker-item${has ? ' in-playlist' : ''}" data-pl-id="${escHtml(pl.id)}" data-in-playlist="${has}">
-        ${icon}
+        ${pickerCheckIcon(has)}
         ${escHtml(pl.name)}
       </button>`;
     }).join('')}`;

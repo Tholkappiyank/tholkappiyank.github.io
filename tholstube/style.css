@@ -386,14 +386,12 @@
     cursor: pointer; transition: background 0.12s, color 0.12s;
   }
   .playlist-picker-item:hover { background: var(--surface); color: var(--text); }
-  /* Already-in-this-playlist state — left accent bar only (no background tint) */
+  /* Already-in-this-playlist state — white text + tick, no border accent */
   .playlist-picker-item.in-playlist {
-    color: var(--indigo-bright);
-    border-left: 2px solid var(--indigo-bright);
-    padding-left: 6px;
+    color: var(--text);
   }
   .playlist-picker-item .pp-check { color: var(--text-dim); opacity: 0.25; }
-  .playlist-picker-item.in-playlist .pp-check { color: var(--indigo-bright); opacity: 1; }
+  .playlist-picker-item.in-playlist .pp-check { color: var(--text); opacity: 1; }
   .add-collection-btn {
     display: flex; align-items: center; gap: 8px;
     padding: 7px 10px; border-radius: var(--radius-sm);
