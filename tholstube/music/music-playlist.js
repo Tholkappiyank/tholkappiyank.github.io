@@ -1,6 +1,6 @@
 // --------------------------------------------------------------
 // PLAYLIST CONFIG
-// Exported from TubeVault on 7/24/2026, 5:13:03 AM
+// Exported from TubeVault on 7/24/2026, 6:12:18 AM
 //
 // Each playlist: id, name, color, videoIds, videos (full details)
 // To apply as defaults: replace music-playlist.js and clear localStorage.
@@ -704,7 +704,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mry3s20iasmn',
     name: 'Music - Lyrics',
     color: '#EC407A',
-    videoIds: ['mry2bdaycjjd', 'mry2bdayfevs', 'mry2bdayml0w', 'mry2bdaynvis', 'mry2bdayhz6z', 'mry2bdayk10q', 'mry2bdaylz23'],
+    videoIds: ['mry2bdaycjjd', 'mry2bdayfevs', 'mry2bdayml0w', 'mry2bdaynvis', 'mry2bdayhz6z', 'mry2bdayk10q', 'mry2bdaylz23', 'mry77oaxzdg6', 'mry75w7kif0y'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=1__CAdTJ5JU&list=RD1__CAdTJ5JU&start_radio=1',
@@ -768,6 +768,24 @@ const DEFAULT_PLAYLISTS = [
       channel: '',
       collectionPath: 'Music -English / English - Lyrics',
       note: 'Collection'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=dFp_b5DPIIo&list=RDdFp_b5DPIIo&start_radio=1',
+      videoId: 'dFp_b5DPIIo',
+      playlistId: 'RDdFp_b5DPIIo',
+      title: 'Shawn Mendes, Camila Cabello - Señorita (Lyrics) Letra',
+      channel: '7clouds',
+      collectionPath: 'Music -English / English - Lyrics',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=kBhJ7tnO4fA&list=RDkBhJ7tnO4fA&start_radio=1',
+      videoId: 'kBhJ7tnO4fA',
+      playlistId: 'RDkBhJ7tnO4fA',
+      title: 'Imagine Dragons – Believer (Lyrics) | Powerful & Intense Anthem',
+      channel: 'Golden Echoes',
+      collectionPath: 'Music -English / English - Lyrics',
+      note: ''
     }
     ]
   },
@@ -786,6 +804,48 @@ const DEFAULT_PLAYLISTS = [
       collectionPath: 'Music -English / Albums',
       note: ''
     }
+    ]
+  },
+  {
+    id: 'mry7auazmnj4',
+    name: 'Selena Gomez',
+    color: '#FFA726',
+    videoIds: ['mry6fb66u4ky'],
+    videos: [
+    {
+      url: 'https://www.youtube.com/watch?v=WcIcVapfqXw',
+      videoId: 'WcIcVapfqXw',
+      title: 'Rema, Selena Gomez - Calm Down (Official Music Video)',
+      channel: 'SelenaGomezVEVO',
+      collectionPath: 'Music -English / Selena Gomez',
+      note: ''
+    }
+    ]
+  },
+  {
+    id: 'mry7c0sd62q1',
+    name: 'JFla Music',
+    color: '#FF7043',
+    videoIds: ['mry7cjfryeww'],
+    videos: [
+    {
+      url: 'https://www.youtube.com/watch?v=MhQKe-aERsU&list=RDMhQKe-aERsU',
+      videoId: 'MhQKe-aERsU',
+      playlistId: 'RDMhQKe-aERsU',
+      title: 'Ed Sheeran - Shape Of You ( cover by J.Fla )',
+      channel: 'JFlaMusic',
+      collectionPath: 'Music -English / JFla Music',
+      note: ''
+    }
+    ]
+  },
+  {
+    id: 'mry7g3srsau4',
+    name: 'Justin Bieber',
+    color: '#5C6BC0',
+    videoIds: [],
+    videos: [
+
     ]
   }
 ];

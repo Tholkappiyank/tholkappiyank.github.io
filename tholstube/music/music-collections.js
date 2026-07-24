@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
-// Exported from TubeVault on 7/24/2026, 5:13:03 AM
+// Exported from TubeVault on 7/24/2026, 6:12:18 AM
 //
 // STRUCTURE — easy to browse/edit in any JSON editor:
 //   DEFAULT_COLLECTIONS
@@ -39,6 +39,16 @@ const DEFAULT_COLLECTIONS = [
     name: 'Music',
     color: '#EC407A',
     groups: {
+      'Tabla': [
+        {
+          url: 'https://www.youtube.com/watch?v=tgneSmdEM2c&list=RDtgneSmdEM2c&start_radio=1',
+          videoId: 'tgneSmdEM2c',
+          playlistId: 'RDtgneSmdEM2c',
+          title: 'YouTube Video',
+          channel: '',
+          note: ''
+        },
+      ],
       'Humming': [
         {
           url: 'https://www.youtube.com/watch?v=Y9oCBRDjKjY&t=1612s',
@@ -662,90 +672,43 @@ const DEFAULT_COLLECTIONS = [
     name: 'Music -English',
     color: '#FFA726',
     groups: {
-      'Instrumental': [
+      'Justin Bieber': [
         {
-          url: 'https://www.youtube.com/watch?v=iSi9Sb2qiN0&list=RDiSi9Sb2qiN0&start_radio=1',
-          videoId: 'iSi9Sb2qiN0',
-          playlistId: 'RDiSi9Sb2qiN0',
-          title: 'Mediterranean Cha-Cha Groove | Flamenco Accordion Banjo Flute & Sax Fusion',
-          channel: 'FlameVolk',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=UH3bfZ6Rb9E&list=RDUH3bfZ6Rb9E',
-          videoId: 'UH3bfZ6Rb9E',
-          playlistId: 'RDUH3bfZ6Rb9E',
-          title: 'Persian & Spanish Fusion Relaxing Music 4K | Persian Gulf & Spanish Beaches | Guitar & Santur',
-          channel: 'WolfRelaxMusicHub',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=_SywaUbg5wU',
-          videoId: '_SywaUbg5wU',
-          title: 'AFRICA - Toto x Peter Bence (Piano Cover)',
-          channel: 'Peter Bence',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=GmtTDvNcXcU&list=RDGmtTDvNcXcU&start_radio=1',
-          videoId: 'GmtTDvNcXcU',
-          playlistId: 'RDGmtTDvNcXcU',
-          title: 'Despacito (Piano Cover) - Peter Bence',
-          channel: 'Peter Bence',
+          url: 'https://www.youtube.com/watch?v=euCqAq6BRa4&list=RDdFp_b5DPIIo&index=2',
+          videoId: 'euCqAq6BRa4',
+          playlistId: 'RDdFp_b5DPIIo',
+          title: 'DJ Snake - Let Me Love You (Official Music Video) ft. Justin Bieber',
+          channel: 'DJSnakeVEVO',
           note: ''
         },
       ],
-      'Albums': [
+      'JFla Music': [
         {
-          url: 'https://www.youtube.com/watch?v=Dg9ePUDm4Vs&list=RDDg9ePUDm4Vs&start_radio=1',
-          videoId: 'Dg9ePUDm4Vs',
-          playlistId: 'RDDg9ePUDm4Vs',
-          title: 'Positive Energy 2026 🌞 Feel Good Deep House Music for Morning Focus | ChillMorning Vibes',
-          channel: 'ChillMorning Vibes',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=8N_Yro5QeCE&list=RD1__CAdTJ5JU&index=2',
-          videoId: '8N_Yro5QeCE',
-          playlistId: 'RD1__CAdTJ5JU',
-          title: 'Selena Gomez - Feel Me (Live from the Revival Tour)',
-          channel: 'SelenaGomezVEVO',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=MhQKe-aERsU&list=RDMhQKe-aERsU&start_radio=1',
+          url: 'https://www.youtube.com/watch?v=MhQKe-aERsU&list=RDMhQKe-aERsU',
           videoId: 'MhQKe-aERsU',
           playlistId: 'RDMhQKe-aERsU',
           title: 'Ed Sheeran - Shape Of You ( cover by J.Fla )',
           channel: 'JFlaMusic',
           note: ''
         },
-        {
-          url: 'https://www.youtube.com/watch?v=WcIcVapfqXw&list=RDWcIcVapfqXw&start_radio=1',
-          videoId: 'WcIcVapfqXw',
-          playlistId: 'RDWcIcVapfqXw',
-          title: 'Rema, Selena Gomez - Calm Down (Official Music Video)',
-          channel: 'SelenaGomezVEVO',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=60ItHLz5WEA&list=RDOcGe6Hy8qOE&index=3',
-          videoId: '60ItHLz5WEA',
-          playlistId: 'RDOcGe6Hy8qOE',
-          title: 'Alan Walker - Faded',
-          channel: 'Alan Walker',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=euCqAq6BRa4&list=RDOcGe6Hy8qOE&index=2',
-          videoId: 'euCqAq6BRa4',
-          playlistId: 'RDOcGe6Hy8qOE',
-          title: 'DJ Snake - Let Me Love You (Official Music Video) ft. Justin Bieber',
-          channel: 'DJSnakeVEVO',
-          note: ''
-        },
       ],
       'English - Lyrics': [
+        {
+          url: 'https://www.youtube.com/watch?v=dFp_b5DPIIo&list=RDdFp_b5DPIIo&start_radio=1',
+          videoId: 'dFp_b5DPIIo',
+          playlistId: 'RDdFp_b5DPIIo',
+          title: 'Shawn Mendes, Camila Cabello - Señorita (Lyrics) Letra',
+          channel: '7clouds',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=kBhJ7tnO4fA&list=RDkBhJ7tnO4fA&start_radio=1',
+          videoId: 'kBhJ7tnO4fA',
+          playlistId: 'RDkBhJ7tnO4fA',
+          title: 'Imagine Dragons – Believer (Lyrics) | Powerful & Intense Anthem',
+          channel: 'Golden Echoes',
+          note: ''
+        },
         {
           url: 'https://www.youtube.com/watch?v=1__CAdTJ5JU&list=RD1__CAdTJ5JU&start_radio=1',
           videoId: '1__CAdTJ5JU',
@@ -801,6 +764,74 @@ const DEFAULT_COLLECTIONS = [
           title: 'YouTube Video',
           channel: '',
           note: 'Collection'
+        },
+      ],
+      'Selena Gomez': [
+        {
+          url: 'https://www.youtube.com/watch?v=WcIcVapfqXw',
+          videoId: 'WcIcVapfqXw',
+          title: 'Rema, Selena Gomez - Calm Down (Official Music Video)',
+          channel: 'SelenaGomezVEVO',
+          note: ''
+        },
+      ],
+      'Albums': [
+        {
+          url: 'https://www.youtube.com/watch?v=syGyHZYsob0&list=RDsyGyHZYsob0&start_radio=1&t=1856s',
+          videoId: 'syGyHZYsob0',
+          playlistId: 'RDsyGyHZYsob0',
+          title: 'Best Trance 2026 🚀 | Uplifting, Vocal & Melodic Trance Mix | EDM, Deep, Euphoric & Progressive',
+          channel: 'Trance Nova',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=Dg9ePUDm4Vs&list=RDDg9ePUDm4Vs&start_radio=1',
+          videoId: 'Dg9ePUDm4Vs',
+          playlistId: 'RDDg9ePUDm4Vs',
+          title: 'Positive Energy 2026 🌞 Feel Good Deep House Music for Morning Focus | ChillMorning Vibes',
+          channel: 'ChillMorning Vibes',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=60ItHLz5WEA&list=RDOcGe6Hy8qOE&index=3',
+          videoId: '60ItHLz5WEA',
+          playlistId: 'RDOcGe6Hy8qOE',
+          title: 'Alan Walker - Faded',
+          channel: 'Alan Walker',
+          note: ''
+        },
+      ],
+      'Instrumental': [
+        {
+          url: 'https://www.youtube.com/watch?v=iSi9Sb2qiN0&list=RDiSi9Sb2qiN0&start_radio=1',
+          videoId: 'iSi9Sb2qiN0',
+          playlistId: 'RDiSi9Sb2qiN0',
+          title: 'Mediterranean Cha-Cha Groove | Flamenco Accordion Banjo Flute & Sax Fusion',
+          channel: 'FlameVolk',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=UH3bfZ6Rb9E&list=RDUH3bfZ6Rb9E',
+          videoId: 'UH3bfZ6Rb9E',
+          playlistId: 'RDUH3bfZ6Rb9E',
+          title: 'Persian & Spanish Fusion Relaxing Music 4K | Persian Gulf & Spanish Beaches | Guitar & Santur',
+          channel: 'WolfRelaxMusicHub',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=_SywaUbg5wU',
+          videoId: '_SywaUbg5wU',
+          title: 'AFRICA - Toto x Peter Bence (Piano Cover)',
+          channel: 'Peter Bence',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=GmtTDvNcXcU&list=RDGmtTDvNcXcU&start_radio=1',
+          videoId: 'GmtTDvNcXcU',
+          playlistId: 'RDGmtTDvNcXcU',
+          title: 'Despacito (Piano Cover) - Peter Bence',
+          channel: 'Peter Bence',
+          note: ''
         },
       ]
     },
