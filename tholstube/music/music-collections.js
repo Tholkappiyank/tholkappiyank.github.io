@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
-// Exported from TubeVault on 7/24/2026, 6:12:18 AM
+// Exported from TubeVault on 7/27/2026, 7:05:27 AM
 //
 // STRUCTURE — easy to browse/edit in any JSON editor:
 //   DEFAULT_COLLECTIONS
@@ -672,6 +672,95 @@ const DEFAULT_COLLECTIONS = [
     name: 'Music -English',
     color: '#FFA726',
     groups: {
+      'Instrumental': [
+        {
+          url: 'https://www.youtube.com/watch?v=yYzCh36jejo&list=RDyYzCh36jejo&start_radio=1',
+          videoId: 'yYzCh36jejo',
+          playlistId: 'RDyYzCh36jejo',
+          title: 'Ancient Persian Sufi Trance — Sacred Rhythm to Quiet the Mind | Deep Work, Study & Meditation',
+          channel: 'Persian Focus Temple',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=Tg2vlqd47Yo',
+          videoId: 'Tg2vlqd47Yo',
+          title: 'Persian & Balkan Fusion Music 4K 🌊 | Relaxing Instrumental Mix from the Adriatic & Persia',
+          channel: 'WolfRelaxMusicHub',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=Bp8bV-jVCs4&list=RDBp8bV-jVCs4&start_radio=1',
+          videoId: 'Bp8bV-jVCs4',
+          playlistId: 'RDBp8bV-jVCs4',
+          title: 'Deep Work Ocean Waves ~ Focus Music for Intense Productivity & Deep Concentration',
+          channel: 'Aurora Work',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=iSi9Sb2qiN0&list=RDiSi9Sb2qiN0&start_radio=1',
+          videoId: 'iSi9Sb2qiN0',
+          playlistId: 'RDiSi9Sb2qiN0',
+          title: 'Mediterranean Cha-Cha Groove | Flamenco Accordion Banjo Flute & Sax Fusion',
+          channel: 'FlameVolk',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=UH3bfZ6Rb9E&list=RDUH3bfZ6Rb9E',
+          videoId: 'UH3bfZ6Rb9E',
+          playlistId: 'RDUH3bfZ6Rb9E',
+          title: 'Persian & Spanish Fusion Relaxing Music 4K | Persian Gulf & Spanish Beaches | Guitar & Santur',
+          channel: 'WolfRelaxMusicHub',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=_SywaUbg5wU',
+          videoId: '_SywaUbg5wU',
+          title: 'AFRICA - Toto x Peter Bence (Piano Cover)',
+          channel: 'Peter Bence',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=GmtTDvNcXcU&list=RDGmtTDvNcXcU&start_radio=1',
+          videoId: 'GmtTDvNcXcU',
+          playlistId: 'RDGmtTDvNcXcU',
+          title: 'Despacito (Piano Cover) - Peter Bence',
+          channel: 'Peter Bence',
+          note: ''
+        },
+      ],
+      'Albums': [
+        {
+          url: 'https://www.youtube.com/watch?v=syGyHZYsob0&list=RDsyGyHZYsob0&start_radio=1&t=1856s',
+          videoId: 'syGyHZYsob0',
+          playlistId: 'RDsyGyHZYsob0',
+          title: 'Best Trance 2026 🚀 | Uplifting, Vocal & Melodic Trance Mix | EDM, Deep, Euphoric & Progressive',
+          channel: 'Trance Nova',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=OmOEAVw7tM4',
+          videoId: 'OmOEAVw7tM4',
+          title: 'Morning Energy 2026 ☀️ Chill & Deep House Mix for Positive Vibes | Perfect Start',
+          channel: 'ChillMorning Vibes',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=Dg9ePUDm4Vs&list=RDDg9ePUDm4Vs&start_radio=1',
+          videoId: 'Dg9ePUDm4Vs',
+          playlistId: 'RDDg9ePUDm4Vs',
+          title: 'Positive Energy 2026 🌞 Feel Good Deep House Music for Morning Focus | ChillMorning Vibes',
+          channel: 'ChillMorning Vibes',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=60ItHLz5WEA&list=RDOcGe6Hy8qOE&index=3',
+          videoId: '60ItHLz5WEA',
+          playlistId: 'RDOcGe6Hy8qOE',
+          title: 'Alan Walker - Faded',
+          channel: 'Alan Walker',
+          note: ''
+        },
+      ],
       'Justin Bieber': [
         {
           url: 'https://www.youtube.com/watch?v=euCqAq6BRa4&list=RDdFp_b5DPIIo&index=2',
@@ -772,65 +861,6 @@ const DEFAULT_COLLECTIONS = [
           videoId: 'WcIcVapfqXw',
           title: 'Rema, Selena Gomez - Calm Down (Official Music Video)',
           channel: 'SelenaGomezVEVO',
-          note: ''
-        },
-      ],
-      'Albums': [
-        {
-          url: 'https://www.youtube.com/watch?v=syGyHZYsob0&list=RDsyGyHZYsob0&start_radio=1&t=1856s',
-          videoId: 'syGyHZYsob0',
-          playlistId: 'RDsyGyHZYsob0',
-          title: 'Best Trance 2026 🚀 | Uplifting, Vocal & Melodic Trance Mix | EDM, Deep, Euphoric & Progressive',
-          channel: 'Trance Nova',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=Dg9ePUDm4Vs&list=RDDg9ePUDm4Vs&start_radio=1',
-          videoId: 'Dg9ePUDm4Vs',
-          playlistId: 'RDDg9ePUDm4Vs',
-          title: 'Positive Energy 2026 🌞 Feel Good Deep House Music for Morning Focus | ChillMorning Vibes',
-          channel: 'ChillMorning Vibes',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=60ItHLz5WEA&list=RDOcGe6Hy8qOE&index=3',
-          videoId: '60ItHLz5WEA',
-          playlistId: 'RDOcGe6Hy8qOE',
-          title: 'Alan Walker - Faded',
-          channel: 'Alan Walker',
-          note: ''
-        },
-      ],
-      'Instrumental': [
-        {
-          url: 'https://www.youtube.com/watch?v=iSi9Sb2qiN0&list=RDiSi9Sb2qiN0&start_radio=1',
-          videoId: 'iSi9Sb2qiN0',
-          playlistId: 'RDiSi9Sb2qiN0',
-          title: 'Mediterranean Cha-Cha Groove | Flamenco Accordion Banjo Flute & Sax Fusion',
-          channel: 'FlameVolk',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=UH3bfZ6Rb9E&list=RDUH3bfZ6Rb9E',
-          videoId: 'UH3bfZ6Rb9E',
-          playlistId: 'RDUH3bfZ6Rb9E',
-          title: 'Persian & Spanish Fusion Relaxing Music 4K | Persian Gulf & Spanish Beaches | Guitar & Santur',
-          channel: 'WolfRelaxMusicHub',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=_SywaUbg5wU',
-          videoId: '_SywaUbg5wU',
-          title: 'AFRICA - Toto x Peter Bence (Piano Cover)',
-          channel: 'Peter Bence',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=GmtTDvNcXcU&list=RDGmtTDvNcXcU&start_radio=1',
-          videoId: 'GmtTDvNcXcU',
-          playlistId: 'RDGmtTDvNcXcU',
-          title: 'Despacito (Piano Cover) - Peter Bence',
-          channel: 'Peter Bence',
           note: ''
         },
       ]
