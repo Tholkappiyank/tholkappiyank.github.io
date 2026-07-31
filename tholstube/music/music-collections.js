@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
-// Exported from TubeVault on 7/27/2026, 7:05:27 AM
+// Exported from TubeVault on 7/31/2026, 3:44:10 PM
 //
 // STRUCTURE — easy to browse/edit in any JSON editor:
 //   DEFAULT_COLLECTIONS
@@ -41,6 +41,14 @@ const DEFAULT_COLLECTIONS = [
     groups: {
       'Tabla': [
         {
+          url: 'https://www.youtube.com/watch?v=yahan-tNpss&list=RDyahan-tNpss&start_radio=1',
+          videoId: 'yahan-tNpss',
+          playlistId: 'RDyahan-tNpss',
+          title: 'Veena & Violin Instrumental | 1 Hour Soulful Indian Classical Carnatic Music for Peace & Relaxation',
+          channel: 'Arrylene Instrumentals',
+          note: ''
+        },
+        {
           url: 'https://www.youtube.com/watch?v=tgneSmdEM2c&list=RDtgneSmdEM2c&start_radio=1',
           videoId: 'tgneSmdEM2c',
           playlistId: 'RDtgneSmdEM2c',
@@ -49,7 +57,64 @@ const DEFAULT_COLLECTIONS = [
           note: ''
         },
       ],
+      'Tamil Album': [
+        {
+          url: 'https://www.youtube.com/watch?v=JXmMgsZFenE&list=RD2tcIB-YHaNs&index=4',
+          videoId: 'JXmMgsZFenE',
+          playlistId: 'RD2tcIB-YHaNs',
+          title: 'Pookal Pookum | Madrasapattinam| Cover Version 4k - KS Harisankar',
+          channel: 'KS Harisankar',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=R5ymC7gXWJk&list=RDR5ymC7gXWJk&start_radio=1',
+          videoId: 'R5ymC7gXWJk',
+          playlistId: 'RDR5ymC7gXWJk',
+          title: 'Idhazhin Mozhi | Tamil Romantic Melody | NMC Productions',
+          channel: 'NMC Productions',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=R722GqixnNA',
+          videoId: 'R722GqixnNA',
+          title: 'நீரோடை... 💎 | காதலில் கரையும் இதயம் | Romantic Tamil Melody | Love Song | Music #lovesong  #love',
+          channel: 'EchoSphere',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=2tcIB-YHaNs&list=RD2tcIB-YHaNs&start_radio=1',
+          videoId: '2tcIB-YHaNs',
+          playlistId: 'RD2tcIB-YHaNs',
+          title: 'YouTube Video',
+          channel: '',
+          note: ''
+        },
+      ],
       'Humming': [
+        {
+          url: 'https://www.youtube.com/watch?v=BqT7SCIfycs&list=RDfMKQTLP4aO0&index=4',
+          videoId: 'BqT7SCIfycs',
+          playlistId: 'RDfMKQTLP4aO0',
+          title: 'Carnatic Meditation Flow 🌿 | 1 Hour Pure Instrumental Music for Yoga, Spa & Deep Calm',
+          channel: 'Pure Instrumental Flow',
+          note: ''
+        },
+        {
+          url: 'youtube.com/watch?v=S0XcA4rNdKs&list=RDS0XcA4rNdKs',
+          videoId: 'S0XcA4rNdKs',
+          playlistId: 'RDS0XcA4rNdKs',
+          title: 'Indian Monsoon Melody | Gentle Rain Instrumental with Huming (No Lyrics)',
+          channel: 'Romantic Frequencies',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=YPa9SgASMRw&list=RDYPa9SgASMRw&start_radio=1',
+          videoId: 'YPa9SgASMRw',
+          playlistId: 'RDYPa9SgASMRw',
+          title: 'Medieval Music with Female Vocals in Old English – A Journey Through Time',
+          channel: 'Medieval Melodies',
+          note: ''
+        },
         {
           url: 'https://www.youtube.com/watch?v=Y9oCBRDjKjY&t=1612s',
           videoId: 'Y9oCBRDjKjY',
@@ -79,6 +144,24 @@ const DEFAULT_COLLECTIONS = [
           playlistId: 'RDhUfuDyhxHT8',
           title: 'Persian Trance 🌙 Mystical Middle Eastern Deep Trance Mix for Work, Study & Meditation',
           channel: 'Persian Focus Temple',
+          note: ''
+        },
+      ],
+      'Instrumental': [
+        {
+          url: 'https://www.youtube.com/watch?v=SEw8IsSXRSU&list=RDSEw8IsSXRSU&start_radio=1',
+          videoId: 'SEw8IsSXRSU',
+          playlistId: 'RDSEw8IsSXRSU',
+          title: 'Sitar for Dopamine Reset | Indian Classical Music for Mindfulness',
+          channel: 'Raga Focus',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=fMKQTLP4aO0&list=RDfMKQTLP4aO0&start_radio=1',
+          videoId: 'fMKQTLP4aO0',
+          playlistId: 'RDfMKQTLP4aO0',
+          title: 'Pure Relaxation Music | Deep Meditation, Stress Relief & Inner Peace | Indian Instrumental Music',
+          channel: 'SAVERA',
           note: ''
         },
       ],
@@ -672,7 +755,72 @@ const DEFAULT_COLLECTIONS = [
     name: 'Music -English',
     color: '#FFA726',
     groups: {
+      'Albums': [
+        {
+          url: 'https://www.youtube.com/watch?v=DhGz5a6hstY&list=RDDhGz5a6hstY&start_radio=1',
+          videoId: 'DhGz5a6hstY',
+          playlistId: 'RDDhGz5a6hstY',
+          title: 'The BEST Way to Experience Adele\'s 2025 Live Tour Globally #adele #adelemusic',
+          channel: 'Tiny Snack',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=a_y3YowYD5Y&list=RDa_y3YowYD5Y&start_radio=1',
+          videoId: 'a_y3YowYD5Y',
+          playlistId: 'RDa_y3YowYD5Y',
+          title: '',
+          channel: '',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=BwkYhaCSxFQ&list=RDBwkYhaCSxFQ&start_radio=1',
+          videoId: 'BwkYhaCSxFQ',
+          playlistId: 'RDBwkYhaCSxFQ',
+          title: 'Best Acoustic Covers Love Songs 2026 💝 Morning Chill Vibes - Top English Music to Start Your Day',
+          channel: 'Sharon Strings',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=syGyHZYsob0&list=RDsyGyHZYsob0&start_radio=1&t=1856s',
+          videoId: 'syGyHZYsob0',
+          playlistId: 'RDsyGyHZYsob0',
+          title: 'Best Trance 2026 🚀 | Uplifting, Vocal & Melodic Trance Mix | EDM, Deep, Euphoric & Progressive',
+          channel: 'Trance Nova',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=OmOEAVw7tM4',
+          videoId: 'OmOEAVw7tM4',
+          title: 'Morning Energy 2026 ☀️ Chill & Deep House Mix for Positive Vibes | Perfect Start',
+          channel: 'ChillMorning Vibes',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=Dg9ePUDm4Vs&list=RDDg9ePUDm4Vs&start_radio=1',
+          videoId: 'Dg9ePUDm4Vs',
+          playlistId: 'RDDg9ePUDm4Vs',
+          title: 'Positive Energy 2026 🌞 Feel Good Deep House Music for Morning Focus | ChillMorning Vibes',
+          channel: 'ChillMorning Vibes',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=60ItHLz5WEA&list=RDOcGe6Hy8qOE&index=3',
+          videoId: '60ItHLz5WEA',
+          playlistId: 'RDOcGe6Hy8qOE',
+          title: 'Alan Walker - Faded',
+          channel: 'Alan Walker',
+          note: ''
+        },
+      ],
       'Instrumental': [
+        {
+          url: 'https://www.youtube.com/watch?v=HRj2g3so-k4&list=RDHRj2g3so-k4&start_radio=1',
+          videoId: 'HRj2g3so-k4',
+          playlistId: 'RDHRj2g3so-k4',
+          title: 'Perfect Fusion of Flamenco & Cha-Cha-Cha | Accordion, Banjo & Sax Instrumental',
+          channel: 'FlameVolk',
+          note: ''
+        },
         {
           url: 'https://www.youtube.com/watch?v=yYzCh36jejo&list=RDyYzCh36jejo&start_radio=1',
           videoId: 'yYzCh36jejo',
@@ -725,39 +873,6 @@ const DEFAULT_COLLECTIONS = [
           playlistId: 'RDGmtTDvNcXcU',
           title: 'Despacito (Piano Cover) - Peter Bence',
           channel: 'Peter Bence',
-          note: ''
-        },
-      ],
-      'Albums': [
-        {
-          url: 'https://www.youtube.com/watch?v=syGyHZYsob0&list=RDsyGyHZYsob0&start_radio=1&t=1856s',
-          videoId: 'syGyHZYsob0',
-          playlistId: 'RDsyGyHZYsob0',
-          title: 'Best Trance 2026 🚀 | Uplifting, Vocal & Melodic Trance Mix | EDM, Deep, Euphoric & Progressive',
-          channel: 'Trance Nova',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=OmOEAVw7tM4',
-          videoId: 'OmOEAVw7tM4',
-          title: 'Morning Energy 2026 ☀️ Chill & Deep House Mix for Positive Vibes | Perfect Start',
-          channel: 'ChillMorning Vibes',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=Dg9ePUDm4Vs&list=RDDg9ePUDm4Vs&start_radio=1',
-          videoId: 'Dg9ePUDm4Vs',
-          playlistId: 'RDDg9ePUDm4Vs',
-          title: 'Positive Energy 2026 🌞 Feel Good Deep House Music for Morning Focus | ChillMorning Vibes',
-          channel: 'ChillMorning Vibes',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=60ItHLz5WEA&list=RDOcGe6Hy8qOE&index=3',
-          videoId: '60ItHLz5WEA',
-          playlistId: 'RDOcGe6Hy8qOE',
-          title: 'Alan Walker - Faded',
-          channel: 'Alan Walker',
           note: ''
         },
       ],

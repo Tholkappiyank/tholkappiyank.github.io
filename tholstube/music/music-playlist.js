@@ -1,6 +1,6 @@
 // --------------------------------------------------------------
 // PLAYLIST CONFIG
-// Exported from TubeVault on 7/27/2026, 7:05:27 AM
+// Exported from TubeVault on 7/31/2026, 3:44:10 PM
 //
 // Each playlist: id, name, color, videoIds, videos (full details)
 // To apply as defaults: replace music-playlist.js and clear localStorage.
@@ -11,7 +11,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mqq9bpw24iah',
     name: 'Veena',
     color: '#26A69A',
-    videoIds: ['ms1bsnlbxfy7', 'ms1bsnlbj3yx', 'ms1bsnlbfdfm', 'ms1bsnlby9lx', 'ms1bsnlbdvcr', 'ms1bsnlb7jdy', 'ms1bsnlby62x', 'ms1bsnlb5jm9', 'ms1bsnlbo28i', 'ms1bsnlbxj3p', 'ms1bsnlbsbqw', 'ms1bsnlbv9cv', 'ms1bsnlb21g1', 'ms1bsnlb7fvp', 'ms1bsnlb6zos', 'ms1bsnlbp8de', 'ms1bsnlbacr5', 'ms1bsnlbxbrz', 'ms1bsnlb7n5e', 'ms1bsnlbp4fs', 'ms1bsnlbyycn', 'ms1bsnlb572u', 'ms1bsnlbl7cp'],
+    videoIds: ['ms4kj57m2u3j', 'ms4kj57msv9l', 'ms4kj57mu3nd', 'ms4kj57m1isk', 'ms4kj57mv96g', 'ms4kj57ld11y', 'ms4kj57lfuzn', 'ms4kj57lwfkk', 'ms4kj57le8l7', 'ms4kj57lp7t9', 'ms4kj57l0vcr', 'ms4kj57lzd7g', 'ms4kj57l4yzr', 'ms4kj57ls5vf', 'ms4kj57l8hih', 'ms4kj57llm4b', 'ms4kj57loncl', 'ms4kj57ly8bj', 'ms4kj57lqplw', 'ms4kj57l9yv1', 'ms4kj57mkyt2', 'ms4kj57lj1o1', 'ms4kj57l87lx'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=vIDl1E26FpU&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=2',
@@ -225,7 +225,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mr22a2y3jmrh',
     name: 'Daily Routine',
     color: '#AB47BC',
-    videoIds: ['ms1bsnlbmt2i', 'ms1bsnlbe0wu', 'ms1bsnlbk5lv', 'ms1bsnlbcpqu', 'ms1bsnlbh2ag', 'ms1bsnlbp4sq', 'ms1bsnlbmpnr', 'ms1bsnlby420', 'ms1bsnlbux2g', 'ms1bsnlb77ot', 'ms1bsnlbxpu1', 'ms1bsnlbzip2', 'ms1bsnlbtcur', 'ms1bsnlb9mtv', 'ms1bsnlbe3he', 'ms1bsnlb3f8i', 'ms1bsnlbwjuc', 'ms1bsnlb488o', 'ms1bsnlba7w4', 'ms1bsnlbvlyq', 'ms1bsnlbcjt5'],
+    videoIds: ['ms4kj57luuts', 'ms4kj57lrnti', 'ms4kj57l4lg9', 'ms4kj57lmyes', 'ms4kj57lm31m', 'ms4kj57luil8', 'ms4kj57lptn4', 'ms4kj57l9h5x', 'ms4kj57lum1u', 'ms4kj57l2fb7', 'ms4kj57l7cki', 'ms4kj57lqtd3', 'ms4kj57lq4ab', 'ms4kj57lunoo', 'ms4kj57lqlsm', 'ms4kj57ljclg', 'ms4kj57l3lvn', 'ms4kj57lccke', 'ms4kj57lpgsv', 'ms4kj57lavf9', 'ms4kj57l52oo'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=eF9LRFbkHLQ&list=RDKUN5Uf9mObQ&index=27',
@@ -421,7 +421,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mrkqs7vie0fe',
     name: 'Daily Routine - Melody',
     color: '#66BB6A',
-    videoIds: ['ms1bsnlbspio', 'ms1bsnlbm5s3', 'ms1bsnlb1ash', 'ms1bsnlbl350', 'ms1bsnlbj8fa', 'ms1bsnlbql0g', 'ms1bsnlbfwck', 'ms1bsnlbhsrv', 'ms1bsnlbs8ru', 'ms1bsnlb6v67', 'ms1bsnlbp8a5', 'ms1bsnlbix0f', 'ms1bsnlbwq7o', 'ms1bsnlbs389', 'ms1bsnlbwhz0', 'ms1bsnlbdcw9', 'ms1bsnlb7g3n', 'ms1bsnlbrojd', 'ms1bsnlb9r5s', 'ms1bsnlbfaoz', 'ms1bsnlb35k3', 'ms1bsnlbpi09'],
+    videoIds: ['ms4kj57l4wba', 'ms4kj57lj9cv', 'ms4kj57lhecw', 'ms4kj57lmzje', 'ms4kj57lyi4a', 'ms4kj57lhquc', 'ms4kj57lf4pi', 'ms4kj57lbqrw', 'ms4kj57lhkay', 'ms4kj57l3ry7', 'ms4kj57lrzrp', 'ms4kj57lntar', 'ms4kj57l8oy3', 'ms4kj57lnv7f', 'ms4kj57l7x5g', 'ms4kj57lfhux', 'ms4kj57lwoas', 'ms4kj57l0g7f', 'ms4kj57lrxrh', 'ms4kj57lq1nz', 'ms4kj57l0i50', 'ms4kj57l4wud'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=MgWrkGfDn-o&list=RDWOxan-rN4Cw&index=13',
@@ -627,7 +627,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mrlk1tk2ny6u',
     name: 'Humming',
     color: '#29B6F6',
-    videoIds: ['ms1bsnlb3iom', 'ms1bsnlb7gx6', 'ms1bsnlbr3g9', 'ms1bsnlbxhbc'],
+    videoIds: ['ms4kj57l8cep', 'ms4kj57l2qwc', 'ms4kj57lb68f', 'ms4kj57ll1s3', 'ms63w64j9ce7', 'ms8pzsmj5dt2', 'ms6xk4tibf6u'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=hUfuDyhxHT8&list=RDhUfuDyhxHT8&start_radio=1&t=5409s',
@@ -663,6 +663,33 @@ const DEFAULT_PLAYLISTS = [
       channel: '',
       collectionPath: 'Music / Humming',
       note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=YPa9SgASMRw&list=RDYPa9SgASMRw&start_radio=1',
+      videoId: 'YPa9SgASMRw',
+      playlistId: 'RDYPa9SgASMRw',
+      title: 'Medieval Music with Female Vocals in Old English – A Journey Through Time',
+      channel: 'Medieval Melodies',
+      collectionPath: 'Music / Humming',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=BqT7SCIfycs&list=RDfMKQTLP4aO0&index=4',
+      videoId: 'BqT7SCIfycs',
+      playlistId: 'RDfMKQTLP4aO0',
+      title: 'Carnatic Meditation Flow 🌿 | 1 Hour Pure Instrumental Music for Yoga, Spa & Deep Calm',
+      channel: 'Pure Instrumental Flow',
+      collectionPath: 'Music / Humming',
+      note: ''
+    },
+    {
+      url: 'youtube.com/watch?v=S0XcA4rNdKs&list=RDS0XcA4rNdKs',
+      videoId: 'S0XcA4rNdKs',
+      playlistId: 'RDS0XcA4rNdKs',
+      title: 'Indian Monsoon Melody | Gentle Rain Instrumental with Huming (No Lyrics)',
+      channel: 'Romantic Frequencies',
+      collectionPath: 'Music / Humming',
+      note: ''
     }
     ]
   },
@@ -670,7 +697,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mry3rf1xoxry',
     name: 'Music - Instrumental',
     color: '#FF7043',
-    videoIds: ['ms1bsnlbwoxx', 'ms1bsnlbhymm', 'ms1bsnlb9igi', 'ms2hgf010xi9', 'ms2hb1oai0fp', 'ms1bsnlb82va'],
+    videoIds: ['ms4kj57mkq48', 'ms4kj57m9l8q', 'ms4kj57mhnw5', 'ms4kj57msd57', 'ms4kj57mm8v5', 'ms4kj57ms85f', 'ms5tvogesdde', 'ms4kj57mei0s'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=UH3bfZ6Rb9E&list=RDUH3bfZ6Rb9E',
@@ -723,6 +750,24 @@ const DEFAULT_PLAYLISTS = [
       channel: 'FlameVolk',
       collectionPath: 'Music -English / Instrumental',
       note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=HRj2g3so-k4&list=RDHRj2g3so-k4&start_radio=1',
+      videoId: 'HRj2g3so-k4',
+      playlistId: 'RDHRj2g3so-k4',
+      title: 'Perfect Fusion of Flamenco & Cha-Cha-Cha | Accordion, Banjo & Sax Instrumental',
+      channel: 'FlameVolk',
+      collectionPath: 'Music -English / Instrumental',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=yYzCh36jejo&list=RDyYzCh36jejo&start_radio=1',
+      videoId: 'yYzCh36jejo',
+      playlistId: 'RDyYzCh36jejo',
+      title: 'Ancient Persian Sufi Trance — Sacred Rhythm to Quiet the Mind | Deep Work, Study & Meditation',
+      channel: 'Persian Focus Temple',
+      collectionPath: 'Music -English / Instrumental',
+      note: ''
     }
     ]
   },
@@ -730,7 +775,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mry3s20iasmn',
     name: 'Music - Lyrics',
     color: '#EC407A',
-    videoIds: ['ms1bsnlblju3', 'ms1bsnlb888y', 'ms1bsnlbnao7', 'ms1bsnlbhf63', 'ms1bsnlb5y6l', 'ms1bsnlb9kc4', 'ms1bsnlbrd2a', 'ms1bsnlbk73z', 'ms1bsnlbv230'],
+    videoIds: ['ms4kj57m4xdf', 'ms4kj57m0u71', 'ms4kj57mqb05', 'ms4kj57m8kzb', 'ms4kj57mrz25', 'ms4kj57m2fn4', 'ms4kj57mzky8', 'ms4kj57mxqwi', 'ms4kj57m72j7'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=1__CAdTJ5JU&list=RD1__CAdTJ5JU&start_radio=1',
@@ -819,7 +864,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mry5i90u4w6x',
     name: 'Music - Album',
     color: '#EF5350',
-    videoIds: ['ms1bsnlb4w3c'],
+    videoIds: ['ms4kj57m5wk1'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=Dg9ePUDm4Vs&list=RDDg9ePUDm4Vs&start_radio=1',
@@ -836,7 +881,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mry7auazmnj4',
     name: 'Selena Gomez',
     color: '#FFA726',
-    videoIds: ['ms1bsnlbyrk3'],
+    videoIds: ['ms4kj57mgehp'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=WcIcVapfqXw',
@@ -852,7 +897,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mry7c0sd62q1',
     name: 'JFla Music',
     color: '#FF7043',
-    videoIds: ['ms1bsnlbhoan'],
+    videoIds: ['ms4kj57mkxco'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=MhQKe-aERsU&list=RDMhQKe-aERsU',
@@ -872,6 +917,40 @@ const DEFAULT_PLAYLISTS = [
     videoIds: [],
     videos: [
 
+    ]
+  },
+  {
+    id: 'ms8pe3rp7qxz',
+    name: 'Tamil Album',
+    color: '#EC407A',
+    videoIds: ['ms7kdgbnvios', 'ms7kh47qd39t', 'ms7kf8w8dsjr'],
+    videos: [
+    {
+      url: 'https://www.youtube.com/watch?v=2tcIB-YHaNs&list=RD2tcIB-YHaNs&start_radio=1',
+      videoId: '2tcIB-YHaNs',
+      playlistId: 'RD2tcIB-YHaNs',
+      title: 'YouTube Video',
+      channel: '',
+      collectionPath: 'Music / Tamil Album',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=R5ymC7gXWJk&list=RDR5ymC7gXWJk&start_radio=1',
+      videoId: 'R5ymC7gXWJk',
+      playlistId: 'RDR5ymC7gXWJk',
+      title: 'Idhazhin Mozhi | Tamil Romantic Melody | NMC Productions',
+      channel: 'NMC Productions',
+      collectionPath: 'Music / Tamil Album',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=R722GqixnNA',
+      videoId: 'R722GqixnNA',
+      title: 'நீரோடை... 💎 | காதலில் கரையும் இதயம் | Romantic Tamil Melody | Love Song | Music #lovesong  #love',
+      channel: 'EchoSphere',
+      collectionPath: 'Music / Tamil Album',
+      note: ''
+    }
     ]
   }
 ];
