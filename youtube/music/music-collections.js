@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
-// Exported from TubeVault on 7/15/2026, 11:13:59 PM
+// Exported from TubeVault on 8/8/2026, 8:40:33 PM
 //
 // STRUCTURE — easy to browse/edit in any JSON editor:
 //   DEFAULT_COLLECTIONS
@@ -39,6 +39,132 @@ const DEFAULT_COLLECTIONS = [
     name: 'Music',
     color: '#EC407A',
     groups: {
+      'Tabla': [
+        {
+          url: 'https://www.youtube.com/watch?v=yahan-tNpss&list=RDyahan-tNpss&start_radio=1',
+          videoId: 'yahan-tNpss',
+          playlistId: 'RDyahan-tNpss',
+          title: 'Veena & Violin Instrumental | 1 Hour Soulful Indian Classical Carnatic Music for Peace & Relaxation',
+          channel: 'Arrylene Instrumentals',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=tgneSmdEM2c&list=RDtgneSmdEM2c&start_radio=1',
+          videoId: 'tgneSmdEM2c',
+          playlistId: 'RDtgneSmdEM2c',
+          title: 'YouTube Video',
+          channel: '',
+          note: ''
+        },
+      ],
+      'Tamil Album': [
+        {
+          url: 'https://www.youtube.com/watch?v=JXmMgsZFenE&list=RD2tcIB-YHaNs&index=4',
+          videoId: 'JXmMgsZFenE',
+          playlistId: 'RD2tcIB-YHaNs',
+          title: 'Pookal Pookum | Madrasapattinam| Cover Version 4k - KS Harisankar',
+          channel: 'KS Harisankar',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=R5ymC7gXWJk&list=RDR5ymC7gXWJk&start_radio=1',
+          videoId: 'R5ymC7gXWJk',
+          playlistId: 'RDR5ymC7gXWJk',
+          title: 'Idhazhin Mozhi | Tamil Romantic Melody | NMC Productions',
+          channel: 'NMC Productions',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=R722GqixnNA',
+          videoId: 'R722GqixnNA',
+          title: 'நீரோடை... 💎 | காதலில் கரையும் இதயம் | Romantic Tamil Melody | Love Song | Music #lovesong  #love',
+          channel: 'EchoSphere',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=2tcIB-YHaNs&list=RD2tcIB-YHaNs&start_radio=1',
+          videoId: '2tcIB-YHaNs',
+          playlistId: 'RD2tcIB-YHaNs',
+          title: 'YouTube Video',
+          channel: '',
+          note: ''
+        },
+      ],
+      'Humming': [
+        {
+          url: 'https://www.youtube.com/watch?v=BqT7SCIfycs&list=RDfMKQTLP4aO0&index=4',
+          videoId: 'BqT7SCIfycs',
+          playlistId: 'RDfMKQTLP4aO0',
+          title: 'Carnatic Meditation Flow 🌿 | 1 Hour Pure Instrumental Music for Yoga, Spa & Deep Calm',
+          channel: 'Pure Instrumental Flow',
+          note: ''
+        },
+        {
+          url: 'youtube.com/watch?v=S0XcA4rNdKs&list=RDS0XcA4rNdKs',
+          videoId: 'S0XcA4rNdKs',
+          playlistId: 'RDS0XcA4rNdKs',
+          title: 'Indian Monsoon Melody | Gentle Rain Instrumental with Huming (No Lyrics)',
+          channel: 'Romantic Frequencies',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=YPa9SgASMRw&list=RDYPa9SgASMRw&start_radio=1',
+          videoId: 'YPa9SgASMRw',
+          playlistId: 'RDYPa9SgASMRw',
+          title: 'Medieval Music with Female Vocals in Old English – A Journey Through Time',
+          channel: 'Medieval Melodies',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=Y9oCBRDjKjY&t=1612s',
+          videoId: 'Y9oCBRDjKjY',
+          title: '',
+          channel: '',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=7Yb8-bVy8E0&list=RD7Yb8-bVy8E0&start_radio=1&t=246s',
+          videoId: '7Yb8-bVy8E0',
+          playlistId: 'RD7Yb8-bVy8E0',
+          title: '',
+          channel: '',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=MnBbHXu8IyA&list=RD9fyOu2dxgOY&index=11',
+          videoId: 'MnBbHXu8IyA',
+          playlistId: 'RD9fyOu2dxgOY',
+          title: 'Innisai Alapadaiye ❤️ | Heavenly Vibes from Varalaaru | A.R. Rahman Tribute',
+          channel: 'Prabhu Musiq Vibez',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=hUfuDyhxHT8&list=RDhUfuDyhxHT8&start_radio=1&t=5409s',
+          videoId: 'hUfuDyhxHT8',
+          playlistId: 'RDhUfuDyhxHT8',
+          title: 'Persian Trance 🌙 Mystical Middle Eastern Deep Trance Mix for Work, Study & Meditation',
+          channel: 'Persian Focus Temple',
+          note: ''
+        },
+      ],
+      'Instrumental': [
+        {
+          url: 'https://www.youtube.com/watch?v=SEw8IsSXRSU&list=RDSEw8IsSXRSU&start_radio=1',
+          videoId: 'SEw8IsSXRSU',
+          playlistId: 'RDSEw8IsSXRSU',
+          title: 'Sitar for Dopamine Reset | Indian Classical Music for Mindfulness',
+          channel: 'Raga Focus',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=fMKQTLP4aO0&list=RDfMKQTLP4aO0&start_radio=1',
+          videoId: 'fMKQTLP4aO0',
+          playlistId: 'RDfMKQTLP4aO0',
+          title: 'Pure Relaxation Music | Deep Meditation, Stress Relief & Inner Peace | Indian Instrumental Music',
+          channel: 'SAVERA',
+          note: ''
+        },
+      ],
       'Other Lang': [
         {
           url: 'https://www.youtube.com/watch?v=PgCliOxl41o&list=RDPgCliOxl41o&start_radio=1',
@@ -264,32 +390,6 @@ const DEFAULT_COLLECTIONS = [
           playlistId: 'RDWOxan-rN4Cw',
           title: 'Kandaangi Kandaangi - Video Song | 4K | Jilla Movie | Vijay | Kajal Agarwal | D.Imman | Star Music',
           channel: 'Star Music India',
-          note: ''
-        },
-      ],
-      'Humming': [
-        {
-          url: 'https://www.youtube.com/watch?v=MnBbHXu8IyA&list=RD9fyOu2dxgOY&index=11',
-          videoId: 'MnBbHXu8IyA',
-          playlistId: 'RD9fyOu2dxgOY',
-          title: 'Innisai Alapadaiye ❤️ | Heavenly Vibes from Varalaaru | A.R. Rahman Tribute',
-          channel: 'Prabhu Musiq Vibez',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=UH3bfZ6Rb9E&list=RDUH3bfZ6Rb9E&start_radio=1',
-          videoId: 'UH3bfZ6Rb9E',
-          playlistId: 'RDUH3bfZ6Rb9E',
-          title: 'Persian & Spanish Fusion Relaxing Music 4K | Persian Gulf & Spanish Beaches | Guitar & Santur',
-          channel: 'WolfRelaxMusicHub',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=hUfuDyhxHT8&list=RDhUfuDyhxHT8&start_radio=1&t=5409s',
-          videoId: 'hUfuDyhxHT8',
-          playlistId: 'RDhUfuDyhxHT8',
-          title: 'Persian Trance 🌙 Mystical Middle Eastern Deep Trance Mix for Work, Study & Meditation',
-          channel: 'Persian Focus Temple',
           note: ''
         },
       ],
@@ -655,7 +755,111 @@ const DEFAULT_COLLECTIONS = [
     name: 'Music -English',
     color: '#FFA726',
     groups: {
+      'Albums': [
+        {
+          url: 'https://www.youtube.com/watch?v=DhGz5a6hstY&list=RDDhGz5a6hstY&start_radio=1',
+          videoId: 'DhGz5a6hstY',
+          playlistId: 'RDDhGz5a6hstY',
+          title: 'The BEST Way to Experience Adele\'s 2025 Live Tour Globally #adele #adelemusic',
+          channel: 'Tiny Snack',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=a_y3YowYD5Y&list=RDa_y3YowYD5Y&start_radio=1',
+          videoId: 'a_y3YowYD5Y',
+          playlistId: 'RDa_y3YowYD5Y',
+          title: '',
+          channel: '',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=BwkYhaCSxFQ&list=RDBwkYhaCSxFQ&start_radio=1',
+          videoId: 'BwkYhaCSxFQ',
+          playlistId: 'RDBwkYhaCSxFQ',
+          title: 'Best Acoustic Covers Love Songs 2026 💝 Morning Chill Vibes - Top English Music to Start Your Day',
+          channel: 'Sharon Strings',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=syGyHZYsob0&list=RDsyGyHZYsob0&start_radio=1&t=1856s',
+          videoId: 'syGyHZYsob0',
+          playlistId: 'RDsyGyHZYsob0',
+          title: 'Best Trance 2026 🚀 | Uplifting, Vocal & Melodic Trance Mix | EDM, Deep, Euphoric & Progressive',
+          channel: 'Trance Nova',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=OmOEAVw7tM4',
+          videoId: 'OmOEAVw7tM4',
+          title: 'Morning Energy 2026 ☀️ Chill & Deep House Mix for Positive Vibes | Perfect Start',
+          channel: 'ChillMorning Vibes',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=Dg9ePUDm4Vs&list=RDDg9ePUDm4Vs&start_radio=1',
+          videoId: 'Dg9ePUDm4Vs',
+          playlistId: 'RDDg9ePUDm4Vs',
+          title: 'Positive Energy 2026 🌞 Feel Good Deep House Music for Morning Focus | ChillMorning Vibes',
+          channel: 'ChillMorning Vibes',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=60ItHLz5WEA&list=RDOcGe6Hy8qOE&index=3',
+          videoId: '60ItHLz5WEA',
+          playlistId: 'RDOcGe6Hy8qOE',
+          title: 'Alan Walker - Faded',
+          channel: 'Alan Walker',
+          note: ''
+        },
+      ],
       'Instrumental': [
+        {
+          url: 'https://www.youtube.com/watch?v=HRj2g3so-k4&list=RDHRj2g3so-k4&start_radio=1',
+          videoId: 'HRj2g3so-k4',
+          playlistId: 'RDHRj2g3so-k4',
+          title: 'Perfect Fusion of Flamenco & Cha-Cha-Cha | Accordion, Banjo & Sax Instrumental',
+          channel: 'FlameVolk',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=yYzCh36jejo&list=RDyYzCh36jejo&start_radio=1',
+          videoId: 'yYzCh36jejo',
+          playlistId: 'RDyYzCh36jejo',
+          title: 'Ancient Persian Sufi Trance — Sacred Rhythm to Quiet the Mind | Deep Work, Study & Meditation',
+          channel: 'Persian Focus Temple',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=Tg2vlqd47Yo',
+          videoId: 'Tg2vlqd47Yo',
+          title: 'Persian & Balkan Fusion Music 4K 🌊 | Relaxing Instrumental Mix from the Adriatic & Persia',
+          channel: 'WolfRelaxMusicHub',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=Bp8bV-jVCs4&list=RDBp8bV-jVCs4&start_radio=1',
+          videoId: 'Bp8bV-jVCs4',
+          playlistId: 'RDBp8bV-jVCs4',
+          title: 'Deep Work Ocean Waves ~ Focus Music for Intense Productivity & Deep Concentration',
+          channel: 'Aurora Work',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=iSi9Sb2qiN0&list=RDiSi9Sb2qiN0&start_radio=1',
+          videoId: 'iSi9Sb2qiN0',
+          playlistId: 'RDiSi9Sb2qiN0',
+          title: 'Mediterranean Cha-Cha Groove | Flamenco Accordion Banjo Flute & Sax Fusion',
+          channel: 'FlameVolk',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=UH3bfZ6Rb9E&list=RDUH3bfZ6Rb9E',
+          videoId: 'UH3bfZ6Rb9E',
+          playlistId: 'RDUH3bfZ6Rb9E',
+          title: 'Persian & Spanish Fusion Relaxing Music 4K | Persian Gulf & Spanish Beaches | Guitar & Santur',
+          channel: 'WolfRelaxMusicHub',
+          note: ''
+        },
         {
           url: 'https://www.youtube.com/watch?v=_SywaUbg5wU',
           videoId: '_SywaUbg5wU',
@@ -672,49 +876,43 @@ const DEFAULT_COLLECTIONS = [
           note: ''
         },
       ],
-      'Albums': [
+      'Justin Bieber': [
         {
-          url: 'https://www.youtube.com/watch?v=8N_Yro5QeCE&list=RD1__CAdTJ5JU&index=2',
-          videoId: '8N_Yro5QeCE',
-          playlistId: 'RD1__CAdTJ5JU',
-          title: 'Selena Gomez - Feel Me (Live from the Revival Tour)',
-          channel: 'SelenaGomezVEVO',
+          url: 'https://www.youtube.com/watch?v=euCqAq6BRa4&list=RDdFp_b5DPIIo&index=2',
+          videoId: 'euCqAq6BRa4',
+          playlistId: 'RDdFp_b5DPIIo',
+          title: 'DJ Snake - Let Me Love You (Official Music Video) ft. Justin Bieber',
+          channel: 'DJSnakeVEVO',
           note: ''
         },
+      ],
+      'JFla Music': [
         {
-          url: 'https://www.youtube.com/watch?v=MhQKe-aERsU&list=RDMhQKe-aERsU&start_radio=1',
+          url: 'https://www.youtube.com/watch?v=MhQKe-aERsU&list=RDMhQKe-aERsU',
           videoId: 'MhQKe-aERsU',
           playlistId: 'RDMhQKe-aERsU',
           title: 'Ed Sheeran - Shape Of You ( cover by J.Fla )',
           channel: 'JFlaMusic',
           note: ''
         },
-        {
-          url: 'https://www.youtube.com/watch?v=WcIcVapfqXw&list=RDWcIcVapfqXw&start_radio=1',
-          videoId: 'WcIcVapfqXw',
-          playlistId: 'RDWcIcVapfqXw',
-          title: 'Rema, Selena Gomez - Calm Down (Official Music Video)',
-          channel: 'SelenaGomezVEVO',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=60ItHLz5WEA&list=RDOcGe6Hy8qOE&index=3',
-          videoId: '60ItHLz5WEA',
-          playlistId: 'RDOcGe6Hy8qOE',
-          title: 'Alan Walker - Faded',
-          channel: 'Alan Walker',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=euCqAq6BRa4&list=RDOcGe6Hy8qOE&index=2',
-          videoId: 'euCqAq6BRa4',
-          playlistId: 'RDOcGe6Hy8qOE',
-          title: 'DJ Snake - Let Me Love You (Official Music Video) ft. Justin Bieber',
-          channel: 'DJSnakeVEVO',
-          note: ''
-        },
       ],
       'English - Lyrics': [
+        {
+          url: 'https://www.youtube.com/watch?v=dFp_b5DPIIo&list=RDdFp_b5DPIIo&start_radio=1',
+          videoId: 'dFp_b5DPIIo',
+          playlistId: 'RDdFp_b5DPIIo',
+          title: 'Shawn Mendes, Camila Cabello - Señorita (Lyrics) Letra',
+          channel: '7clouds',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=kBhJ7tnO4fA&list=RDkBhJ7tnO4fA&start_radio=1',
+          videoId: 'kBhJ7tnO4fA',
+          playlistId: 'RDkBhJ7tnO4fA',
+          title: 'Imagine Dragons – Believer (Lyrics) | Powerful & Intense Anthem',
+          channel: 'Golden Echoes',
+          note: ''
+        },
         {
           url: 'https://www.youtube.com/watch?v=1__CAdTJ5JU&list=RD1__CAdTJ5JU&start_radio=1',
           videoId: '1__CAdTJ5JU',
@@ -770,6 +968,15 @@ const DEFAULT_COLLECTIONS = [
           title: 'YouTube Video',
           channel: '',
           note: 'Collection'
+        },
+      ],
+      'Selena Gomez': [
+        {
+          url: 'https://www.youtube.com/watch?v=WcIcVapfqXw',
+          videoId: 'WcIcVapfqXw',
+          title: 'Rema, Selena Gomez - Calm Down (Official Music Video)',
+          channel: 'SelenaGomezVEVO',
+          note: ''
         },
       ]
     },

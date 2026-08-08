@@ -2884,33 +2884,30 @@ function pvPlayIndex(i) {
   } else if (ytReady && window.YT && window.YT.Player) {
     pvCreatePlayer(v.videoId);
   } else {
-    // The IFrame API script hasn't loaded yet. Deliberately NOT dropping a bare
-    // <iframe> in here: it carries no onStateChange, so autoplay would be dead
-    // for this track, and the poller would then swap it for a real player on
-    // the same video mid-watch — restarting it from zero. Show a placeholder,
-    // build the real player the moment the API lands, and only fall back to a
-    // bare iframe if it never does.
-    if (container) container.innerHTML =
-      '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;'
-      + 'color:#8A8AA3;font:13px system-ui,sans-serif;">Loading player…</div>';
+    // The IFrame API script hasn't loaded yet. Match the youtube folder's
+    // behaviour: drop a bare, autoplaying <iframe> immediately so the first
+    // video starts right away instead of hanging on a "Loading player…"
+    // placeholder. The poller below upgrades it to a full YT.Player (which
+    // carries onStateChange for auto-advance) the moment the API lands, and
+    // only keeps the bare iframe if the API never arrives.
     const pendingVideoId = v.videoId;
+    if (container) container.innerHTML =
+      `<iframe src="${getEmbedUrl(pendingVideoId)}"
+       style="width:100%;height:100%;border:none;position:absolute;inset:0;" allowfullscreen
+       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
     let waited = 0;
     pvApiWaitTimer = setInterval(() => {
       if (ytReady && window.YT && window.YT.Player) {
+        // API ready — swap the bare iframe for a real player (auto-advance works).
         clearInterval(pvApiWaitTimer); pvApiWaitTimer = null;
         pvCreatePlayer(pendingVideoId);
         return;
       }
       waited += 500;
       if (waited >= 15000) {
-        // Gave up on the API (offline, blocked, slow). A bare iframe at least
-        // plays the video; autoplay stays off for it since there are no state
-        // events to advance on.
+        // Gave up on the API (offline, blocked, slow). Keep the bare iframe;
+        // it already autoplays the single track, just no auto-advance.
         clearInterval(pvApiWaitTimer); pvApiWaitTimer = null;
-        if (container) container.innerHTML =
-          `<iframe src="${getEmbedUrl(pendingVideoId)}"
-           style="width:100%;height:100%;border:none;position:absolute;inset:0;" allowfullscreen
-           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
       }
     }, 500);
   }

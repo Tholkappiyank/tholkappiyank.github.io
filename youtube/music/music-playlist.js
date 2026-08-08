@@ -1,6 +1,6 @@
 // --------------------------------------------------------------
 // PLAYLIST CONFIG
-// Exported from TubeVault on 7/15/2026, 11:14:00 PM
+// Exported from TubeVault on 8/8/2026, 8:40:34 PM
 //
 // Each playlist: id, name, color, videoIds, videos (full details)
 // To apply as defaults: replace music-playlist.js and clear localStorage.
@@ -11,7 +11,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mqq9bpw24iah',
     name: 'Veena',
     color: '#26A69A',
-    videoIds: ['mrkeji70ynz7', 'mrkeji700r9r', 'mrkeji70bmr2', 'mrkeji70lik1', 'mrkeji70zoh3', 'mrkeji70yzr7', 'mrkeji7061tz', 'mrkeji70l1wy', 'mrkeji708pby', 'mrkeji70t2tl', 'mrkeji703lmt', 'mrkeji70eai1', 'mrkeji70g6bu', 'mrkeji70e1w3', 'mrkeji70a6rp', 'mrkeji70irpk', 'mrkeji70q6ln', 'mrkeji70kvqq', 'mrkeji70w51s', 'mrkeji70zwip', 'mrkeji70tp8j', 'mrkeji70wsi5', 'mrkeji70pxjv'],
+    videoIds: ['mskd0au6dq8t', 'mskd0au66e9a', 'mskd0au67bj1', 'mskd0au6ith9', 'mskd0au6v347', 'mskd0au6n0nu', 'mskd0au6iqty', 'mskd0au6hog4', 'mskd0au6cuyh', 'mskd0au6fhuv', 'mskd0au6r43t', 'mskd0au69h17', 'mskd0au6j3za', 'mskd0au6t14k', 'mskd0au6jftj', 'mskd0au64l95', 'mskd0au6i655', 'mskd0au60a5m', 'mskd0au6bkkj', 'mskd0au6lwtw', 'mskd0au6g1le', 'mskd0au6k1j9', 'mskd0au63cy6'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=vIDl1E26FpU&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=2',
@@ -225,7 +225,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mr22a2y3jmrh',
     name: 'Daily Routine',
     color: '#AB47BC',
-    videoIds: ['mrkeji70bgaq', 'mrkeji70kwp3', 'mrkeji70f3vn', 'mrkeji70p10i', 'mrkeji703rc4', 'mrkeji70qxbv', 'mrkeji70njmk', 'mrkeji70y43v', 'mrkeji70u984', 'mrkeji708rxo', 'mrkeji70p6pd', 'mrkeji70nbcf', 'mrkeji70tdr6', 'mrkeji70z34r', 'mrkeji70hfkt', 'mrkeji702vn8', 'mrkeji701s84', 'mrkeji70maf2', 'mrkeji70z6ce', 'mrkeji70on41', 'mrkeji707u11', 'mrkeji70oxun', 'mrkeji70tyjk', 'mrm5tqefh5tr'],
+    videoIds: ['mskd0au6i0u9', 'mskd0au600jq', 'mskd0au6az13', 'mskd0au65fzo', 'mskd0au6zc8v', 'mskd0au6o9gn', 'mskd0au6ag0a', 'mskd0au6qud4', 'mskd0au6zzxy', 'mskd0au698d5', 'mskd0au667ap', 'mskd0au65r3t', 'mskd0au6j2mu', 'mskd0au6j5c9', 'mskd0au6w2ag', 'mskd0au6age2', 'mskd0au6nl1g', 'mskd0au6srhg', 'mskd0au6g740', 'mskd0au66inv', 'mskd0au6xcmg'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=eF9LRFbkHLQ&list=RDKUN5Uf9mObQ&index=27',
@@ -421,7 +421,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mrkqs7vie0fe',
     name: 'Daily Routine - Melody',
     color: '#66BB6A',
-    videoIds: ['mrkupihbcu1h', 'mrkukhs0qxv8', 'mrkrhfqd55jj', 'mrkraqg4pjbu', 'mrkr2wef1z3q', 'mrkqrbe501v5', 'mrkqlbmmai4a', 'mrm8xxu7zfpn', 'mrm8ruey1qbd', 'mrm8nvfn7yzh', 'mrm8ilhu0m9u', 'mrm7qxy8tm4e', 'mrm7ermreof9', 'mrm73ubbpus7', 'mrm6xvzn5hlq', 'mrm6qs2rhf0z', 'mrm6la4cmca5', 'mrm6f7ls856k', 'mrm6en1ha1k9', 'mrm65nop3xer', 'mrm5rkbqdvkc', 'mrm5gysgpba3'],
+    videoIds: ['mskd0au60bzt', 'mskd0au6stwk', 'mskd0au6vthy', 'mskd0au669jl', 'mskd0au6dxoh', 'mskd0au66qgn', 'mskd0au64zxg', 'mskd0au6dm1r', 'mskd0au6byx7', 'mskd0au6g6ty', 'mskd0au6r2ft', 'mskd0au68bsj', 'mskd0au60mcb', 'mskd0au65u5q', 'mskd0au6dp9i', 'mskd0au6722l', 'mskd0au6ypke', 'mskd0au6hbf5', 'mskd0au6zxbk', 'mskd0au6k3ll', 'mskd0au6pudi', 'mskd0au6e1dm'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=MgWrkGfDn-o&list=RDWOxan-rN4Cw&index=13',
@@ -627,7 +627,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mrlk1tk2ny6u',
     name: 'Humming',
     color: '#29B6F6',
-    videoIds: ['mrlk2lblc9yb', 'mrlwuizn5dwh', 'mrm98fsa8dep'],
+    videoIds: ['mskd0au6chqv', 'mskd0au6hdxm', 'mskd0au6g84l', 'mskd0au6t978', 'mskd0au6twk2', 'mskd0au605x3', 'mskd0au6fyis'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=hUfuDyhxHT8&list=RDhUfuDyhxHT8&start_radio=1&t=5409s',
@@ -639,21 +639,316 @@ const DEFAULT_PLAYLISTS = [
       note: ''
     },
     {
-      url: 'https://www.youtube.com/watch?v=UH3bfZ6Rb9E&list=RDUH3bfZ6Rb9E&start_radio=1',
-      videoId: 'UH3bfZ6Rb9E',
-      playlistId: 'RDUH3bfZ6Rb9E',
-      title: 'Persian & Spanish Fusion Relaxing Music 4K | Persian Gulf & Spanish Beaches | Guitar & Santur',
-      channel: 'WolfRelaxMusicHub',
-      collectionPath: 'Music / Humming',
-      note: ''
-    },
-    {
       url: 'https://www.youtube.com/watch?v=MnBbHXu8IyA&list=RD9fyOu2dxgOY&index=11',
       videoId: 'MnBbHXu8IyA',
       playlistId: 'RD9fyOu2dxgOY',
       title: 'Innisai Alapadaiye ❤️ | Heavenly Vibes from Varalaaru | A.R. Rahman Tribute',
       channel: 'Prabhu Musiq Vibez',
       collectionPath: 'Music / Humming',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=Y9oCBRDjKjY&t=1612s',
+      videoId: 'Y9oCBRDjKjY',
+      title: '',
+      channel: '',
+      collectionPath: 'Music / Humming',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=7Yb8-bVy8E0&list=RD7Yb8-bVy8E0&start_radio=1&t=246s',
+      videoId: '7Yb8-bVy8E0',
+      playlistId: 'RD7Yb8-bVy8E0',
+      title: '',
+      channel: '',
+      collectionPath: 'Music / Humming',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=YPa9SgASMRw&list=RDYPa9SgASMRw&start_radio=1',
+      videoId: 'YPa9SgASMRw',
+      playlistId: 'RDYPa9SgASMRw',
+      title: 'Medieval Music with Female Vocals in Old English – A Journey Through Time',
+      channel: 'Medieval Melodies',
+      collectionPath: 'Music / Humming',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=BqT7SCIfycs&list=RDfMKQTLP4aO0&index=4',
+      videoId: 'BqT7SCIfycs',
+      playlistId: 'RDfMKQTLP4aO0',
+      title: 'Carnatic Meditation Flow 🌿 | 1 Hour Pure Instrumental Music for Yoga, Spa & Deep Calm',
+      channel: 'Pure Instrumental Flow',
+      collectionPath: 'Music / Humming',
+      note: ''
+    },
+    {
+      url: 'youtube.com/watch?v=S0XcA4rNdKs&list=RDS0XcA4rNdKs',
+      videoId: 'S0XcA4rNdKs',
+      playlistId: 'RDS0XcA4rNdKs',
+      title: 'Indian Monsoon Melody | Gentle Rain Instrumental with Huming (No Lyrics)',
+      channel: 'Romantic Frequencies',
+      collectionPath: 'Music / Humming',
+      note: ''
+    }
+    ]
+  },
+  {
+    id: 'mry3rf1xoxry',
+    name: 'Music - Instrumental',
+    color: '#FF7043',
+    videoIds: ['mskd0au6s4rm', 'mskd0au6silw', 'mskd0au6z5lr', 'mskd0au6oej1', 'mskd0au6t8do', 'mskd0au643k5', 'mskd0au6t4yg', 'mskd0au6q7r3'],
+    videos: [
+    {
+      url: 'https://www.youtube.com/watch?v=UH3bfZ6Rb9E&list=RDUH3bfZ6Rb9E',
+      videoId: 'UH3bfZ6Rb9E',
+      playlistId: 'RDUH3bfZ6Rb9E',
+      title: 'Persian & Spanish Fusion Relaxing Music 4K | Persian Gulf & Spanish Beaches | Guitar & Santur',
+      channel: 'WolfRelaxMusicHub',
+      collectionPath: 'Music -English / Instrumental',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=GmtTDvNcXcU&list=RDGmtTDvNcXcU&start_radio=1',
+      videoId: 'GmtTDvNcXcU',
+      playlistId: 'RDGmtTDvNcXcU',
+      title: 'Despacito (Piano Cover) - Peter Bence',
+      channel: 'Peter Bence',
+      collectionPath: 'Music -English / Instrumental',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=_SywaUbg5wU',
+      videoId: '_SywaUbg5wU',
+      title: 'AFRICA - Toto x Peter Bence (Piano Cover)',
+      channel: 'Peter Bence',
+      collectionPath: 'Music -English / Instrumental',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=Tg2vlqd47Yo',
+      videoId: 'Tg2vlqd47Yo',
+      title: 'Persian & Balkan Fusion Music 4K 🌊 | Relaxing Instrumental Mix from the Adriatic & Persia',
+      channel: 'WolfRelaxMusicHub',
+      collectionPath: 'Music -English / Instrumental',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=Bp8bV-jVCs4&list=RDBp8bV-jVCs4&start_radio=1',
+      videoId: 'Bp8bV-jVCs4',
+      playlistId: 'RDBp8bV-jVCs4',
+      title: 'Deep Work Ocean Waves ~ Focus Music for Intense Productivity & Deep Concentration',
+      channel: 'Aurora Work',
+      collectionPath: 'Music -English / Instrumental',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=iSi9Sb2qiN0&list=RDiSi9Sb2qiN0&start_radio=1',
+      videoId: 'iSi9Sb2qiN0',
+      playlistId: 'RDiSi9Sb2qiN0',
+      title: 'Mediterranean Cha-Cha Groove | Flamenco Accordion Banjo Flute & Sax Fusion',
+      channel: 'FlameVolk',
+      collectionPath: 'Music -English / Instrumental',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=HRj2g3so-k4&list=RDHRj2g3so-k4&start_radio=1',
+      videoId: 'HRj2g3so-k4',
+      playlistId: 'RDHRj2g3so-k4',
+      title: 'Perfect Fusion of Flamenco & Cha-Cha-Cha | Accordion, Banjo & Sax Instrumental',
+      channel: 'FlameVolk',
+      collectionPath: 'Music -English / Instrumental',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=yYzCh36jejo&list=RDyYzCh36jejo&start_radio=1',
+      videoId: 'yYzCh36jejo',
+      playlistId: 'RDyYzCh36jejo',
+      title: 'Ancient Persian Sufi Trance — Sacred Rhythm to Quiet the Mind | Deep Work, Study & Meditation',
+      channel: 'Persian Focus Temple',
+      collectionPath: 'Music -English / Instrumental',
+      note: ''
+    }
+    ]
+  },
+  {
+    id: 'mry3s20iasmn',
+    name: 'Music - Lyrics',
+    color: '#EC407A',
+    videoIds: ['mskd0au6grgx', 'mskd0au6bd5s', 'mskd0au67q78', 'mskd0au6j5pg', 'mskd0au6tago', 'mskd0au6383p', 'mskd0au62sos', 'mskd0au66sjp', 'mskd0au6jdlg'],
+    videos: [
+    {
+      url: 'https://www.youtube.com/watch?v=1__CAdTJ5JU&list=RD1__CAdTJ5JU&start_radio=1',
+      videoId: '1__CAdTJ5JU',
+      playlistId: 'RD1__CAdTJ5JU',
+      title: 'Tones and I - Dance Monkey (Lyrics)',
+      channel: 'Royal Music',
+      collectionPath: 'Music -English / English - Lyrics',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=OcGe6Hy8qOE&list=RDOcGe6Hy8qOE&start_radio=1',
+      videoId: 'OcGe6Hy8qOE',
+      playlistId: 'RDOcGe6Hy8qOE',
+      title: 'Ed Sheeran - Shape of You (Lyrics)',
+      channel: 'Pizza Music',
+      collectionPath: 'Music -English / English - Lyrics',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=mY9fNwGE7YA&list=RDmY9fNwGE7YA&start_radio=1',
+      videoId: 'mY9fNwGE7YA',
+      playlistId: 'RDmY9fNwGE7YA',
+      title: 'Sia - Cheap Thrills (Lyrics) ft. Sean Paul',
+      channel: '7clouds',
+      collectionPath: 'Music -English / English - Lyrics',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=czWcyZRAMtk&list=RDczWcyZRAMtk&start_radio=1',
+      videoId: 'czWcyZRAMtk',
+      playlistId: 'RDczWcyZRAMtk',
+      title: 'Shakira - Waka Waka (This Time For Africa) (Lyrics)',
+      channel: '7clouds',
+      collectionPath: 'Music -English / English - Lyrics',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=qdpXxGPqW-Y&list=RDoS07d8Gr4tw&index=2',
+      videoId: 'qdpXxGPqW-Y',
+      playlistId: 'RDoS07d8Gr4tw',
+      title: 'Alan Walker - Faded (Lyrics)',
+      channel: '7clouds',
+      collectionPath: 'Music -English / English - Lyrics',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=oS07d8Gr4tw&list=RDoS07d8Gr4tw&start_radio=1',
+      videoId: 'oS07d8Gr4tw',
+      playlistId: 'RDoS07d8Gr4tw',
+      title: 'Sia - Unstoppable (Lyrics)',
+      channel: '7clouds',
+      collectionPath: 'Music -English / English - Lyrics',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=dtiafgbsQl4&list=RDdtiafgbsQl4&start_radio=1',
+      videoId: 'dtiafgbsQl4',
+      playlistId: 'RDdtiafgbsQl4',
+      title: 'YouTube Video',
+      channel: '',
+      collectionPath: 'Music -English / English - Lyrics',
+      note: 'Collection'
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=dFp_b5DPIIo&list=RDdFp_b5DPIIo&start_radio=1',
+      videoId: 'dFp_b5DPIIo',
+      playlistId: 'RDdFp_b5DPIIo',
+      title: 'Shawn Mendes, Camila Cabello - Señorita (Lyrics) Letra',
+      channel: '7clouds',
+      collectionPath: 'Music -English / English - Lyrics',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=kBhJ7tnO4fA&list=RDkBhJ7tnO4fA&start_radio=1',
+      videoId: 'kBhJ7tnO4fA',
+      playlistId: 'RDkBhJ7tnO4fA',
+      title: 'Imagine Dragons – Believer (Lyrics) | Powerful & Intense Anthem',
+      channel: 'Golden Echoes',
+      collectionPath: 'Music -English / English - Lyrics',
+      note: ''
+    }
+    ]
+  },
+  {
+    id: 'mry5i90u4w6x',
+    name: 'Music - Album',
+    color: '#EF5350',
+    videoIds: ['mskd0au6rttm'],
+    videos: [
+    {
+      url: 'https://www.youtube.com/watch?v=Dg9ePUDm4Vs&list=RDDg9ePUDm4Vs&start_radio=1',
+      videoId: 'Dg9ePUDm4Vs',
+      playlistId: 'RDDg9ePUDm4Vs',
+      title: 'Positive Energy 2026 🌞 Feel Good Deep House Music for Morning Focus | ChillMorning Vibes',
+      channel: 'ChillMorning Vibes',
+      collectionPath: 'Music -English / Albums',
+      note: ''
+    }
+    ]
+  },
+  {
+    id: 'mry7auazmnj4',
+    name: 'Selena Gomez',
+    color: '#FFA726',
+    videoIds: ['mskd0au64akr'],
+    videos: [
+    {
+      url: 'https://www.youtube.com/watch?v=WcIcVapfqXw',
+      videoId: 'WcIcVapfqXw',
+      title: 'Rema, Selena Gomez - Calm Down (Official Music Video)',
+      channel: 'SelenaGomezVEVO',
+      collectionPath: 'Music -English / Selena Gomez',
+      note: ''
+    }
+    ]
+  },
+  {
+    id: 'mry7c0sd62q1',
+    name: 'JFla Music',
+    color: '#FF7043',
+    videoIds: ['mskd0au6kqy1'],
+    videos: [
+    {
+      url: 'https://www.youtube.com/watch?v=MhQKe-aERsU&list=RDMhQKe-aERsU',
+      videoId: 'MhQKe-aERsU',
+      playlistId: 'RDMhQKe-aERsU',
+      title: 'Ed Sheeran - Shape Of You ( cover by J.Fla )',
+      channel: 'JFlaMusic',
+      collectionPath: 'Music -English / JFla Music',
+      note: ''
+    }
+    ]
+  },
+  {
+    id: 'mry7g3srsau4',
+    name: 'Justin Bieber',
+    color: '#5C6BC0',
+    videoIds: [],
+    videos: [
+
+    ]
+  },
+  {
+    id: 'ms8pe3rp7qxz',
+    name: 'Tamil Album',
+    color: '#EC407A',
+    videoIds: ['mskd0au6nvjt', 'mskd0au6iudt', 'mskd0au6pgwu'],
+    videos: [
+    {
+      url: 'https://www.youtube.com/watch?v=2tcIB-YHaNs&list=RD2tcIB-YHaNs&start_radio=1',
+      videoId: '2tcIB-YHaNs',
+      playlistId: 'RD2tcIB-YHaNs',
+      title: 'YouTube Video',
+      channel: '',
+      collectionPath: 'Music / Tamil Album',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=R5ymC7gXWJk&list=RDR5ymC7gXWJk&start_radio=1',
+      videoId: 'R5ymC7gXWJk',
+      playlistId: 'RDR5ymC7gXWJk',
+      title: 'Idhazhin Mozhi | Tamil Romantic Melody | NMC Productions',
+      channel: 'NMC Productions',
+      collectionPath: 'Music / Tamil Album',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=R722GqixnNA',
+      videoId: 'R722GqixnNA',
+      title: 'நீரோடை... 💎 | காதலில் கரையும் இதயம் | Romantic Tamil Melody | Love Song | Music #lovesong  #love',
+      channel: 'EchoSphere',
+      collectionPath: 'Music / Tamil Album',
       note: ''
     }
     ]
