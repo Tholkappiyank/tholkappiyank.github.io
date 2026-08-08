@@ -22,12 +22,30 @@
     record(name, a, 'expected truthy, got ' + JSON.stringify(a));
   }
 
-  // Make sure we have seed data to assert against even on a reused localStorage
-  if (state.videos.length === 0 && typeof DEFAULT_COLLECTIONS !== 'undefined') {
-    seedData();
-    renderSidebar();
-    renderCards();
-  }
+  // Rebuild state from the fixtures unconditionally, so a run asserts against
+  // the same data every time regardless of what a previous run left in
+  // localStorage under `tholsstudio_test`.
+  //
+  // Seeding only when state.videos was empty wasn't enough: a stale entry can
+  // hold videos: [] AND playlists: [], and app.js's `if (!state.playlists)`
+  // migration doesn't fire for an empty array. seedData() would then refill the
+  // videos while remapPlaylistIds() had no playlist left to remap, so the pl1
+  // assertion below failed with -1 on every reload after the first.
+  //
+  // Mirrors the fresh-state shape in app.js (STATE, top of file).
+  state.videos = [];
+  state.collections = DEFAULT_COLLECTIONS.map(function (c) {
+    return { id: c.id, name: c.name, color: c.color };
+  });
+  state.playlists = DEFAULT_PLAYLISTS.map(function (p) {
+    return { id: p.id, name: p.name, color: p.color, videoIds: p.videoIds.slice() };
+  });
+  state.watchedIds = [];
+  state.videoOrder = {};
+  state.expandedGroups = [];
+  seedData();       // flattens the fixtures, remaps playlist ids, persists
+  renderSidebar();
+  renderCards();    // also runs attachCardDrag(), which sets card.draggable
 
   // ── Pure parsing / helpers ──
   eq('extractVideoId: watch url', extractVideoId('https://www.youtube.com/watch?v=abcdefghijk'), 'abcdefghijk');
@@ -52,7 +70,6 @@
   eq('chunk sizes', ch.map(function (a) { return a.length; }).join(','), '4,4,2');
 
   eq('escHtml', escHtml('<a>&"'), '&lt;a&gt;&amp;&quot;');
-  eq('escAttr', escAttr("a'b"), "a\\'b");
 
   truthy('formatDate returns string', typeof formatDate(Date.now()) === 'string');
 

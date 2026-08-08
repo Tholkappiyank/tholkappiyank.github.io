@@ -2631,6 +2631,12 @@ function pvHandleSearch() {
 let ytPlayer = null;
 let ytReady = false;
 
+// Handle for the "waiting on the IFrame API to load" poller in pvPlayIndex().
+// Kept at module scope so a second pvPlayIndex() call (user clicked another
+// track while the API was still loading) cancels the pending one — otherwise
+// two pollers race and the loser builds a player for the wrong video.
+let pvApiWaitTimer = null;
+
 // Called by YouTube IFrame API when loaded
 function onYouTubeIframeAPIReady() {
   ytReady = true;
@@ -2775,9 +2781,9 @@ function pvAttachTrackDrag() {
         pvState.index++;
       }
 
-      pvSaveOrderToPlaylist();
+      const saved = pvSaveOrderToPlaylist();
       pvRenderList();
-      showToast('✓ Playlist order saved');
+      showToast(saved ? '✓ Playlist order saved' : '↕ Queue reordered (shuffle only — playlist not changed)');
     },
     onDropToEnd: (srcEl) => {
       const srcIndex = parseInt(srcEl.dataset.pvIndex);
@@ -2786,17 +2792,26 @@ function pvAttachTrackDrag() {
       const oldPlaying = pvState.index;
       if (srcIndex === oldPlaying) pvState.index = pvState.order.length - 1;
       else if (srcIndex < oldPlaying) pvState.index--;
-      pvSaveOrderToPlaylist();
+      const saved = pvSaveOrderToPlaylist();
       pvRenderList();
-      showToast('✓ Playlist order saved');
+      showToast(saved ? '✓ Playlist order saved' : '↕ Queue reordered (shuffle only — playlist not changed)');
     }
   });
 }
 
 
+// Writes the current queue order back into the playlist (localStorage +
+// DEFAULT_PLAYLISTS, so "Export as playlist.js" picks it up).
+//
+// Only ever valid in sequential mode. In random mode pvState.order IS the
+// shuffle, so persisting it would overwrite the curated order with a random
+// permutation — irreversibly, and bakeable into committed source on the next
+// export. Returns whether it actually saved so the caller can word its toast
+// honestly instead of claiming a save that didn't happen.
 function pvSaveOrderToPlaylist() {
+  if (pvState.mode !== 'sequential') return false;
   const pl = state.playlists.find(p => p.id === pvState.plId);
-  if (!pl) return;
+  if (!pl) return false;
   pl.videoIds = [...pvState.order];
   save();
 
@@ -2820,9 +2835,35 @@ function pvSaveOrderToPlaylist() {
     }).filter(Boolean);
     defPl.videos = orderedVideos;
   }
+  return true;
+}
+
+// Builds a fresh YT.Player in the split view. Shared by the "API already
+// ready" path and the poller below so the two can't drift apart — in
+// particular so both wire up onStateChange (autoplay) AND onError (skip).
+function pvCreatePlayer(videoId) {
+  const container = document.getElementById('pvIframeContainer');
+  if (container) container.innerHTML = '<div id="ytPlayerEl" style="width:100%;height:100%;"></div>';
+  ytPlayer = new window.YT.Player('ytPlayerEl', {
+    width: '100%',
+    height: '100%',
+    videoId: videoId,
+    playerVars: { autoplay: 1, rel: 0, modestbranding: 1 },
+    events: {
+      onReady: function() {
+        try { ytPlayer.playVideo(); } catch(e) {}
+      },
+      onStateChange: onYtPlayerStateChange,
+      onError: onYtPlayerError,
+    }
+  });
 }
 
 function pvPlayIndex(i) {
+  // Any poller left over from a previous track is now stale — it would build a
+  // player for the video the user just navigated away from.
+  if (pvApiWaitTimer) { clearInterval(pvApiWaitTimer); pvApiWaitTimer = null; }
+
   pvState.index = i;
   const vidId = pvState.order[i];
   const v = state.videos.find(v => v.id === vidId);
@@ -2841,49 +2882,44 @@ function pvPlayIndex(i) {
       return;
     }
   } else if (ytReady && window.YT && window.YT.Player) {
-    if (container) container.innerHTML = '<div id="ytPlayerEl" style="width:100%;height:100%;"></div>';
-    ytPlayer = new window.YT.Player('ytPlayerEl', {
-      width: '100%',
-      height: '100%',
-      videoId: v.videoId,
-      playerVars: { autoplay: 1, rel: 0, modestbranding: 1 },
-      events: {
-        onReady: function() {
-          try { ytPlayer.playVideo(); } catch(e) {}
-        },
-        onStateChange: onYtPlayerStateChange,
-      }
-    });
+    pvCreatePlayer(v.videoId);
   } else {
+    // The IFrame API script hasn't loaded yet. Deliberately NOT dropping a bare
+    // <iframe> in here: it carries no onStateChange, so autoplay would be dead
+    // for this track, and the poller would then swap it for a real player on
+    // the same video mid-watch — restarting it from zero. Show a placeholder,
+    // build the real player the moment the API lands, and only fall back to a
+    // bare iframe if it never does.
     if (container) container.innerHTML =
-      `<iframe src="${getEmbedUrl(v.videoId)}"
-       style="width:100%;height:100%;border:none;position:absolute;inset:0;" allowfullscreen
-       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
-    if (!ytReady) {
-      const checkInterval = setInterval(() => {
-        if (ytReady && window.YT && window.YT.Player) {
-          clearInterval(checkInterval);
-          if (container) container.innerHTML = '<div id="ytPlayerEl" style="width:100%;height:100%;"></div>';
-          ytPlayer = new window.YT.Player('ytPlayerEl', {
-            width: '100%',
-            height: '100%',
-            videoId: v.videoId,
-            playerVars: { autoplay: 1, rel: 0, modestbranding: 1 },
-            events: {
-              onReady: function() {
-                try { ytPlayer.playVideo(); } catch(e) {}
-              },
-              onStateChange: onYtPlayerStateChange,
-            }
-          });
-        }
-      }, 500);
-      setTimeout(() => clearInterval(checkInterval), 15000);
-    }
+      '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;'
+      + 'color:#8A8AA3;font:13px system-ui,sans-serif;">Loading player…</div>';
+    const pendingVideoId = v.videoId;
+    let waited = 0;
+    pvApiWaitTimer = setInterval(() => {
+      if (ytReady && window.YT && window.YT.Player) {
+        clearInterval(pvApiWaitTimer); pvApiWaitTimer = null;
+        pvCreatePlayer(pendingVideoId);
+        return;
+      }
+      waited += 500;
+      if (waited >= 15000) {
+        // Gave up on the API (offline, blocked, slow). A bare iframe at least
+        // plays the video; autoplay stays off for it since there are no state
+        // events to advance on.
+        clearInterval(pvApiWaitTimer); pvApiWaitTimer = null;
+        if (container) container.innerHTML =
+          `<iframe src="${getEmbedUrl(pendingVideoId)}"
+           style="width:100%;height:100%;border:none;position:absolute;inset:0;" allowfullscreen
+           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
+      }
+    }, 500);
   }
 
-  document.querySelectorAll('.pv-track').forEach((el, idx) => {
-    el.classList.toggle('active', idx === i);
+  // Highlight by the row's real position in pvState.order, NOT by its position
+  // in the DOM: the search filter drops non-matching rows, so the two diverge
+  // and a DOM-index comparison highlights the wrong row (or none at all).
+  document.querySelectorAll('.pv-track').forEach(el => {
+    el.classList.toggle('active', parseInt(el.dataset.pvIndex, 10) === i);
   });
 
   const activeTrack = document.getElementById('pvt-' + i);
@@ -2892,11 +2928,31 @@ function pvPlayIndex(i) {
 
 function onYtPlayerStateChange(event) {
   // YT.PlayerState.ENDED = 0
-  if (event.data === 0 && pvState.autoplay) {
-    const next = pvState.index + 1;
-    if (next < pvState.order.length) {
-      pvPlayIndex(next);
-    }
+  if (event.data !== 0 || !pvState.autoplay) return;
+  const next = pvState.index + 1;
+  if (next < pvState.order.length) {
+    pvPlayIndex(next);
+  } else {
+    // Last track — there's no repeat mode, so playback stops here. Say so
+    // rather than just going quiet.
+    showToast('✓ Playlist finished');
+  }
+}
+
+// Unplayable videos (deleted, private, region-blocked, embedding disabled)
+// surface through onError and never fire ENDED — so without this the queue
+// stalls on one dead link forever. Skipping walks at most to the end of the
+// playlist, so a fully broken playlist terminates rather than looping.
+function onYtPlayerError(event) {
+  const v = state.videos.find(v => v.id === pvState.order[pvState.index]);
+  let label = (v && (v.title || v.videoId)) || 'this video';
+  if (label.length > 40) label = label.slice(0, 40) + '…';
+  const next = pvState.index + 1;
+  if (pvState.autoplay && next < pvState.order.length) {
+    showToast(`⚠ Can't play "${label}" — skipping`);
+    pvPlayIndex(next);
+  } else {
+    showToast(`⚠ Can't play "${label}"`);
   }
 }
 
@@ -2908,7 +2964,11 @@ function pvToggleAutoplay() {
 }
 
 function pvSetMode(mode) {
-  if (pvState.mode === mode) return;
+  // Clicking Shuffle while already shuffled re-shuffles — the old blanket early
+  // return made the button look dead on every press after the first. Clicking
+  // Sequential while already sequential stays a no-op: rebuilding it can only
+  // produce the identical order, and it would needlessly restart playback.
+  if (pvState.mode === mode && mode !== 'random') return;
   pvState.mode = mode;
   const pl = state.playlists.find(p => p.id === pvState.plId);
   if (pl) pvBuildOrder(pl);
@@ -2922,6 +2982,7 @@ function closePvView(restoreAll) {
   document.getElementById('mainView').style.display = '';
   document.getElementById('sidebar').style.display = '';
   // Stop and destroy the YouTube player
+  if (pvApiWaitTimer) { clearInterval(pvApiWaitTimer); pvApiWaitTimer = null; }
   if (ytPlayer && typeof ytPlayer.stopVideo === 'function') {
     try { ytPlayer.stopVideo(); ytPlayer.destroy(); } catch(e) {}
     ytPlayer = null;

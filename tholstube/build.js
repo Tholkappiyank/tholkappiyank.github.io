@@ -228,9 +228,13 @@ function main() {
   console.log('✓ generated tests.html + test/page-template.js');
 
   // The test page references test/test-collections.js, test/test-playlist.js,
-  // test/test-watched.js. These are hand-maintained fixtures (the feature
-  // tests assert against their demo data); writeCategorySeeds skips existing
-  // files, so the committed fixtures are preserved.
+  // test/test-watched.js. These are hand-maintained fixtures — the feature
+  // tests assert against their exact contents (video counts, the 'pl1'
+  // playlist id, the watched entry), so they are NOT interchangeable with the
+  // empty seeds this script generates for a new category. writeCategorySeeds()
+  // only writes files that don't already exist, so the committed fixtures are
+  // preserved here; delete one and the next build silently replaces it with an
+  // empty seed, which will fail the tests.
   writeCategorySeeds(testApp);
 
   console.log('done');

@@ -1,6 +1,6 @@
 // --------------------------------------------------------------
 // PLAYLIST CONFIG
-// Exported from TubeVault on 7/31/2026, 3:44:10 PM
+// Exported from TubeVault on 8/8/2026, 8:40:34 PM
 //
 // Each playlist: id, name, color, videoIds, videos (full details)
 // To apply as defaults: replace music-playlist.js and clear localStorage.
@@ -11,7 +11,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mqq9bpw24iah',
     name: 'Veena',
     color: '#26A69A',
-    videoIds: ['ms4kj57m2u3j', 'ms4kj57msv9l', 'ms4kj57mu3nd', 'ms4kj57m1isk', 'ms4kj57mv96g', 'ms4kj57ld11y', 'ms4kj57lfuzn', 'ms4kj57lwfkk', 'ms4kj57le8l7', 'ms4kj57lp7t9', 'ms4kj57l0vcr', 'ms4kj57lzd7g', 'ms4kj57l4yzr', 'ms4kj57ls5vf', 'ms4kj57l8hih', 'ms4kj57llm4b', 'ms4kj57loncl', 'ms4kj57ly8bj', 'ms4kj57lqplw', 'ms4kj57l9yv1', 'ms4kj57mkyt2', 'ms4kj57lj1o1', 'ms4kj57l87lx'],
+    videoIds: ['mskd0au6dq8t', 'mskd0au66e9a', 'mskd0au67bj1', 'mskd0au6ith9', 'mskd0au6v347', 'mskd0au6n0nu', 'mskd0au6iqty', 'mskd0au6hog4', 'mskd0au6cuyh', 'mskd0au6fhuv', 'mskd0au6r43t', 'mskd0au69h17', 'mskd0au6j3za', 'mskd0au6t14k', 'mskd0au6jftj', 'mskd0au64l95', 'mskd0au6i655', 'mskd0au60a5m', 'mskd0au6bkkj', 'mskd0au6lwtw', 'mskd0au6g1le', 'mskd0au6k1j9', 'mskd0au63cy6'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=vIDl1E26FpU&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=2',
@@ -225,7 +225,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mr22a2y3jmrh',
     name: 'Daily Routine',
     color: '#AB47BC',
-    videoIds: ['ms4kj57luuts', 'ms4kj57lrnti', 'ms4kj57l4lg9', 'ms4kj57lmyes', 'ms4kj57lm31m', 'ms4kj57luil8', 'ms4kj57lptn4', 'ms4kj57l9h5x', 'ms4kj57lum1u', 'ms4kj57l2fb7', 'ms4kj57l7cki', 'ms4kj57lqtd3', 'ms4kj57lq4ab', 'ms4kj57lunoo', 'ms4kj57lqlsm', 'ms4kj57ljclg', 'ms4kj57l3lvn', 'ms4kj57lccke', 'ms4kj57lpgsv', 'ms4kj57lavf9', 'ms4kj57l52oo'],
+    videoIds: ['mskd0au6i0u9', 'mskd0au600jq', 'mskd0au6az13', 'mskd0au65fzo', 'mskd0au6zc8v', 'mskd0au6o9gn', 'mskd0au6ag0a', 'mskd0au6qud4', 'mskd0au6zzxy', 'mskd0au698d5', 'mskd0au667ap', 'mskd0au65r3t', 'mskd0au6j2mu', 'mskd0au6j5c9', 'mskd0au6w2ag', 'mskd0au6age2', 'mskd0au6nl1g', 'mskd0au6srhg', 'mskd0au6g740', 'mskd0au66inv', 'mskd0au6xcmg'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=eF9LRFbkHLQ&list=RDKUN5Uf9mObQ&index=27',
@@ -421,7 +421,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mrkqs7vie0fe',
     name: 'Daily Routine - Melody',
     color: '#66BB6A',
-    videoIds: ['ms4kj57l4wba', 'ms4kj57lj9cv', 'ms4kj57lhecw', 'ms4kj57lmzje', 'ms4kj57lyi4a', 'ms4kj57lhquc', 'ms4kj57lf4pi', 'ms4kj57lbqrw', 'ms4kj57lhkay', 'ms4kj57l3ry7', 'ms4kj57lrzrp', 'ms4kj57lntar', 'ms4kj57l8oy3', 'ms4kj57lnv7f', 'ms4kj57l7x5g', 'ms4kj57lfhux', 'ms4kj57lwoas', 'ms4kj57l0g7f', 'ms4kj57lrxrh', 'ms4kj57lq1nz', 'ms4kj57l0i50', 'ms4kj57l4wud'],
+    videoIds: ['mskd0au60bzt', 'mskd0au6stwk', 'mskd0au6vthy', 'mskd0au669jl', 'mskd0au6dxoh', 'mskd0au66qgn', 'mskd0au64zxg', 'mskd0au6dm1r', 'mskd0au6byx7', 'mskd0au6g6ty', 'mskd0au6r2ft', 'mskd0au68bsj', 'mskd0au60mcb', 'mskd0au65u5q', 'mskd0au6dp9i', 'mskd0au6722l', 'mskd0au6ypke', 'mskd0au6hbf5', 'mskd0au6zxbk', 'mskd0au6k3ll', 'mskd0au6pudi', 'mskd0au6e1dm'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=MgWrkGfDn-o&list=RDWOxan-rN4Cw&index=13',
@@ -627,7 +627,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mrlk1tk2ny6u',
     name: 'Humming',
     color: '#29B6F6',
-    videoIds: ['ms4kj57l8cep', 'ms4kj57l2qwc', 'ms4kj57lb68f', 'ms4kj57ll1s3', 'ms63w64j9ce7', 'ms8pzsmj5dt2', 'ms6xk4tibf6u'],
+    videoIds: ['mskd0au6chqv', 'mskd0au6hdxm', 'mskd0au6g84l', 'mskd0au6t978', 'mskd0au6twk2', 'mskd0au605x3', 'mskd0au6fyis'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=hUfuDyhxHT8&list=RDhUfuDyhxHT8&start_radio=1&t=5409s',
@@ -697,7 +697,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mry3rf1xoxry',
     name: 'Music - Instrumental',
     color: '#FF7043',
-    videoIds: ['ms4kj57mkq48', 'ms4kj57m9l8q', 'ms4kj57mhnw5', 'ms4kj57msd57', 'ms4kj57mm8v5', 'ms4kj57ms85f', 'ms5tvogesdde', 'ms4kj57mei0s'],
+    videoIds: ['mskd0au6s4rm', 'mskd0au6silw', 'mskd0au6z5lr', 'mskd0au6oej1', 'mskd0au6t8do', 'mskd0au643k5', 'mskd0au6t4yg', 'mskd0au6q7r3'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=UH3bfZ6Rb9E&list=RDUH3bfZ6Rb9E',
@@ -775,7 +775,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mry3s20iasmn',
     name: 'Music - Lyrics',
     color: '#EC407A',
-    videoIds: ['ms4kj57m4xdf', 'ms4kj57m0u71', 'ms4kj57mqb05', 'ms4kj57m8kzb', 'ms4kj57mrz25', 'ms4kj57m2fn4', 'ms4kj57mzky8', 'ms4kj57mxqwi', 'ms4kj57m72j7'],
+    videoIds: ['mskd0au6grgx', 'mskd0au6bd5s', 'mskd0au67q78', 'mskd0au6j5pg', 'mskd0au6tago', 'mskd0au6383p', 'mskd0au62sos', 'mskd0au66sjp', 'mskd0au6jdlg'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=1__CAdTJ5JU&list=RD1__CAdTJ5JU&start_radio=1',
@@ -864,7 +864,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mry5i90u4w6x',
     name: 'Music - Album',
     color: '#EF5350',
-    videoIds: ['ms4kj57m5wk1'],
+    videoIds: ['mskd0au6rttm'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=Dg9ePUDm4Vs&list=RDDg9ePUDm4Vs&start_radio=1',
@@ -881,7 +881,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mry7auazmnj4',
     name: 'Selena Gomez',
     color: '#FFA726',
-    videoIds: ['ms4kj57mgehp'],
+    videoIds: ['mskd0au64akr'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=WcIcVapfqXw',
@@ -897,7 +897,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mry7c0sd62q1',
     name: 'JFla Music',
     color: '#FF7043',
-    videoIds: ['ms4kj57mkxco'],
+    videoIds: ['mskd0au6kqy1'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=MhQKe-aERsU&list=RDMhQKe-aERsU',
@@ -923,7 +923,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'ms8pe3rp7qxz',
     name: 'Tamil Album',
     color: '#EC407A',
-    videoIds: ['ms7kdgbnvios', 'ms7kh47qd39t', 'ms7kf8w8dsjr'],
+    videoIds: ['mskd0au6nvjt', 'mskd0au6iudt', 'mskd0au6pgwu'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=2tcIB-YHaNs&list=RD2tcIB-YHaNs&start_radio=1',
