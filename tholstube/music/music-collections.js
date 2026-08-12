@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
-// Exported from TubeVault on 8/8/2026, 8:40:33 PM
+// Exported from TubeVault on 8/12/2026, 8:31:35 PM
 //
 // STRUCTURE — easy to browse/edit in any JSON editor:
 //   DEFAULT_COLLECTIONS
@@ -39,25 +39,63 @@ const DEFAULT_COLLECTIONS = [
     name: 'Music',
     color: '#EC407A',
     groups: {
-      'Tabla': [
+      'Tamil Album': [
         {
-          url: 'https://www.youtube.com/watch?v=yahan-tNpss&list=RDyahan-tNpss&start_radio=1',
-          videoId: 'yahan-tNpss',
-          playlistId: 'RDyahan-tNpss',
-          title: 'Veena & Violin Instrumental | 1 Hour Soulful Indian Classical Carnatic Music for Peace & Relaxation',
-          channel: 'Arrylene Instrumentals',
+          url: 'https://www.youtube.com/watch?v=ErKz6M_4aZU&list=RDErKz6M_4aZU&start_radio=1',
+          videoId: 'ErKz6M_4aZU',
+          playlistId: 'RDErKz6M_4aZU',
+          title: 'Mounam Sollum Varthaigal | Tamil Music Album | Vinitha Koshy | Rahul Riji Nair, Sidhartha Pradeep',
+          channel: 'Tamil Muzik247',
           note: ''
         },
         {
-          url: 'https://www.youtube.com/watch?v=tgneSmdEM2c&list=RDtgneSmdEM2c&start_radio=1',
-          videoId: 'tgneSmdEM2c',
-          playlistId: 'RDtgneSmdEM2c',
+          url: 'https://www.youtube.com/watch?v=5BMvVvk2aGA&list=RD5BMvVvk2aGA&start_radio=1',
+          videoId: '5BMvVvk2aGA',
+          playlistId: 'RD5BMvVvk2aGA',
+          title: 'Neela Nilave - 8K Video | RDX | Kapil Kapilan | Sam CS | Shane Nigam,Antony Varghese,Neeraj Madhav',
+          channel: 'Saregama Malayalam',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=D76XBkNoeac&list=RDscRQR-FRfIo&index=2',
+          videoId: 'D76XBkNoeac',
+          playlistId: 'RDscRQR-FRfIo',
+          title: 'Chiri Thottu | Sarvam Maya | Nivin Pauly, Preity Mukhundhan | Justin, Chinmayi | Akhil Sathyan',
+          channel: 'FireFly Films & Arts',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=scRQR-FRfIo&list=RDscRQR-FRfIo&start_radio=1',
+          videoId: 'scRQR-FRfIo',
+          playlistId: 'RDscRQR-FRfIo',
+          title: 'Puthu Mazha | Sarvam Maya | Nivin Pauly, Riya Shibu | Justin, Shakthisree Gopalan | Akhil Sathyan',
+          channel: 'FireFly Films & Arts',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=k-YdbnWzn6s&list=RD2tcIB-YHaNs&index=3',
+          videoId: 'k-YdbnWzn6s',
+          playlistId: 'RD2tcIB-YHaNs',
           title: 'YouTube Video',
           channel: '',
           note: ''
         },
-      ],
-      'Tamil Album': [
+        {
+          url: 'https://www.youtube.com/watch?v=nMxmb7DeKqk&list=RD2tcIB-YHaNs&index=4',
+          videoId: 'nMxmb7DeKqk',
+          playlistId: 'RD2tcIB-YHaNs',
+          title: '🌙 எங்கே நீ... | Enge Nee | Arabic × Carnatic Sufi Fusion | Soulful Female Vocal | Ear X Music',
+          channel: 'Ear X Music ',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=Ekyc_iJjwsM&list=RDEkyc_iJjwsM&start_radio=1',
+          videoId: 'Ekyc_iJjwsM',
+          playlistId: 'RDEkyc_iJjwsM',
+          title: 'Bipin Jose | Sithara Vijayan | Romantic Travel Song| Pranah | പ്രാണ',
+          channel: 'Meenachil Talkies | മീനച്ചിൽ ടാക്കീസ്',
+          note: ''
+        },
         {
           url: 'https://www.youtube.com/watch?v=JXmMgsZFenE&list=RD2tcIB-YHaNs&index=4',
           videoId: 'JXmMgsZFenE',
@@ -85,97 +123,88 @@ const DEFAULT_COLLECTIONS = [
           url: 'https://www.youtube.com/watch?v=2tcIB-YHaNs&list=RD2tcIB-YHaNs&start_radio=1',
           videoId: '2tcIB-YHaNs',
           playlistId: 'RD2tcIB-YHaNs',
-          title: 'YouTube Video',
+          title: 'யானும் நீயும் | Yaanum Neeyum',
           channel: '',
-          note: ''
+          note: 'Tamil Romantic Melody | Carnatic Fusion'
         },
       ],
-      'Humming': [
+      'Mirthangam': [
         {
-          url: 'https://www.youtube.com/watch?v=BqT7SCIfycs&list=RDfMKQTLP4aO0&index=4',
-          videoId: 'BqT7SCIfycs',
-          playlistId: 'RDfMKQTLP4aO0',
-          title: 'Carnatic Meditation Flow 🌿 | 1 Hour Pure Instrumental Music for Yoga, Spa & Deep Calm',
-          channel: 'Pure Instrumental Flow',
-          note: ''
-        },
-        {
-          url: 'youtube.com/watch?v=S0XcA4rNdKs&list=RDS0XcA4rNdKs',
-          videoId: 'S0XcA4rNdKs',
-          playlistId: 'RDS0XcA4rNdKs',
-          title: 'Indian Monsoon Melody | Gentle Rain Instrumental with Huming (No Lyrics)',
-          channel: 'Romantic Frequencies',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=YPa9SgASMRw&list=RDYPa9SgASMRw&start_radio=1',
-          videoId: 'YPa9SgASMRw',
-          playlistId: 'RDYPa9SgASMRw',
-          title: 'Medieval Music with Female Vocals in Old English – A Journey Through Time',
-          channel: 'Medieval Melodies',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=Y9oCBRDjKjY&t=1612s',
-          videoId: 'Y9oCBRDjKjY',
+          url: 'https://www.youtube.com/watch?v=wSgJPfr1CT0&list=RDwSgJPfr1CT0&start_radio=1&t=3999s',
+          videoId: 'wSgJPfr1CT0',
+          playlistId: 'RDwSgJPfr1CT0',
           title: '',
           channel: '',
           note: ''
         },
         {
-          url: 'https://www.youtube.com/watch?v=7Yb8-bVy8E0&list=RD7Yb8-bVy8E0&start_radio=1&t=246s',
-          videoId: '7Yb8-bVy8E0',
-          playlistId: 'RD7Yb8-bVy8E0',
+          url: 'https://www.youtube.com/watch?v=R1z0ASKw4x4&list=RDR1z0ASKw4x4&start_radio=1',
+          videoId: 'R1z0ASKw4x4',
+          playlistId: 'RDR1z0ASKw4x4',
           title: '',
           channel: '',
           note: ''
         },
         {
-          url: 'https://www.youtube.com/watch?v=MnBbHXu8IyA&list=RD9fyOu2dxgOY&index=11',
-          videoId: 'MnBbHXu8IyA',
-          playlistId: 'RD9fyOu2dxgOY',
-          title: 'Innisai Alapadaiye ❤️ | Heavenly Vibes from Varalaaru | A.R. Rahman Tribute',
-          channel: 'Prabhu Musiq Vibez',
+          url: 'https://www.youtube.com/watch?v=cAU0k_yQjLc&list=RDcAU0k_yQjLc&start_radio=1',
+          videoId: 'cAU0k_yQjLc',
+          playlistId: 'RDcAU0k_yQjLc',
+          title: 'Carnatic Mridangam Solo • 5 Jathi Tala Journey | Pure South Indian Percussion',
+          channel: 'Ancient Earth Rhythms',
           note: ''
         },
         {
-          url: 'https://www.youtube.com/watch?v=hUfuDyhxHT8&list=RDhUfuDyhxHT8&start_radio=1&t=5409s',
-          videoId: 'hUfuDyhxHT8',
-          playlistId: 'RDhUfuDyhxHT8',
-          title: 'Persian Trance 🌙 Mystical Middle Eastern Deep Trance Mix for Work, Study & Meditation',
-          channel: 'Persian Focus Temple',
-          note: ''
-        },
-      ],
-      'Instrumental': [
-        {
-          url: 'https://www.youtube.com/watch?v=SEw8IsSXRSU&list=RDSEw8IsSXRSU&start_radio=1',
-          videoId: 'SEw8IsSXRSU',
-          playlistId: 'RDSEw8IsSXRSU',
-          title: 'Sitar for Dopamine Reset | Indian Classical Music for Mindfulness',
-          channel: 'Raga Focus',
+          url: 'https://www.youtube.com/watch?v=Po8btQUks3g',
+          videoId: 'Po8btQUks3g',
+          title: '',
+          channel: '',
           note: ''
         },
         {
-          url: 'https://www.youtube.com/watch?v=fMKQTLP4aO0&list=RDfMKQTLP4aO0&start_radio=1',
-          videoId: 'fMKQTLP4aO0',
-          playlistId: 'RDfMKQTLP4aO0',
-          title: 'Pure Relaxation Music | Deep Meditation, Stress Relief & Inner Peace | Indian Instrumental Music',
-          channel: 'SAVERA',
+          url: 'https://www.youtube.com/watch?v=EjYdo-6Zh4I&list=RDEjYdo-6Zh4I&start_radio=1&t=241s',
+          videoId: 'EjYdo-6Zh4I',
+          playlistId: 'RDEjYdo-6Zh4I',
+          title: '',
+          channel: '',
           note: ''
         },
       ],
-      'Other Lang': [
+      'Beats': [
         {
-          url: 'https://www.youtube.com/watch?v=PgCliOxl41o&list=RDPgCliOxl41o&start_radio=1',
-          videoId: 'PgCliOxl41o',
-          playlistId: 'RDPgCliOxl41o',
+          url: 'https://www.youtube.com/watch?v=5Yvt5t6p88s',
+          videoId: '5Yvt5t6p88s',
           title: 'YouTube Video',
           channel: '',
-          note: 'Yes'
+          note: ''
+        },
+      ],
+      'Flute': [
+        {
+          url: 'https://www.youtube.com/watch?v=3A4AbGlNVz0&list=RD3A4AbGlNVz0&start_radio=1',
+          videoId: '3A4AbGlNVz0',
+          playlistId: 'RD3A4AbGlNVz0',
+          title: 'Morning Dopamine Reset 🌿 Healing Bansuri Music for Focus, Motivation & Mental Clarity',
+          channel: 'Soulful Breathscape™',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=CZNu1mGicPA&list=RDVyrbmVbq88Y&index=5',
+          videoId: 'CZNu1mGicPA',
+          playlistId: 'RDVyrbmVbq88Y',
+          title: 'YouTube Video',
+          channel: '',
+          note: ''
         },
       ],
       'Daily Routine - Melody': [
+        {
+          url: 'https://www.youtube.com/watch?v=Q-_cu_78eIA&list=RDQ-_cu_78eIA&start_radio=1',
+          videoId: 'Q-_cu_78eIA',
+          playlistId: 'RDQ-_cu_78eIA',
+          title: 'Kanavae Kanavae Official Video Song HD',
+          channel: 'kabesh Auditore',
+          note: ''
+        },
         {
           url: 'https://www.youtube.com/watch?v=UmyOwP4-eEU&list=PLvGJzgY6LDpA0QVcvaKkR4DyckjNAgGRn&index=48',
           videoId: 'UmyOwP4-eEU',
@@ -391,6 +420,109 @@ const DEFAULT_COLLECTIONS = [
           title: 'Kandaangi Kandaangi - Video Song | 4K | Jilla Movie | Vijay | Kajal Agarwal | D.Imman | Star Music',
           channel: 'Star Music India',
           note: ''
+        },
+      ],
+      'Tabla': [
+        {
+          url: 'https://www.youtube.com/watch?v=yahan-tNpss&list=RDyahan-tNpss&start_radio=1',
+          videoId: 'yahan-tNpss',
+          playlistId: 'RDyahan-tNpss',
+          title: 'Veena & Violin Instrumental | 1 Hour Soulful Indian Classical Carnatic Music for Peace & Relaxation',
+          channel: 'Arrylene Instrumentals',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=tgneSmdEM2c&list=RDtgneSmdEM2c&start_radio=1',
+          videoId: 'tgneSmdEM2c',
+          playlistId: 'RDtgneSmdEM2c',
+          title: 'YouTube Video',
+          channel: '',
+          note: ''
+        },
+      ],
+      'Humming': [
+        {
+          url: 'https://www.youtube.com/watch?v=BqT7SCIfycs&list=RDfMKQTLP4aO0&index=4',
+          videoId: 'BqT7SCIfycs',
+          playlistId: 'RDfMKQTLP4aO0',
+          title: 'Carnatic Meditation Flow 🌿 | 1 Hour Pure Instrumental Music for Yoga, Spa & Deep Calm',
+          channel: 'Pure Instrumental Flow',
+          note: ''
+        },
+        {
+          url: 'youtube.com/watch?v=S0XcA4rNdKs&list=RDS0XcA4rNdKs',
+          videoId: 'S0XcA4rNdKs',
+          playlistId: 'RDS0XcA4rNdKs',
+          title: 'Indian Monsoon Melody | Gentle Rain Instrumental with Huming (No Lyrics)',
+          channel: 'Romantic Frequencies',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=YPa9SgASMRw&list=RDYPa9SgASMRw&start_radio=1',
+          videoId: 'YPa9SgASMRw',
+          playlistId: 'RDYPa9SgASMRw',
+          title: 'Medieval Music with Female Vocals in Old English – A Journey Through Time',
+          channel: 'Medieval Melodies',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=Y9oCBRDjKjY&t=1612s',
+          videoId: 'Y9oCBRDjKjY',
+          title: '',
+          channel: '',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=7Yb8-bVy8E0&list=RD7Yb8-bVy8E0&start_radio=1&t=246s',
+          videoId: '7Yb8-bVy8E0',
+          playlistId: 'RD7Yb8-bVy8E0',
+          title: '',
+          channel: '',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=MnBbHXu8IyA&list=RD9fyOu2dxgOY&index=11',
+          videoId: 'MnBbHXu8IyA',
+          playlistId: 'RD9fyOu2dxgOY',
+          title: 'Innisai Alapadaiye ❤️ | Heavenly Vibes from Varalaaru | A.R. Rahman Tribute',
+          channel: 'Prabhu Musiq Vibez',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=hUfuDyhxHT8&list=RDhUfuDyhxHT8&start_radio=1&t=5409s',
+          videoId: 'hUfuDyhxHT8',
+          playlistId: 'RDhUfuDyhxHT8',
+          title: 'Persian Trance 🌙 Mystical Middle Eastern Deep Trance Mix for Work, Study & Meditation',
+          channel: 'Persian Focus Temple',
+          note: ''
+        },
+      ],
+      'Instrumental': [
+        {
+          url: 'https://www.youtube.com/watch?v=SEw8IsSXRSU&list=RDSEw8IsSXRSU&start_radio=1',
+          videoId: 'SEw8IsSXRSU',
+          playlistId: 'RDSEw8IsSXRSU',
+          title: 'Sitar for Dopamine Reset | Indian Classical Music for Mindfulness',
+          channel: 'Raga Focus',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=fMKQTLP4aO0&list=RDfMKQTLP4aO0&start_radio=1',
+          videoId: 'fMKQTLP4aO0',
+          playlistId: 'RDfMKQTLP4aO0',
+          title: 'Pure Relaxation Music | Deep Meditation, Stress Relief & Inner Peace | Indian Instrumental Music',
+          channel: 'SAVERA',
+          note: ''
+        },
+      ],
+      'Other Lang': [
+        {
+          url: 'https://www.youtube.com/watch?v=PgCliOxl41o&list=RDPgCliOxl41o&start_radio=1',
+          videoId: 'PgCliOxl41o',
+          playlistId: 'RDPgCliOxl41o',
+          title: 'YouTube Video',
+          channel: '',
+          note: 'Yes'
         },
       ],
       'Daily Routine': [
@@ -755,6 +887,16 @@ const DEFAULT_COLLECTIONS = [
     name: 'Music -English',
     color: '#FFA726',
     groups: {
+      'Alan Walker': [
+        {
+          url: 'https://www.youtube.com/watch?v=jW-ysI71WY0&list=RD6QBy_Oa5ZmM&index=4',
+          videoId: 'jW-ysI71WY0',
+          playlistId: 'RD6QBy_Oa5ZmM',
+          title: 'Alok & Alan Walker - Headlights (feat. KIDDO)  | Flipside Deep House Remix',
+          channel: 'The Flipside',
+          note: ''
+        },
+      ],
       'Albums': [
         {
           url: 'https://www.youtube.com/watch?v=DhGz5a6hstY&list=RDDhGz5a6hstY&start_radio=1',

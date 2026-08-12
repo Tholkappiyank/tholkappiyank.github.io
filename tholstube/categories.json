@@ -1,9 +1,10 @@
 {
   "collections": [
-    { "id": "music", "name": "music", "color": "#EC407A" },
-    { "id": "electronics", "name": "electronics", "color": "#29B6F6" },
-    { "id": "astrology",   "name": "astrology",   "color": "#AB47BC" },
-    { "id": "finance",   "name": "finance",   "color": "#AB46BC" },
-	{ "id": "cooking",   "name": "cooking",   "color": "#AB64BC" }
+    { "id": "music", "name": "Music", "color": "#EC407A" },
+    { "id": "electronics", "name": "Electronics", "color": "#29B6F6" },
+    { "id": "astrology",   "name": "Astrology",   "color": "#AB47BC" },
+    { "id": "finance",   "name": "Finance",   "color": "#AB46BC" },
+	  { "id": "cooking",   "name": "Cooking",   "color": "#AB64BC" },
+	  { "id": "book",   "name": "Book",   "color": "#AB64BC" }
   ]
 }

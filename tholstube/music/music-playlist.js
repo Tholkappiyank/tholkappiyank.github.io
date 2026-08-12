@@ -1,6 +1,6 @@
 // --------------------------------------------------------------
 // PLAYLIST CONFIG
-// Exported from TubeVault on 8/8/2026, 8:40:34 PM
+// Exported from TubeVault on 8/12/2026, 8:31:35 PM
 //
 // Each playlist: id, name, color, videoIds, videos (full details)
 // To apply as defaults: replace music-playlist.js and clear localStorage.
@@ -923,16 +923,16 @@ const DEFAULT_PLAYLISTS = [
     id: 'ms8pe3rp7qxz',
     name: 'Tamil Album',
     color: '#EC407A',
-    videoIds: ['mskd0au6nvjt', 'mskd0au6iudt', 'mskd0au6pgwu'],
+    videoIds: ['mskd0au6nvjt', 'mskd0au6iudt', 'mskd0au6pgwu', 'msojf6tceie5', 'msojvwsb0oah', 'msok29rvpy6f', 'msn63cixsngn', 'msn3r2cpda0e', 'mskd0au6p2dh'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=2tcIB-YHaNs&list=RD2tcIB-YHaNs&start_radio=1',
       videoId: '2tcIB-YHaNs',
       playlistId: 'RD2tcIB-YHaNs',
-      title: 'YouTube Video',
+      title: 'யானும் நீயும் | Yaanum Neeyum',
       channel: '',
       collectionPath: 'Music / Tamil Album',
-      note: ''
+      note: 'Tamil Romantic Melody | Carnatic Fusion'
     },
     {
       url: 'https://www.youtube.com/watch?v=R5ymC7gXWJk&list=RDR5ymC7gXWJk&start_radio=1',
@@ -949,6 +949,94 @@ const DEFAULT_PLAYLISTS = [
       title: 'நீரோடை... 💎 | காதலில் கரையும் இதயம் | Romantic Tamil Melody | Love Song | Music #lovesong  #love',
       channel: 'EchoSphere',
       collectionPath: 'Music / Tamil Album',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=k-YdbnWzn6s&list=RD2tcIB-YHaNs&index=3',
+      videoId: 'k-YdbnWzn6s',
+      playlistId: 'RD2tcIB-YHaNs',
+      title: 'YouTube Video',
+      channel: '',
+      collectionPath: 'Music / Tamil Album',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=scRQR-FRfIo&list=RDscRQR-FRfIo&start_radio=1',
+      videoId: 'scRQR-FRfIo',
+      playlistId: 'RDscRQR-FRfIo',
+      title: 'Puthu Mazha | Sarvam Maya | Nivin Pauly, Riya Shibu | Justin, Shakthisree Gopalan | Akhil Sathyan',
+      channel: 'FireFly Films & Arts',
+      collectionPath: 'Music / Tamil Album',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=D76XBkNoeac&list=RDscRQR-FRfIo&index=2',
+      videoId: 'D76XBkNoeac',
+      playlistId: 'RDscRQR-FRfIo',
+      title: 'Chiri Thottu | Sarvam Maya | Nivin Pauly, Preity Mukhundhan | Justin, Chinmayi | Akhil Sathyan',
+      channel: 'FireFly Films & Arts',
+      collectionPath: 'Music / Tamil Album',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=nMxmb7DeKqk&list=RD2tcIB-YHaNs&index=4',
+      videoId: 'nMxmb7DeKqk',
+      playlistId: 'RD2tcIB-YHaNs',
+      title: '🌙 எங்கே நீ... | Enge Nee | Arabic × Carnatic Sufi Fusion | Soulful Female Vocal | Ear X Music',
+      channel: 'Ear X Music ',
+      collectionPath: 'Music / Tamil Album',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=Ekyc_iJjwsM&list=RDEkyc_iJjwsM&start_radio=1',
+      videoId: 'Ekyc_iJjwsM',
+      playlistId: 'RDEkyc_iJjwsM',
+      title: 'Bipin Jose | Sithara Vijayan | Romantic Travel Song| Pranah | പ്രാണ',
+      channel: 'Meenachil Talkies | മീനച്ചിൽ ടാക്കീസ്',
+      collectionPath: 'Music / Tamil Album',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=JXmMgsZFenE&list=RD2tcIB-YHaNs&index=4',
+      videoId: 'JXmMgsZFenE',
+      playlistId: 'RD2tcIB-YHaNs',
+      title: 'Pookal Pookum | Madrasapattinam| Cover Version 4k - KS Harisankar',
+      channel: 'KS Harisankar',
+      collectionPath: 'Music / Tamil Album',
+      note: ''
+    }
+    ]
+  },
+  {
+    id: 'mso433utr6gk',
+    name: 'Flute',
+    color: '#29B6F6',
+    videoIds: ['mso414z4bq60'],
+    videos: [
+    {
+      url: 'https://www.youtube.com/watch?v=CZNu1mGicPA&list=RDVyrbmVbq88Y&index=5',
+      videoId: 'CZNu1mGicPA',
+      playlistId: 'RDVyrbmVbq88Y',
+      title: 'YouTube Video',
+      channel: '',
+      collectionPath: 'Music / Flute',
+      note: ''
+    }
+    ]
+  },
+  {
+    id: 'msph56jn5tqr',
+    name: 'Mirthangam',
+    color: '#78909C',
+    videoIds: ['msph4vf7u6fh'],
+    videos: [
+    {
+      url: 'https://www.youtube.com/watch?v=EjYdo-6Zh4I&list=RDEjYdo-6Zh4I&start_radio=1&t=241s',
+      videoId: 'EjYdo-6Zh4I',
+      playlistId: 'RDEjYdo-6Zh4I',
+      title: '',
+      channel: '',
+      collectionPath: 'Music / Mirthangam',
       note: ''
     }
     ]
