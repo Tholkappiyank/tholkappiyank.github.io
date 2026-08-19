@@ -114,7 +114,9 @@ function getWatchUrl(videoId, playlistId) {
 }
 
 // Same reasoning as getThumbnail()/getWatchUrl() above — used for the
-// iframe fallback in pvPlayIndex().
+// iframe fallback in pvPlayIndex() so a videoId seeded from a *-collections.js
+// file (which bypasses extractVideoId()'s validation) can't smuggle unsafe
+// characters into the src= attribute.
 function getEmbedUrl(videoId) {
   return `https://www.youtube.com/embed/${escHtml(videoId)}?autoplay=1&rel=0&enablejsapi=1`;
 }
@@ -2631,12 +2633,6 @@ function pvHandleSearch() {
 let ytPlayer = null;
 let ytReady = false;
 
-// Handle for the "waiting on the IFrame API to load" poller in pvPlayIndex().
-// Kept at module scope so a second pvPlayIndex() call (user clicked another
-// track while the API was still loading) cancels the pending one — otherwise
-// two pollers race and the loser builds a player for the wrong video.
-let pvApiWaitTimer = null;
-
 // Called by YouTube IFrame API when loaded
 function onYouTubeIframeAPIReady() {
   ytReady = true;
@@ -2838,32 +2834,7 @@ function pvSaveOrderToPlaylist() {
   return true;
 }
 
-// Builds a fresh YT.Player in the split view. Shared by the "API already
-// ready" path and the poller below so the two can't drift apart — in
-// particular so both wire up onStateChange (autoplay) AND onError (skip).
-function pvCreatePlayer(videoId) {
-  const container = document.getElementById('pvIframeContainer');
-  if (container) container.innerHTML = '<div id="ytPlayerEl" style="width:100%;height:100%;"></div>';
-  ytPlayer = new window.YT.Player('ytPlayerEl', {
-    width: '100%',
-    height: '100%',
-    videoId: videoId,
-    playerVars: { autoplay: 1, rel: 0, modestbranding: 1 },
-    events: {
-      onReady: function() {
-        try { ytPlayer.playVideo(); } catch(e) {}
-      },
-      onStateChange: onYtPlayerStateChange,
-      onError: onYtPlayerError,
-    }
-  });
-}
-
 function pvPlayIndex(i) {
-  // Any poller left over from a previous track is now stale — it would build a
-  // player for the video the user just navigated away from.
-  if (pvApiWaitTimer) { clearInterval(pvApiWaitTimer); pvApiWaitTimer = null; }
-
   pvState.index = i;
   const vidId = pvState.order[i];
   const v = state.videos.find(v => v.id === vidId);
@@ -2882,34 +2853,47 @@ function pvPlayIndex(i) {
       return;
     }
   } else if (ytReady && window.YT && window.YT.Player) {
-    pvCreatePlayer(v.videoId);
+    if (container) container.innerHTML = '<div id="ytPlayerEl" style="width:100%;height:100%;"></div>';
+    ytPlayer = new window.YT.Player('ytPlayerEl', {
+      width: '100%',
+      height: '100%',
+      videoId: v.videoId,
+      playerVars: { autoplay: 1, rel: 0, modestbranding: 1 },
+      events: {
+        onReady: function() {
+          try { ytPlayer.playVideo(); } catch(e) {}
+        },
+        onStateChange: onYtPlayerStateChange,
+        onError: onYtPlayerError,
+      }
+    });
   } else {
-    // The IFrame API script hasn't loaded yet. Match the youtube folder's
-    // behaviour: drop a bare, autoplaying <iframe> immediately so the first
-    // video starts right away instead of hanging on a "Loading player…"
-    // placeholder. The poller below upgrades it to a full YT.Player (which
-    // carries onStateChange for auto-advance) the moment the API lands, and
-    // only keeps the bare iframe if the API never arrives.
-    const pendingVideoId = v.videoId;
     if (container) container.innerHTML =
-      `<iframe src="${getEmbedUrl(pendingVideoId)}"
+      `<iframe src="${getEmbedUrl(v.videoId)}"
        style="width:100%;height:100%;border:none;position:absolute;inset:0;" allowfullscreen
        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
-    let waited = 0;
-    pvApiWaitTimer = setInterval(() => {
-      if (ytReady && window.YT && window.YT.Player) {
-        // API ready — swap the bare iframe for a real player (auto-advance works).
-        clearInterval(pvApiWaitTimer); pvApiWaitTimer = null;
-        pvCreatePlayer(pendingVideoId);
-        return;
-      }
-      waited += 500;
-      if (waited >= 15000) {
-        // Gave up on the API (offline, blocked, slow). Keep the bare iframe;
-        // it already autoplays the single track, just no auto-advance.
-        clearInterval(pvApiWaitTimer); pvApiWaitTimer = null;
-      }
-    }, 500);
+    if (!ytReady) {
+      const checkInterval = setInterval(() => {
+        if (ytReady && window.YT && window.YT.Player) {
+          clearInterval(checkInterval);
+          if (container) container.innerHTML = '<div id="ytPlayerEl" style="width:100%;height:100%;"></div>';
+          ytPlayer = new window.YT.Player('ytPlayerEl', {
+            width: '100%',
+            height: '100%',
+            videoId: v.videoId,
+            playerVars: { autoplay: 1, rel: 0, modestbranding: 1 },
+              events: {
+                onReady: function() {
+                  try { ytPlayer.playVideo(); } catch(e) {}
+                },
+                onStateChange: onYtPlayerStateChange,
+                onError: onYtPlayerError,
+              }
+          });
+        }
+      }, 500);
+      setTimeout(() => clearInterval(checkInterval), 15000);
+    }
   }
 
   // Highlight by the row's real position in pvState.order, NOT by its position
@@ -2979,7 +2963,6 @@ function closePvView(restoreAll) {
   document.getElementById('mainView').style.display = '';
   document.getElementById('sidebar').style.display = '';
   // Stop and destroy the YouTube player
-  if (pvApiWaitTimer) { clearInterval(pvApiWaitTimer); pvApiWaitTimer = null; }
   if (ytPlayer && typeof ytPlayer.stopVideo === 'function') {
     try { ytPlayer.stopVideo(); ytPlayer.destroy(); } catch(e) {}
     ytPlayer = null;
