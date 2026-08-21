@@ -113,14 +113,6 @@ function getWatchUrl(videoId, playlistId) {
     : `https://www.youtube.com/watch?v=${escHtml(videoId)}`;
 }
 
-// Same reasoning as getThumbnail()/getWatchUrl() above — used for the
-// iframe fallback in pvPlayIndex() so a videoId seeded from a *-collections.js
-// file (which bypasses extractVideoId()'s validation) can't smuggle unsafe
-// characters into the src= attribute.
-function getEmbedUrl(videoId) {
-  return `https://www.youtube.com/embed/${escHtml(videoId)}?autoplay=1&rel=0&enablejsapi=1`;
-}
-
 function isYouTubeUrl(url) {
   return url && (url.includes('youtube.com') || url.includes('youtu.be'));
 }
@@ -2632,6 +2624,11 @@ function pvHandleSearch() {
 // YouTube IFrame API player instance
 let ytPlayer = null;
 let ytReady = (typeof window.YT !== 'undefined' && typeof window.YT.Player === 'function');
+// Handle for the "waiting on the IFrame API to load" poller in pvPlayIndex().
+// Stored at module scope so closePvView() can cancel it if the playlist view
+// is closed before the API arrives; otherwise the poller would briefly build a
+// hidden player after the view is gone.
+let pvApiWaitTimer = null;
 
 function isYtReady() {
   return ytReady || (typeof window.YT !== 'undefined' && typeof window.YT.Player === 'function');
@@ -2862,6 +2859,8 @@ function pvPlayIndex(i) {
   const container = document.getElementById('pvIframeContainer');
 
   if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
+    // A player already exists — just load the next video into it. This keeps
+    // the same iframe and its autoplay, so no teardown/rebuild is needed.
     try {
       ytPlayer.loadVideoById(v.videoId);
       try { ytPlayer.playVideo(); } catch (_) {}
@@ -2870,49 +2869,43 @@ function pvPlayIndex(i) {
       pvPlayIndex(i);
       return;
     }
-  } else if (isYtReady()) {
-    if (container) container.innerHTML = '<div id="ytPlayerEl" style="width:100%;height:100%;"></div>';
-    ytPlayer = new window.YT.Player('ytPlayerEl', {
-      width: '100%',
-      height: '100%',
-      videoId: v.videoId,
-      playerVars: { autoplay: 1, rel: 0, modestbranding: 1, enablejsapi: 1 },
-      events: {
-        onReady: function(event) {
-          try { event.target.playVideo(); } catch(e) {}
-        },
-        onStateChange: onYtPlayerStateChange,
-        onError: onYtPlayerError,
-      }
-    });
   } else {
-    if (container) container.innerHTML =
-      `<iframe src="${getEmbedUrl(v.videoId)}"
-       style="width:100%;height:100%;border:none;position:absolute;inset:0;" allowfullscreen
-       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
-    if (!isYtReady()) {
-      const checkInterval = setInterval(() => {
+    // No player yet — mount a real YT.Player. new YT.Player() REPLACES the
+    // #ytPlayerEl div with its own iframe, so playback is always driven by the
+    // IFrame API (onStateChange → auto-advance) rather than a hand-rolled
+    // <iframe> carrying an autoplay URL. While the API loads we just show a
+    // placeholder; the mount below swaps in the real player once it's ready.
+    if (container) container.innerHTML = '<div id="ytPlayerEl" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:13px;">Loading player…</div>';
+
+    const mountPlayer = () => {
+      // Bail if the playlist view was closed while we waited for the API —
+      // otherwise we'd build a hidden player against a torn-down container.
+      if (pvState.plId === null) return;
+      ytPlayer = new window.YT.Player('ytPlayerEl', {
+        width: '100%',
+        height: '100%',
+        videoId: v.videoId,
+        playerVars: { autoplay: 1, rel: 0, modestbranding: 1, enablejsapi: 1 },
+        events: {
+          onReady: function(event) {
+            try { event.target.playVideo(); } catch(e) {}
+          },
+          onStateChange: onYtPlayerStateChange,
+          onError: onYtPlayerError,
+        }
+      });
+    };
+
+    if (isYtReady()) {
+      mountPlayer();
+    } else {
+      pvApiWaitTimer = setInterval(() => {
         if (isYtReady()) {
-          clearInterval(checkInterval);
-          if (container && pvState.plId !== null) {
-            container.innerHTML = '<div id="ytPlayerEl" style="width:100%;height:100%;"></div>';
-            ytPlayer = new window.YT.Player('ytPlayerEl', {
-              width: '100%',
-              height: '100%',
-              videoId: v.videoId,
-              playerVars: { autoplay: 1, rel: 0, modestbranding: 1, enablejsapi: 1 },
-              events: {
-                onReady: function(event) {
-                  try { event.target.playVideo(); } catch(e) {}
-                },
-                onStateChange: onYtPlayerStateChange,
-                onError: onYtPlayerError,
-              }
-            });
-          }
+          clearInterval(pvApiWaitTimer); pvApiWaitTimer = null;
+          mountPlayer();
         }
       }, 500);
-      setTimeout(() => clearInterval(checkInterval), 15000);
+      setTimeout(() => { clearInterval(pvApiWaitTimer); pvApiWaitTimer = null; }, 15000);
     }
   }
 
@@ -2982,6 +2975,8 @@ function closePvView(restoreAll) {
   document.getElementById('playlistView').style.display = 'none';
   document.getElementById('mainView').style.display = '';
   document.getElementById('sidebar').style.display = '';
+  // Cancel any pending IFrame-API wait poller so it can't spin after close
+  if (pvApiWaitTimer) { clearInterval(pvApiWaitTimer); pvApiWaitTimer = null; }
   // Stop and destroy the YouTube player
   if (ytPlayer && typeof ytPlayer.stopVideo === 'function') {
     try { ytPlayer.stopVideo(); ytPlayer.destroy(); } catch(e) {}
