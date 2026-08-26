@@ -1,16 +1,16 @@
 // --------------------------------------------------------------
 // WATCHED HISTORY
-// Exported from TubeVault on 8/12/2026, 8:31:36 PM
+// Exported from TubeVault on 8/26/2026, 7:37:46 PM
 //
 // WATCHED_VIDEO_IDS: YouTube video IDs marked as watched.
 // To restore: replace music-watched.js with this file and clear localStorage.
 // --------------------------------------------------------------
 
 const WATCHED_VIDEO_IDS = [
-  'EjYdo-6Zh4I', // https://www.youtube.com/watch?v=EjYdo-6Zh4I&list=RDEjYdo-6Zh
   'R5ymC7gXWJk', // Idhazhin Mozhi | Tamil Romantic Melody | NMC Productions
   'R722GqixnNA', // நீரோடை... 💎 | காதலில் கரையும் இதயம் | Romantic Tamil Melody
   '2tcIB-YHaNs', // யானும் நீயும் | Yaanum Neeyum
+  'EjYdo-6Zh4I', // https://www.youtube.com/watch?v=EjYdo-6Zh4I&list=RDEjYdo-6Zh
   'S0XcA4rNdKs', // Indian Monsoon Melody | Gentle Rain Instrumental with Huming
   'YPa9SgASMRw', // Medieval Music with Female Vocals in Old English – A Journey
   'hUfuDyhxHT8', // Persian Trance 🌙 Mystical Middle Eastern Deep Trance Mix fo
