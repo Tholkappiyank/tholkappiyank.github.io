@@ -1,6 +1,6 @@
 // --------------------------------------------------------------
 // PLAYLIST CONFIG
-// Exported from TubeVault on 8/26/2026, 7:37:45 PM
+// Exported from TubeVault on 28/8/2026, 12:10:43 pm
 //
 // Each playlist: id, name, color, videoIds, videos (full details)
 // To apply as defaults: replace music-playlist.js and clear localStorage.
@@ -11,7 +11,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mqq9bpw24iah',
     name: 'Veena',
     color: '#26A69A',
-    videoIds: ['mta62zosyfba', 'mta62zosdp1f', 'mta62zosz9q7', 'mta62zosbeti', 'mta62zoszriu', 'mta62zoszh7m', 'mta62zos3mrc', 'mta62zosc0wa', 'mta62zos5yhh', 'mta62zosgdzx', 'mta62zosai1u', 'mta62zosq42x', 'mta62zosc4k0', 'mta62zos9ksr', 'mta62zose0cj', 'mta62zos7zws', 'mta62zos6i2u', 'mta62zostlnm', 'mta62zoswq1b', 'mta62zos0i44', 'mta62zoswr24', 'mta62zosnkaj', 'mta62zoskzzr'],
+    videoIds: ['mtcd4gpzwzte', 'mtcd4gpza0o5', 'mtcd4gpznnly', 'mtcd4gpzhfcl', 'mtcd4gpzmpi5', 'mtcd4gpzgi76', 'mtcd4gpz20g1', 'mtcd4gpz16sw', 'mtcd4gpzigkh', 'mtcd4gpzeb1m', 'mtcd4gpz6qso', 'mtcd4gpz2xhz', 'mtcd4gpzlf49', 'mtcd4gpzs96r', 'mtcd4gpz7q6y', 'mtcd4gpz0okf', 'mtcd4gpz99nf', 'mtcd4gpzgigj', 'mtcd4gpz81v2', 'mtcd4gpzxcv6', 'mtcd4gpz7iox', 'mtcd4gpz8goi', 'mtcd4gpzicfj'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=vIDl1E26FpU&list=PLvGJzgY6LDpB2AZVXGhN60dR5QhffZrvY&index=2',
@@ -225,7 +225,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mr22a2y3jmrh',
     name: 'Daily Routine',
     color: '#AB47BC',
-    videoIds: ['mta62zostjig', 'mta62zos3afo', 'mta62zosdbw1', 'mta62zosooc9', 'mta62zos66bq', 'mta62zos5ykw', 'mta62zosfnbb', 'mta62zos1xjg', 'mta62zoshg72', 'mta62zos6e2e', 'mta62zos7tvi', 'mta62zos25wm', 'mta62zosx588', 'mta62zosl498', 'mta62zos2zbc', 'mta62zosltv0', 'mta62zosd3qh', 'mta62zoso93i', 'mta62zossg8f', 'mta62zos9vt1', 'mta62zosw1mj'],
+    videoIds: ['mtcd4gpz7yoy', 'mtcd4gpzytj4', 'mtcd4gpz9onh', 'mtcd4gpzb7ux', 'mtcd4gpzoauj', 'mtcd4gpzr9oy', 'mtcd4gpzbe77', 'mtcd4gpza34g', 'mtcd4gpz82nq', 'mtcd4gpzbr3s', 'mtcd4gpzdjlb', 'mtcd4gpz5cdz', 'mtcd4gpzhbah', 'mtcd4gpz6b2v', 'mtcd4gpzy7ux', 'mtcd4gpzyd6e', 'mtcd4gpzpdor', 'mtcd4gpznkkl', 'mtcd4gpzj5ab', 'mtcd4gpzy77x', 'mtcd4gpzicbc'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=eF9LRFbkHLQ&list=RDKUN5Uf9mObQ&index=27',
@@ -421,7 +421,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mrkqs7vie0fe',
     name: 'Daily Routine - Melody',
     color: '#66BB6A',
-    videoIds: ['mta62zosqz8t', 'mta62zos640r', 'mta62zosvmxi', 'mta62zoskjt6', 'mta62zosqb1j', 'mta62zosdxeu', 'mta62zos4sqv', 'mta62zorvog0', 'mta62zor8x40', 'mta62zoswzdt', 'mta62zosouf8', 'mta62zosoi76', 'mta62zosfejz', 'mta62zosrwv6', 'mta62zosxvmx', 'mta62zoseifi', 'mta62zosbqzg', 'mta62zosh8sx', 'mta62zost20d', 'mta62zos3aao', 'mta62zoslxcl', 'mta62zosm2da'],
+    videoIds: ['mtcd4gpzet97', 'mtcd4gpzms15', 'mtcd4gpzg2xz', 'mtcd4gpziqeb', 'mtcd4gpzoqbm', 'mtcd4gpzzp5o', 'mtcd4gpzshu3', 'mtcd4gpzzjqu', 'mtcd4gpzb7ju', 'mtcd4gpzb9hx', 'mtcd4gpzi6es', 'mtcd4gpz2q4d', 'mtcd4gpzv99n', 'mtcd4gpzdewl', 'mtcd4gpz70lo', 'mtcd4gpzektv', 'mtcd4gpznmga', 'mtcd4gpzvxux', 'mtcd4gpzzwcg', 'mtcd4gpz1vku', 'mtcd4gpzjd5j', 'mtcd4gpz6690'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=MgWrkGfDn-o&list=RDWOxan-rN4Cw&index=13',
@@ -627,7 +627,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mrlk1tk2ny6u',
     name: 'Humming',
     color: '#29B6F6',
-    videoIds: ['mta62zos5aox', 'mta62zoso0vw', 'mta62zosb34j', 'mta62zos2paj', 'mta62zos8dai', 'mta62zoszu6l', 'mta62zosuk63'],
+    videoIds: ['mtcd4gpzdavc', 'mtcd4gpzvss4', 'mtcd4gpz7ys6', 'mtcd4gpzoese', 'mtcd4gpzk2fc', 'mtcd4gpz38xc', 'mtcd4gpzmdj4', 'mtcd4gpzfe7p'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=hUfuDyhxHT8&list=RDhUfuDyhxHT8&start_radio=1&t=5409s',
@@ -690,6 +690,14 @@ const DEFAULT_PLAYLISTS = [
       channel: 'Romantic Frequencies',
       collectionPath: 'Music / Humming',
       note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=3tRHLQSpkMA',
+      videoId: '3tRHLQSpkMA',
+      title: 'Whispers of India | Soft Emotional Bollywood Music',
+      channel: 'Romantic Frequencies',
+      collectionPath: 'Music / Humming',
+      note: ''
     }
     ]
   },
@@ -697,7 +705,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mry3rf1xoxry',
     name: 'Music - Instrumental',
     color: '#FF7043',
-    videoIds: ['mta62zosyloy', 'mta62zoswdcq', 'mta62zos2mrq', 'mta62zosg61j', 'mta62zosfwc8', 'mta62zosh77w', 'mta62zoso9iq', 'mta62zos9jq6'],
+    videoIds: ['mtcd4gpz3ud5', 'mtcd4gpzgzq6', 'mtcd4gpztkfq', 'mtcd4gpzep47', 'mtcd4gpzhwfz', 'mtcd4gpz90l3', 'mtcd4gpzev1d', 'mtcd4gpzkqgf'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=UH3bfZ6Rb9E&list=RDUH3bfZ6Rb9E',
@@ -775,7 +783,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mry3s20iasmn',
     name: 'Music - Lyrics',
     color: '#EC407A',
-    videoIds: ['mta62zos6gca', 'mta62zosk477', 'mta62zosj4lu', 'mta62zoske74', 'mta62zoslbtw', 'mta62zoswcrt', 'mta62zosavpb', 'mta62zostw7g', 'mta62zos21mi'],
+    videoIds: ['mtcd4gpzxr03', 'mtcd4gpzacog', 'mtcd4gpzu4id', 'mtcd4gpz38sf', 'mtcd4gpzg7xj', 'mtcd4gpz096t', 'mtcd4gpz8vn1', 'mtcd4gpz8yx2', 'mtcd4gpzasbk'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=1__CAdTJ5JU&list=RD1__CAdTJ5JU&start_radio=1',
@@ -864,7 +872,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mry5i90u4w6x',
     name: 'Music - Album',
     color: '#EF5350',
-    videoIds: ['mta62zosqohq'],
+    videoIds: ['mtcd4gpznlql'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=Dg9ePUDm4Vs&list=RDDg9ePUDm4Vs&start_radio=1',
@@ -881,7 +889,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mry7auazmnj4',
     name: 'Selena Gomez',
     color: '#FFA726',
-    videoIds: ['mta62zos6g1o'],
+    videoIds: ['mtcd4gpzbpyv'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=WcIcVapfqXw',
@@ -897,7 +905,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mry7c0sd62q1',
     name: 'JFla Music',
     color: '#FF7043',
-    videoIds: ['mta62zosdn6v'],
+    videoIds: ['mtcd4gpzqpl8'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=MhQKe-aERsU&list=RDMhQKe-aERsU',
@@ -923,7 +931,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'ms8pe3rp7qxz',
     name: 'Tamil Album',
     color: '#EC407A',
-    videoIds: ['mta62zorp2f3', 'mta62zor3lms', 'mta62zor1ylm', 'mta62zorb5jq', 'mta62zor80hu', 'mta62zorysx8', 'mta62zors6yy', 'mta62zord8p9', 'mta62zorees2'],
+    videoIds: ['mtcd4gpzjk5s', 'mtcd4gpz4nvy', 'mtcd4gpzpkwo', 'mtcd4gpzpk11', 'mtcd4gpzpwbn', 'mtcd4gpzam70', 'mtcd4gpz7bdo', 'mtcd4gpzv607', 'mtcd4gpz6cnh'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=2tcIB-YHaNs&list=RD2tcIB-YHaNs&start_radio=1',
@@ -1011,7 +1019,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'mso433utr6gk',
     name: 'Flute',
     color: '#29B6F6',
-    videoIds: ['mta62zoruk55'],
+    videoIds: ['mtcd4gpzgy44'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=CZNu1mGicPA&list=RDVyrbmVbq88Y&index=5',
@@ -1028,7 +1036,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'msph56jn5tqr',
     name: 'Mirthangam',
     color: '#78909C',
-    videoIds: ['mta62zorjxac'],
+    videoIds: ['mtcd4gpzcx5h'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=EjYdo-6Zh4I&list=RDEjYdo-6Zh4I&start_radio=1&t=241s',
