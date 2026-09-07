@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
-// Exported from TubeVault on 28/8/2026, 12:10:43 pm
+// Exported from TubeVault on 9/7/2026, 7:36:39 PM
 //
 // STRUCTURE — easy to browse/edit in any JSON editor:
 //   DEFAULT_COLLECTIONS
@@ -39,71 +39,23 @@ const DEFAULT_COLLECTIONS = [
     name: 'Music',
     color: '#EC407A',
     groups: {
-      'Humming': [
-        {
-          url: 'https://www.youtube.com/watch?v=3tRHLQSpkMA',
-          videoId: '3tRHLQSpkMA',
-          title: 'Whispers of India | Soft Emotional Bollywood Music',
-          channel: 'Romantic Frequencies',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=BqT7SCIfycs&list=RDfMKQTLP4aO0&index=4',
-          videoId: 'BqT7SCIfycs',
-          playlistId: 'RDfMKQTLP4aO0',
-          title: 'Carnatic Meditation Flow 🌿 | 1 Hour Pure Instrumental Music for Yoga, Spa & Deep Calm',
-          channel: 'Pure Instrumental Flow',
-          note: ''
-        },
-        {
-          url: 'youtube.com/watch?v=S0XcA4rNdKs&list=RDS0XcA4rNdKs',
-          videoId: 'S0XcA4rNdKs',
-          playlistId: 'RDS0XcA4rNdKs',
-          title: 'Indian Monsoon Melody | Gentle Rain Instrumental with Huming (No Lyrics)',
-          channel: 'Romantic Frequencies',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=YPa9SgASMRw&list=RDYPa9SgASMRw&start_radio=1',
-          videoId: 'YPa9SgASMRw',
-          playlistId: 'RDYPa9SgASMRw',
-          title: 'Medieval Music with Female Vocals in Old English – A Journey Through Time',
-          channel: 'Medieval Melodies',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=Y9oCBRDjKjY&t=1612s',
-          videoId: 'Y9oCBRDjKjY',
-          title: '',
-          channel: '',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=7Yb8-bVy8E0&list=RD7Yb8-bVy8E0&start_radio=1&t=246s',
-          videoId: '7Yb8-bVy8E0',
-          playlistId: 'RD7Yb8-bVy8E0',
-          title: '',
-          channel: '',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=MnBbHXu8IyA&list=RD9fyOu2dxgOY&index=11',
-          videoId: 'MnBbHXu8IyA',
-          playlistId: 'RD9fyOu2dxgOY',
-          title: 'Innisai Alapadaiye ❤️ | Heavenly Vibes from Varalaaru | A.R. Rahman Tribute',
-          channel: 'Prabhu Musiq Vibez',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=hUfuDyhxHT8&list=RDhUfuDyhxHT8&start_radio=1&t=5409s',
-          videoId: 'hUfuDyhxHT8',
-          playlistId: 'RDhUfuDyhxHT8',
-          title: 'Persian Trance 🌙 Mystical Middle Eastern Deep Trance Mix for Work, Study & Meditation',
-          channel: 'Persian Focus Temple',
-          note: ''
-        },
-      ],
       'Tamil Album': [
+        {
+          url: 'https://www.youtube.com/watch?v=0MrK_o3HQVo&list=RDk-YdbnWzn6s&index=21',
+          videoId: '0MrK_o3HQVo',
+          playlistId: 'RDk-YdbnWzn6s',
+          title: 'மென்மழை நீயே 2 | Best Tamil Love Song | Tamil Melodies | Kollywood Song | New Tamil Hit Song',
+          channel: 'Spiral Hook',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=gEFhsOGACq0&list=RDk-YdbnWzn6s&index=14',
+          videoId: 'gEFhsOGACq0',
+          playlistId: 'RDk-YdbnWzn6s',
+          title: 'Kokki Vecha -  Love Album Song | Original Album  |  Ganya Studios',
+          channel: 'Ganya Studios',
+          note: ''
+        },
         {
           url: 'https://www.youtube.com/watch?v=ErKz6M_4aZU&list=RDErKz6M_4aZU&start_radio=1',
           videoId: 'ErKz6M_4aZU',
@@ -190,6 +142,70 @@ const DEFAULT_COLLECTIONS = [
           title: 'யானும் நீயும் | Yaanum Neeyum',
           channel: '',
           note: 'Tamil Romantic Melody | Carnatic Fusion'
+        },
+      ],
+      'Humming': [
+        {
+          url: 'https://www.youtube.com/watch?v=3tRHLQSpkMA',
+          videoId: '3tRHLQSpkMA',
+          title: 'Whispers of India | Soft Emotional Bollywood Music',
+          channel: 'Romantic Frequencies',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=BqT7SCIfycs&list=RDfMKQTLP4aO0&index=4',
+          videoId: 'BqT7SCIfycs',
+          playlistId: 'RDfMKQTLP4aO0',
+          title: 'Carnatic Meditation Flow 🌿 | 1 Hour Pure Instrumental Music for Yoga, Spa & Deep Calm',
+          channel: 'Pure Instrumental Flow',
+          note: ''
+        },
+        {
+          url: 'youtube.com/watch?v=S0XcA4rNdKs&list=RDS0XcA4rNdKs',
+          videoId: 'S0XcA4rNdKs',
+          playlistId: 'RDS0XcA4rNdKs',
+          title: 'Indian Monsoon Melody | Gentle Rain Instrumental with Huming (No Lyrics)',
+          channel: 'Romantic Frequencies',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=YPa9SgASMRw&list=RDYPa9SgASMRw&start_radio=1',
+          videoId: 'YPa9SgASMRw',
+          playlistId: 'RDYPa9SgASMRw',
+          title: 'Medieval Music with Female Vocals in Old English – A Journey Through Time',
+          channel: 'Medieval Melodies',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=Y9oCBRDjKjY&t=1612s',
+          videoId: 'Y9oCBRDjKjY',
+          title: '',
+          channel: '',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=7Yb8-bVy8E0&list=RD7Yb8-bVy8E0&start_radio=1&t=246s',
+          videoId: '7Yb8-bVy8E0',
+          playlistId: 'RD7Yb8-bVy8E0',
+          title: '',
+          channel: '',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=MnBbHXu8IyA&list=RD9fyOu2dxgOY&index=11',
+          videoId: 'MnBbHXu8IyA',
+          playlistId: 'RD9fyOu2dxgOY',
+          title: 'Innisai Alapadaiye ❤️ | Heavenly Vibes from Varalaaru | A.R. Rahman Tribute',
+          channel: 'Prabhu Musiq Vibez',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=hUfuDyhxHT8&list=RDhUfuDyhxHT8&start_radio=1&t=5409s',
+          videoId: 'hUfuDyhxHT8',
+          playlistId: 'RDhUfuDyhxHT8',
+          title: 'Persian Trance 🌙 Mystical Middle Eastern Deep Trance Mix for Work, Study & Meditation',
+          channel: 'Persian Focus Temple',
+          note: ''
         },
       ],
       'Mirthangam': [

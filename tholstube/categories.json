@@ -5,6 +5,8 @@
     { "id": "astrology",   "name": "Astrology",   "color": "#AB47BC" },
     { "id": "finance",   "name": "Finance",   "color": "#AB46BC" },
 	  { "id": "cooking",   "name": "Cooking",   "color": "#AB64BC" },
-	  { "id": "book",   "name": "Book",   "color": "#AB64BC" }
+	  { "id": "book",   "name": "Book",   "color": "#AB54BC" },
+		{ "id": "speaking",   "name": "Speaking",   "color": "#AB44BC" },
+		{ "id": "parenting",   "name": "Parenting",   "color": "#AB34BC" }
   ]
 }
