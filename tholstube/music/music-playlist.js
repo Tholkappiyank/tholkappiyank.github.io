@@ -1,6 +1,6 @@
 // --------------------------------------------------------------
 // PLAYLIST CONFIG
-// Exported from TubeVault on 9/7/2026, 7:36:39 PM
+// Exported from TubeVault on 9/19/2026, 8:02:05 PM
 //
 // Each playlist: id, name, color, videoIds, videos (full details)
 // To apply as defaults: replace music-playlist.js and clear localStorage.
@@ -1036,7 +1036,7 @@ const DEFAULT_PLAYLISTS = [
     id: 'msph56jn5tqr',
     name: 'Mirthangam',
     color: '#78909C',
-    videoIds: ['mta62zorjxac', 'mta62zorvu8f', 'mta62zord1me', 'mta62zorb6wm', 'mta62zorf0qg'],
+    videoIds: ['mta62zorjxac', 'mta62zorvu8f', 'mta62zord1me', 'mta62zorb6wm', 'mta62zorf0qg', 'mu2uaugc3vy2'],
     videos: [
     {
       url: 'https://www.youtube.com/watch?v=EjYdo-6Zh4I&list=RDEjYdo-6Zh4I&start_radio=1&t=241s',
@@ -1080,6 +1080,59 @@ const DEFAULT_PLAYLISTS = [
       title: '',
       channel: '',
       collectionPath: 'Music / Mirthangam',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=k4ek0owhOiM&list=RDk4ek0owhOiM&start_radio=1&t=654s',
+      videoId: 'k4ek0owhOiM',
+      playlistId: 'RDk4ek0owhOiM',
+      title: 'Mridangam Music with Veena | Fast Carnatic Instrumental | South Indian Classical Music',
+      channel: 'Sacred Tamil Soul',
+      collectionPath: 'Music / Mirthangam',
+      note: ''
+    }
+    ]
+  },
+  {
+    id: 'mtu6dkd7epe3',
+    name: 'Tabla',
+    color: '#FF7043',
+    videoIds: ['mtu6cjg8d185', 'mta62zosaolh', 'mta62zosvajz', 'mtu6ht9mblhv'],
+    videos: [
+    {
+      url: 'https://www.youtube.com/watch?v=Tp-K46Ynj5o&list=RDTp-K46Ynj5o&start_radio=1',
+      videoId: 'Tp-K46Ynj5o',
+      playlistId: 'RDTp-K46Ynj5o',
+      title: '🔥 Soul of Tabla | Fast Teentaal Rhythm | Rapid Dayan & Bayan | Pure Solo Tabla Performance',
+      channel: 'Soul of Tabla',
+      collectionPath: 'Music / Tabla',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=yahan-tNpss&list=RDyahan-tNpss&start_radio=1',
+      videoId: 'yahan-tNpss',
+      playlistId: 'RDyahan-tNpss',
+      title: 'Veena & Violin Instrumental | 1 Hour Soulful Indian Classical Carnatic Music for Peace & Relaxation',
+      channel: 'Arrylene Instrumentals',
+      collectionPath: 'Music / Tabla',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=tgneSmdEM2c&list=RDtgneSmdEM2c&start_radio=1',
+      videoId: 'tgneSmdEM2c',
+      playlistId: 'RDtgneSmdEM2c',
+      title: 'YouTube Video',
+      channel: '',
+      collectionPath: 'Music / Tabla',
+      note: ''
+    },
+    {
+      url: 'https://www.youtube.com/watch?v=Gg7Jgqb30tE&list=RDGg7Jgqb30tE&start_radio=1',
+      videoId: 'Gg7Jgqb30tE',
+      playlistId: 'RDGg7Jgqb30tE',
+      title: '🔥 Fast Tabla & Veena | Temple Rhythms | Virtuoso Solo Tabla Performance | Ancient Earth Rhythms',
+      channel: 'Ancient Earth Rhythms',
+      collectionPath: 'Music / Tabla',
       note: ''
     }
     ]

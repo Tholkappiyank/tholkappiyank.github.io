@@ -7,6 +7,7 @@
 	  { "id": "cooking",   "name": "Cooking",   "color": "#AB64BC" },
 	  { "id": "book",   "name": "Book",   "color": "#AB54BC" },
 		{ "id": "speaking",   "name": "Speaking",   "color": "#AB44BC" },
-		{ "id": "parenting",   "name": "Parenting",   "color": "#AB34BC" }
+		{ "id": "parenting",   "name": "Parenting",   "color": "#AB34BC" },
+			{ "id": "yoga",   "name": "Yoga",   "color": "#AB24BC" }
   ]
 }

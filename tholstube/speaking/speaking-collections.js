@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
-// Exported from TubeVault on 9/7/2026, 7:59:14 PM
+// Exported from TubeVault on 9/19/2026, 7:59:54 PM
 //
 // STRUCTURE — easy to browse/edit in any JSON editor:
 //   DEFAULT_COLLECTIONS
@@ -45,6 +45,21 @@ const DEFAULT_COLLECTIONS = [
         videoId: 'GV_-xdb3qK8',
         title: 'Why Your Voice Shakes When You Speak (And Exactly How to Stop It)',
         channel: 'Speak With Power ',
+        note: ''
+      },
+    ]
+  },
+  {
+    id: 'bhakthi',
+    name: 'Bhakthi',
+    color: '#26A69A',
+    groups: {},
+    ungrouped: [
+      {
+        url: 'https://www.youtube.com/shorts/cHMT-f9UYUE',
+        videoId: 'cHMT-f9UYUE',
+        title: 'ரமணரின் உபதேசம்! ஞானம் பெற்ற சீடர்! | #spiritualawakening',
+        channel: 'Dhayavu Prabhavathi Amma',
         note: ''
       },
     ]

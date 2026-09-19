@@ -1,9 +1,10 @@
 // --------------------------------------------------------------
 // WATCHED HISTORY
+// Exported from TubeVault on 9/19/2026, 8:00:37 PM
 //
 // WATCHED_VIDEO_IDS: YouTube video IDs marked as watched.
-// To restore: replace this file with an exported watched.js
-// and clear localStorage.
+// To restore: replace cooking-watched.js with this file and clear localStorage.
 // --------------------------------------------------------------
 
-const WATCHED_VIDEO_IDS = [];
+const WATCHED_VIDEO_IDS = [
+];

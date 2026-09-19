@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
-// Exported from TubeVault on 9/7/2026, 7:36:39 PM
+// Exported from TubeVault on 9/19/2026, 8:02:05 PM
 //
 // STRUCTURE — easy to browse/edit in any JSON editor:
 //   DEFAULT_COLLECTIONS
@@ -40,6 +40,14 @@ const DEFAULT_COLLECTIONS = [
     color: '#EC407A',
     groups: {
       'Tamil Album': [
+        {
+          url: 'https://www.youtube.com/watch?v=2uhvJwNwfe0&list=RD2uhvJwNwfe0&start_radio=1',
+          videoId: '2uhvJwNwfe0',
+          playlistId: 'RD2uhvJwNwfe0',
+          title: 'Nila - Music video | " All One side lovers assamble" | Lyrics JD|.',
+          channel: 'JD musical studio ',
+          note: ''
+        },
         {
           url: 'https://www.youtube.com/watch?v=0MrK_o3HQVo&list=RDk-YdbnWzn6s&index=21',
           videoId: '0MrK_o3HQVo',
@@ -144,6 +152,132 @@ const DEFAULT_COLLECTIONS = [
           note: 'Tamil Romantic Melody | Carnatic Fusion'
         },
       ],
+      'Mirthangam': [
+        {
+          url: 'https://www.youtube.com/watch?v=k4ek0owhOiM&list=RDk4ek0owhOiM&start_radio=1&t=654s',
+          videoId: 'k4ek0owhOiM',
+          playlistId: 'RDk4ek0owhOiM',
+          title: 'Mridangam Music with Veena | Fast Carnatic Instrumental | South Indian Classical Music',
+          channel: 'Sacred Tamil Soul',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=wSgJPfr1CT0&list=RDwSgJPfr1CT0&start_radio=1&t=3999s',
+          videoId: 'wSgJPfr1CT0',
+          playlistId: 'RDwSgJPfr1CT0',
+          title: '',
+          channel: '',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=R1z0ASKw4x4&list=RDR1z0ASKw4x4&start_radio=1',
+          videoId: 'R1z0ASKw4x4',
+          playlistId: 'RDR1z0ASKw4x4',
+          title: '',
+          channel: '',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=cAU0k_yQjLc&list=RDcAU0k_yQjLc&start_radio=1',
+          videoId: 'cAU0k_yQjLc',
+          playlistId: 'RDcAU0k_yQjLc',
+          title: 'Carnatic Mridangam Solo • 5 Jathi Tala Journey | Pure South Indian Percussion',
+          channel: 'Ancient Earth Rhythms',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=Po8btQUks3g',
+          videoId: 'Po8btQUks3g',
+          title: '',
+          channel: '',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=EjYdo-6Zh4I&list=RDEjYdo-6Zh4I&start_radio=1&t=241s',
+          videoId: 'EjYdo-6Zh4I',
+          playlistId: 'RDEjYdo-6Zh4I',
+          title: '',
+          channel: '',
+          note: ''
+        },
+      ],
+      'Instrumental': [
+        {
+          url: 'https://www.youtube.com/shorts/EB0kZi7CvQM',
+          videoId: 'EB0kZi7CvQM',
+          title: 'You Won\'t Believe This Roland Instrument Can Play Nagara 🔥',
+          channel: 'Krishna Chand Das',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=SEw8IsSXRSU&list=RDSEw8IsSXRSU&start_radio=1',
+          videoId: 'SEw8IsSXRSU',
+          playlistId: 'RDSEw8IsSXRSU',
+          title: 'Sitar for Dopamine Reset | Indian Classical Music for Mindfulness',
+          channel: 'Raga Focus',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=fMKQTLP4aO0&list=RDfMKQTLP4aO0&start_radio=1',
+          videoId: 'fMKQTLP4aO0',
+          playlistId: 'RDfMKQTLP4aO0',
+          title: 'Pure Relaxation Music | Deep Meditation, Stress Relief & Inner Peace | Indian Instrumental Music',
+          channel: 'SAVERA',
+          note: ''
+        },
+      ],
+      'Tamil 90\'s': [
+        {
+          url: 'https://www.youtube.com/watch?v=FBVVUvFgsnE&list=RDtuR5hLtN_ow',
+          videoId: 'FBVVUvFgsnE',
+          playlistId: 'RDtuR5hLtN_ow',
+          title: 'Staccato | Unplucked  | Niranjana Ramanan',
+          channel: 'Staccato - Contemporary Classic',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=9Tq7GS_rvag&list=RDtuR5hLtN_ow&index=8',
+          videoId: '9Tq7GS_rvag',
+          playlistId: 'RDtuR5hLtN_ow',
+          title: 'YouTube Video',
+          channel: '',
+          note: ''
+        },
+      ],
+      'Tabla': [
+        {
+          url: 'https://www.youtube.com/watch?v=Gg7Jgqb30tE&list=RDGg7Jgqb30tE&start_radio=1',
+          videoId: 'Gg7Jgqb30tE',
+          playlistId: 'RDGg7Jgqb30tE',
+          title: '🔥 Fast Tabla & Veena | Temple Rhythms | Virtuoso Solo Tabla Performance | Ancient Earth Rhythms',
+          channel: 'Ancient Earth Rhythms',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=Tp-K46Ynj5o&list=RDTp-K46Ynj5o&start_radio=1',
+          videoId: 'Tp-K46Ynj5o',
+          playlistId: 'RDTp-K46Ynj5o',
+          title: '🔥 Soul of Tabla | Fast Teentaal Rhythm | Rapid Dayan & Bayan | Pure Solo Tabla Performance',
+          channel: 'Soul of Tabla',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=yahan-tNpss&list=RDyahan-tNpss&start_radio=1',
+          videoId: 'yahan-tNpss',
+          playlistId: 'RDyahan-tNpss',
+          title: 'Veena & Violin Instrumental | 1 Hour Soulful Indian Classical Carnatic Music for Peace & Relaxation',
+          channel: 'Arrylene Instrumentals',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=tgneSmdEM2c&list=RDtgneSmdEM2c&start_radio=1',
+          videoId: 'tgneSmdEM2c',
+          playlistId: 'RDtgneSmdEM2c',
+          title: 'YouTube Video',
+          channel: '',
+          note: ''
+        },
+      ],
       'Humming': [
         {
           url: 'https://www.youtube.com/watch?v=3tRHLQSpkMA',
@@ -205,47 +339,6 @@ const DEFAULT_COLLECTIONS = [
           playlistId: 'RDhUfuDyhxHT8',
           title: 'Persian Trance 🌙 Mystical Middle Eastern Deep Trance Mix for Work, Study & Meditation',
           channel: 'Persian Focus Temple',
-          note: ''
-        },
-      ],
-      'Mirthangam': [
-        {
-          url: 'https://www.youtube.com/watch?v=wSgJPfr1CT0&list=RDwSgJPfr1CT0&start_radio=1&t=3999s',
-          videoId: 'wSgJPfr1CT0',
-          playlistId: 'RDwSgJPfr1CT0',
-          title: '',
-          channel: '',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=R1z0ASKw4x4&list=RDR1z0ASKw4x4&start_radio=1',
-          videoId: 'R1z0ASKw4x4',
-          playlistId: 'RDR1z0ASKw4x4',
-          title: '',
-          channel: '',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=cAU0k_yQjLc&list=RDcAU0k_yQjLc&start_radio=1',
-          videoId: 'cAU0k_yQjLc',
-          playlistId: 'RDcAU0k_yQjLc',
-          title: 'Carnatic Mridangam Solo • 5 Jathi Tala Journey | Pure South Indian Percussion',
-          channel: 'Ancient Earth Rhythms',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=Po8btQUks3g',
-          videoId: 'Po8btQUks3g',
-          title: '',
-          channel: '',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=EjYdo-6Zh4I&list=RDEjYdo-6Zh4I&start_radio=1&t=241s',
-          videoId: 'EjYdo-6Zh4I',
-          playlistId: 'RDEjYdo-6Zh4I',
-          title: '',
-          channel: '',
           note: ''
         },
       ],
@@ -499,42 +592,6 @@ const DEFAULT_COLLECTIONS = [
           playlistId: 'RDWOxan-rN4Cw',
           title: 'Kandaangi Kandaangi - Video Song | 4K | Jilla Movie | Vijay | Kajal Agarwal | D.Imman | Star Music',
           channel: 'Star Music India',
-          note: ''
-        },
-      ],
-      'Tabla': [
-        {
-          url: 'https://www.youtube.com/watch?v=yahan-tNpss&list=RDyahan-tNpss&start_radio=1',
-          videoId: 'yahan-tNpss',
-          playlistId: 'RDyahan-tNpss',
-          title: 'Veena & Violin Instrumental | 1 Hour Soulful Indian Classical Carnatic Music for Peace & Relaxation',
-          channel: 'Arrylene Instrumentals',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=tgneSmdEM2c&list=RDtgneSmdEM2c&start_radio=1',
-          videoId: 'tgneSmdEM2c',
-          playlistId: 'RDtgneSmdEM2c',
-          title: 'YouTube Video',
-          channel: '',
-          note: ''
-        },
-      ],
-      'Instrumental': [
-        {
-          url: 'https://www.youtube.com/watch?v=SEw8IsSXRSU&list=RDSEw8IsSXRSU&start_radio=1',
-          videoId: 'SEw8IsSXRSU',
-          playlistId: 'RDSEw8IsSXRSU',
-          title: 'Sitar for Dopamine Reset | Indian Classical Music for Mindfulness',
-          channel: 'Raga Focus',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=fMKQTLP4aO0&list=RDfMKQTLP4aO0&start_radio=1',
-          videoId: 'fMKQTLP4aO0',
-          playlistId: 'RDfMKQTLP4aO0',
-          title: 'Pure Relaxation Music | Deep Meditation, Stress Relief & Inner Peace | Indian Instrumental Music',
-          channel: 'SAVERA',
           note: ''
         },
       ],
@@ -1141,6 +1198,30 @@ const DEFAULT_COLLECTIONS = [
           videoId: 'WcIcVapfqXw',
           title: 'Rema, Selena Gomez - Calm Down (Official Music Video)',
           channel: 'SelenaGomezVEVO',
+          note: ''
+        },
+      ]
+    },
+    ungrouped: []
+  },
+  {
+    id: 'carmusic',
+    name: 'CarMusic',
+    color: '#AB47BC',
+    groups: {
+      'Speaker': [
+        {
+          url: 'https://www.youtube.com/shorts/wdqNV5nOD_c',
+          videoId: 'wdqNV5nOD_c',
+          title: 'Car Ready ஆயிடுச்சு 🔥🎶3 way audio RM car decors',
+          channel: 'Rams Review',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/shorts/7fJMnpJnXdY',
+          videoId: '7fJMnpJnXdY',
+          title: 'YouTube Video',
+          channel: '',
           note: ''
         },
       ]

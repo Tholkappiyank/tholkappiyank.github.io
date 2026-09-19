@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
-// Exported from TubeVault on 8/27/2026, 9:14:17 PM
+// Exported from TubeVault on 9/19/2026, 8:01:25 PM
 //
 // STRUCTURE — easy to browse/edit in any JSON editor:
 //   DEFAULT_COLLECTIONS
@@ -40,6 +40,13 @@ const DEFAULT_COLLECTIONS = [
     color: '#AB47BC',
     groups: {},
     ungrouped: [
+      {
+        url: 'https://www.youtube.com/shorts/wqpSE3RV7bw',
+        videoId: 'wqpSE3RV7bw',
+        title: 'short technique of astrology',
+        channel: 'astro chinnaraj',
+        note: ''
+      },
       {
         url: 'https://www.youtube.com/shorts/PUdnbQHOLgM',
         videoId: 'PUdnbQHOLgM',

@@ -1,12 +1,14 @@
 // --------------------------------------------------------------
 // WATCHED HISTORY
-// Exported from TubeVault on 9/7/2026, 7:36:39 PM
+// Exported from TubeVault on 9/19/2026, 8:02:05 PM
 //
 // WATCHED_VIDEO_IDS: YouTube video IDs marked as watched.
 // To restore: replace music-watched.js with this file and clear localStorage.
 // --------------------------------------------------------------
 
 const WATCHED_VIDEO_IDS = [
+  'Gg7Jgqb30tE', // 🔥 Fast Tabla & Veena | Temple Rhythms | Virtuoso Solo Tabla
+  'Tp-K46Ynj5o', // 🔥 Soul of Tabla | Fast Teentaal Rhythm | Rapid Dayan & Baya
   '3tRHLQSpkMA', // Whispers of India | Soft Emotional Bollywood Music
   'D76XBkNoeac', // Chiri Thottu | Sarvam Maya | Nivin Pauly, Preity Mukhundhan 
   'scRQR-FRfIo', // Puthu Mazha | Sarvam Maya | Nivin Pauly, Riya Shibu | Justin
@@ -22,6 +24,7 @@ const WATCHED_VIDEO_IDS = [
   'cAU0k_yQjLc', // Carnatic Mridangam Solo • 5 Jathi Tala Journey | Pure South 
   'Po8btQUks3g', // https://www.youtube.com/watch?v=Po8btQUks3g
   'EjYdo-6Zh4I', // https://www.youtube.com/watch?v=EjYdo-6Zh4I&list=RDEjYdo-6Zh
+  '5Yvt5t6p88s', // YouTube Video
   '4JrOPlxXl8Q', // Othaiyadi Pathayila 8K/4K Video Song | Kanaa | Dhibu Ninan T
   'dvWdFMCC1-I', // Lubber Pandhu - Chillanjirukkiye Video Song | Harish Kalyan,
   'U1JLtpJTe84', // Vazhithunaiye - Video Song | Dragon | Pradeep Ranganathan, K
@@ -79,4 +82,5 @@ const WATCHED_VIDEO_IDS = [
   'MhQKe-aERsU', // Ed Sheeran - Shape Of You ( cover by J.Fla )
   'WcIcVapfqXw', // Rema, Selena Gomez - Calm Down (Official Music Video)
   'oebpYD4cXVA',
+  'FBVVUvFgsnE', // Staccato | Unplucked  | Niranjana Ramanan
 ];

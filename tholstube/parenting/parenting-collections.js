@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
-// Exported from TubeVault on 9/7/2026, 7:48:48 PM
+// Exported from TubeVault on 9/19/2026, 7:59:25 PM
 //
 // STRUCTURE — easy to browse/edit in any JSON editor:
 //   DEFAULT_COLLECTIONS
@@ -45,6 +45,28 @@ const DEFAULT_COLLECTIONS = [
         videoId: 'eDsDSme7ZVI',
         title: 'உங்க குழந்தை Slow இல்ல! 🧠 8 Types of Intelligence | உங்கள் குழந்தை எந்த Type? | MindGroves',
         channel: 'MindGroves',
+        note: ''
+      },
+    ]
+  },
+  {
+    id: 'confidence-building',
+    name: 'Confidence Building',
+    color: '#FF7043',
+    groups: {},
+    ungrouped: [
+      {
+        url: 'https://www.youtube.com/shorts/Bxqx_ktWsno',
+        videoId: 'Bxqx_ktWsno',
+        title: 'என் அகங்காரதை வீழ்த்திய கேரள இளம் பெண் ஐபிஎஸ் அதிகாரி#kaliyamurthyips #shortsfeed #motivation #women',
+        channel: 'Tamil Santhippu',
+        note: ''
+      },
+      {
+        url: 'https://www.youtube.com/shorts/7fuLSkDBgiI',
+        videoId: '7fuLSkDBgiI',
+        title: 'அழுகை தீர்வல்ல... 10th - 12th ரெண்டுலயும் மதிப்பெண் எடுத்து சாதித்த ஆயிஷா! - கலியமூர்த்தி IPS Speech',
+        channel: 'TAMIL PEOPLE',
         note: ''
       },
     ]
