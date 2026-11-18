@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
-// Exported from TubeVault on 9/19/2026, 7:59:25 PM
+// Exported from TubeVault on 11/18/2026, 2:04:18 PM
 //
 // STRUCTURE — easy to browse/edit in any JSON editor:
 //   DEFAULT_COLLECTIONS
@@ -67,6 +67,28 @@ const DEFAULT_COLLECTIONS = [
         videoId: '7fuLSkDBgiI',
         title: 'அழுகை தீர்வல்ல... 10th - 12th ரெண்டுலயும் மதிப்பெண் எடுத்து சாதித்த ஆயிஷா! - கலியமூர்த்தி IPS Speech',
         channel: 'TAMIL PEOPLE',
+        note: ''
+      },
+    ]
+  },
+  {
+    id: 'character-building',
+    name: 'Character Building',
+    color: '#66BB6A',
+    groups: {},
+    ungrouped: [
+      {
+        url: 'https://www.youtube.com/shorts/hDFA4craIU4',
+        videoId: 'hDFA4craIU4',
+        title: 'கவலை நம்மை கொன்றுவிடும்! | #spiritualawakening',
+        channel: 'Dhayavu Prabhavathi Amma',
+        note: ''
+      },
+      {
+        url: 'https://www.youtube.com/shorts/6tfsHIwSiA0',
+        videoId: '6tfsHIwSiA0',
+        title: 'Don’t ignore small mistakes ✨ #prashanthsv #positivitychannel #motivation #psychology #tamilshorts',
+        channel: 'Prashanth SV',
         note: ''
       },
     ]

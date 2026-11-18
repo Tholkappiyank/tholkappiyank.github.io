@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
-// Exported from TubeVault on 9/19/2026, 7:59:54 PM
+// Exported from TubeVault on 11/18/2026, 2:00:33 PM
 //
 // STRUCTURE — easy to browse/edit in any JSON editor:
 //   DEFAULT_COLLECTIONS
@@ -41,6 +41,48 @@ const DEFAULT_COLLECTIONS = [
     groups: {},
     ungrouped: [
       {
+        url: 'https://www.youtube.com/watch?v=SwxqLC9uDXk',
+        videoId: 'SwxqLC9uDXk',
+        title: 'Real English Questions from Movies You MUST Know!',
+        channel: 'Real English From Movies',
+        note: ''
+      },
+      {
+        url: 'https://www.youtube.com/watch?v=7fImda_f4lg',
+        videoId: '7fImda_f4lg',
+        title: '🎬 Learn English Through Movies | 10 Expressions Native Speakers Actually Use',
+        channel: 'Grow With Rabia',
+        note: ''
+      },
+      {
+        url: 'https://www.youtube.com/watch?v=mem8LerchuA',
+        videoId: 'mem8LerchuA',
+        title: 'If You Want Fluent English, You NEED to Watch This 🎬',
+        channel: 'Real English From Movies',
+        note: ''
+      },
+      {
+        url: 'https://www.youtube.com/watch?v=OSDJEXQtfhI',
+        videoId: 'OSDJEXQtfhI',
+        title: 'The Secret to Understanding Fast American English Without Translating (C1–C2)',
+        channel: 'English with CTM',
+        note: ''
+      },
+      {
+        url: 'https://www.youtube.com/watch?v=LC3-NRKTxAA',
+        videoId: 'LC3-NRKTxAA',
+        title: '800 Advanced English Words Native Speakers Use Every Day (C1–C2) | Speak More Naturally',
+        channel: 'English with CTM',
+        note: ''
+      },
+      {
+        url: 'https://www.youtube.com/watch?v=vrlepDcRxN4',
+        videoId: 'vrlepDcRxN4',
+        title: 'Shadowing English with the movie Menu | Speak like a Native Ep.22',
+        channel: 'Moving English',
+        note: ''
+      },
+      {
         url: 'https://www.youtube.com/watch?v=GV_-xdb3qK8',
         videoId: 'GV_-xdb3qK8',
         title: 'Why Your Voice Shakes When You Speak (And Exactly How to Stop It)',
@@ -60,6 +102,21 @@ const DEFAULT_COLLECTIONS = [
         videoId: 'cHMT-f9UYUE',
         title: 'ரமணரின் உபதேசம்! ஞானம் பெற்ற சீடர்! | #spiritualawakening',
         channel: 'Dhayavu Prabhavathi Amma',
+        note: ''
+      },
+    ]
+  },
+  {
+    id: 'understandmind',
+    name: 'UnderstandMind',
+    color: '#EF5350',
+    groups: {},
+    ungrouped: [
+      {
+        url: 'https://www.youtube.com/watch?v=sXHJosUhqBM',
+        videoId: 'sXHJosUhqBM',
+        title: 'WHY NOTHING FEELS INTERESTING ANYMORE (and how to fix it with neuroscience)',
+        channel: 'Olga Loiek',
         note: ''
       },
     ]
