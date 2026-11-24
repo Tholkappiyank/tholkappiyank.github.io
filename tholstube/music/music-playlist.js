@@ -1,6 +1,6 @@
 // --------------------------------------------------------------
 // PLAYLIST CONFIG
-// Exported from TubeVault on 9/19/2026, 8:02:05 PM
+// Exported from TubeVault on 11/24/2026, 10:27:40 AM
 //
 // Each playlist: id, name, color, videoIds, videos (full details)
 // To apply as defaults: replace music-playlist.js and clear localStorage.

@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
-// Exported from TubeVault on 9/19/2026, 8:00:36 PM
+// Exported from TubeVault on 11/24/2026, 10:21:25 AM
 //
 // STRUCTURE — easy to browse/edit in any JSON editor:
 //   DEFAULT_COLLECTIONS
@@ -70,6 +70,27 @@ const DEFAULT_COLLECTIONS = [
     groups: {},
     ungrouped: [
       {
+        url: 'https://www.youtube.com/shorts/mJNjABOzkoY',
+        videoId: 'mJNjABOzkoY',
+        title: 'கொத்தவரங்காய் சாப்பிட்டால் உடலுக்கு இவ்வளவு நன்மையா? OSB | Mayan Senthil',
+        channel: 'OmSaravanaBhava',
+        note: ''
+      },
+      {
+        url: 'https://www.youtube.com/shorts/9RXvM3Wh8Y8',
+        videoId: '9RXvM3Wh8Y8',
+        title: 'காய்கறி கழிவுகள் & Kitchen Waste அனைத்தையும் உரமாக மாற்றும் Compost Maker! 🔥',
+        channel: 'Tiffin Carrier',
+        note: ''
+      },
+      {
+        url: 'https://www.youtube.com/shorts/I_4LWJUHT8I',
+        videoId: 'I_4LWJUHT8I',
+        title: 'பலதானியம் - மண்ணை பொன்னாக்கும் hack!',
+        channel: 'Save Soil - மண் காப்போம்',
+        note: ''
+      },
+      {
         url: 'https://www.youtube.com/shorts/b0s1_MWikuo',
         videoId: 'b0s1_MWikuo',
         title: 'இத கேள்வி பட்டுருக்கேங்களா...#trending #dhana #ytshorts #latest',
@@ -81,6 +102,43 @@ const DEFAULT_COLLECTIONS = [
         videoId: 'wDkpO524I20',
         title: '',
         channel: '',
+        note: ''
+      },
+    ]
+  },
+  {
+    id: 'honey',
+    name: 'Honey',
+    color: '#29B6F6',
+    groups: {},
+    ungrouped: [
+      {
+        url: 'https://www.youtube.com/shorts/oY_uqXnfqao',
+        videoId: 'oY_uqXnfqao',
+        title: 'பூண்டு + தேன் 🧄🐝',
+        channel: 'Tamil Speech Box',
+        note: ''
+      },
+    ]
+  },
+  {
+    id: 'snacks',
+    name: 'Snacks',
+    color: '#EF5350',
+    groups: {},
+    ungrouped: [
+      {
+        url: 'https://www.youtube.com/shorts/ijl20Xy7ZyM',
+        videoId: 'ijl20Xy7ZyM',
+        title: 'Paneer Ke Sholay ❤️🤩 #thecookgirl #paneerkesholay #paneer #easysnacks #snacksrecipe',
+        channel: 'The Cook Girl ',
+        note: ''
+      },
+      {
+        url: 'https://www.youtube.com/shorts/4F9ye5ylDSs',
+        videoId: '4F9ye5ylDSs',
+        title: '🥗  சுண்டலோ சுண்டல்! 🫘 😋 | Suganthi Jaya | International Yoga Trainer',
+        channel: 'Yoga with Suganthi',
         note: ''
       },
     ]

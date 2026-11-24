@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
-// Exported from TubeVault on 11/18/2026, 2:02:59 PM
+// Exported from TubeVault on 11/24/2026, 10:14:46 AM
 //
 // STRUCTURE — easy to browse/edit in any JSON editor:
 //   DEFAULT_COLLECTIONS
@@ -39,6 +39,24 @@ const DEFAULT_COLLECTIONS = [
     name: 'Book',
     color: '#AB64BC',
     groups: {
+      'Listening': [
+        {
+          url: 'https://www.youtube.com/watch?v=zqimhmvTaRM',
+          videoId: 'zqimhmvTaRM',
+          title: 'YouTube Video',
+          channel: '',
+          note: ''
+        },
+      ],
+      'Communication': [
+        {
+          url: 'https://www.youtube.com/watch?v=cpKmsjDn5Wg',
+          videoId: 'cpKmsjDn5Wg',
+          title: 'YouTube Video',
+          channel: '',
+          note: ''
+        },
+      ],
       'Words of Jasmine': [
         {
           url: 'https://www.youtube.com/watch?v=baEn3Vb6cRA',

@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
-// Exported from TubeVault on 9/19/2026, 8:02:05 PM
+// Exported from TubeVault on 11/24/2026, 10:27:40 AM
 //
 // STRUCTURE — easy to browse/edit in any JSON editor:
 //   DEFAULT_COLLECTIONS
@@ -40,6 +40,34 @@ const DEFAULT_COLLECTIONS = [
     color: '#EC407A',
     groups: {
       'Tamil Album': [
+        {
+          url: 'https://www.youtube.com/watch?v=hxXN_Jssgbc',
+          videoId: 'hxXN_Jssgbc',
+          title: 'Nerungatha (Ft. Aisha) | Andrew Iyan',
+          channel: 'Andrew Iyan',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=M_P5M-Un6-Y',
+          videoId: 'M_P5M-Un6-Y',
+          title: 'Thodari Songs | Pona Usuru Lyrical Video | Dhanush, Keerthy Suresh, D.Imman, Prabhu Solomon',
+          channel: 'Lahari Music',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=dlCdBqzbejU',
+          videoId: 'dlCdBqzbejU',
+          title: 'Anjali Anjali | Duet | 24 Bit Song | AR Rahman | SP Balasubramaniam | KS Chithra',
+          channel: 'Music Wave',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=5AkDz3JWHHs',
+          videoId: '5AkDz3JWHHs',
+          title: 'kathoduthan naan paaduven AI creation song please listen subscribe my channel',
+          channel: 'Shiva music channel',
+          note: ''
+        },
         {
           url: 'https://www.youtube.com/watch?v=2uhvJwNwfe0&list=RD2uhvJwNwfe0&start_radio=1',
           videoId: '2uhvJwNwfe0',
@@ -152,6 +180,32 @@ const DEFAULT_COLLECTIONS = [
           note: 'Tamil Romantic Melody | Carnatic Fusion'
         },
       ],
+      'Tamil 90\'s': [
+        {
+          url: 'https://www.youtube.com/watch?v=FhY1h746yuc&list=RDFhY1h746yuc&start_radio=1',
+          videoId: 'FhY1h746yuc',
+          playlistId: 'RDFhY1h746yuc',
+          title: 'Poththi Vachcha Mallikai (Remix Creator R.Rathan. Use Headphone For Better Experience)',
+          channel: 'Rithush Digital Dreams',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=FBVVUvFgsnE&list=RDtuR5hLtN_ow',
+          videoId: 'FBVVUvFgsnE',
+          playlistId: 'RDtuR5hLtN_ow',
+          title: 'Staccato | Unplucked  | Niranjana Ramanan',
+          channel: 'Staccato - Contemporary Classic',
+          note: ''
+        },
+        {
+          url: 'https://www.youtube.com/watch?v=9Tq7GS_rvag&list=RDtuR5hLtN_ow&index=8',
+          videoId: '9Tq7GS_rvag',
+          playlistId: 'RDtuR5hLtN_ow',
+          title: 'YouTube Video',
+          channel: '',
+          note: ''
+        },
+      ],
       'Mirthangam': [
         {
           url: 'https://www.youtube.com/watch?v=k4ek0owhOiM&list=RDk4ek0owhOiM&start_radio=1&t=654s',
@@ -223,24 +277,6 @@ const DEFAULT_COLLECTIONS = [
           playlistId: 'RDfMKQTLP4aO0',
           title: 'Pure Relaxation Music | Deep Meditation, Stress Relief & Inner Peace | Indian Instrumental Music',
           channel: 'SAVERA',
-          note: ''
-        },
-      ],
-      'Tamil 90\'s': [
-        {
-          url: 'https://www.youtube.com/watch?v=FBVVUvFgsnE&list=RDtuR5hLtN_ow',
-          videoId: 'FBVVUvFgsnE',
-          playlistId: 'RDtuR5hLtN_ow',
-          title: 'Staccato | Unplucked  | Niranjana Ramanan',
-          channel: 'Staccato - Contemporary Classic',
-          note: ''
-        },
-        {
-          url: 'https://www.youtube.com/watch?v=9Tq7GS_rvag&list=RDtuR5hLtN_ow&index=8',
-          videoId: '9Tq7GS_rvag',
-          playlistId: 'RDtuR5hLtN_ow',
-          title: 'YouTube Video',
-          channel: '',
           note: ''
         },
       ],

@@ -1,6 +1,6 @@
 // --------------------------------------------------------------
 // PLAYLIST CONFIG
-// Exported from TubeVault on 11/18/2026, 2:02:59 PM
+// Exported from TubeVault on 11/24/2026, 10:14:46 AM
 //
 // Each playlist: id, name, color, videoIds, videos (full details)
 // To apply as defaults: replace book-playlist.js and clear localStorage.

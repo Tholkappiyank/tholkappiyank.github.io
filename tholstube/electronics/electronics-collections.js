@@ -1,6 +1,6 @@
 // ──────────────────────────────────────────────────────────────
 // COLLECTIONS CONFIG
-// Exported from TubeVault on 9/19/2026, 8:01:46 PM
+// Exported from TubeVault on 11/24/2026, 10:22:18 AM
 //
 // STRUCTURE — easy to browse/edit in any JSON editor:
 //   DEFAULT_COLLECTIONS
@@ -39,7 +39,15 @@ const DEFAULT_COLLECTIONS = [
     name: 'electronics',
     color: '#29B6F6',
     groups: {},
-    ungrouped: []
+    ungrouped: [
+      {
+        url: 'https://www.youtube.com/shorts/PA3te8GR76M',
+        videoId: 'PA3te8GR76M',
+        title: 'Three levels of electronics',
+        channel: 'Engineering Nerd science',
+        note: ''
+      },
+    ]
   },
   {
     id: 'light',
@@ -52,6 +60,51 @@ const DEFAULT_COLLECTIONS = [
         videoId: 'i3H9RcOI2q0',
         title: 'HP-375 1500W Strong Torch 🔥 3KM Range! 😱 18000mAh Battery | Zoom + Blinking | செம்ம Powerful Torch!',
         channel: 'APPLE ELECTRONICS',
+        note: ''
+      },
+    ]
+  },
+  {
+    id: 'cpu',
+    name: 'CPU',
+    color: '#66BB6A',
+    groups: {},
+    ungrouped: [
+      {
+        url: 'https://www.youtube.com/watch?v=b3-4PZhd3LY',
+        videoId: 'b3-4PZhd3LY',
+        title: '7 Chinese Mini PCs That Are DESTROYING Expensive Brands',
+        channel: 'Tech Autopsy',
+        note: ''
+      },
+    ]
+  },
+  {
+    id: 'repairmobile',
+    name: 'RepairMobile',
+    color: '#FFA726',
+    groups: {},
+    ungrouped: [
+      {
+        url: 'https://www.youtube.com/shorts/_zieFGc_T94',
+        videoId: '_zieFGc_T94',
+        title: '🔥 Samsung S23 Ultra DEAD! 😱VPH LINE SHORT FOUND|Step-by-Step Power Short Fault Finding | LIVE Repair',
+        channel: 'RATHNA MOBILES TRAINING CENTRE',
+        note: ''
+      },
+    ]
+  },
+  {
+    id: '3d-printer',
+    name: '3d Printer',
+    color: '#78909C',
+    groups: {},
+    ungrouped: [
+      {
+        url: 'https://www.youtube.com/shorts/84ek_3fpMhs',
+        videoId: '84ek_3fpMhs',
+        title: 'New Obsession,So satisfying.',
+        channel: 'Graceful Tales By Grace Antony',
         note: ''
       },
     ]

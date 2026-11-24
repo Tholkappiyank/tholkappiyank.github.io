@@ -1,6 +1,6 @@
 // --------------------------------------------------------------
 // WATCHED HISTORY
-// Exported from TubeVault on 9/19/2026, 8:02:05 PM
+// Exported from TubeVault on 11/24/2026, 10:27:40 AM
 //
 // WATCHED_VIDEO_IDS: YouTube video IDs marked as watched.
 // To restore: replace music-watched.js with this file and clear localStorage.
@@ -75,11 +75,13 @@ const WATCHED_VIDEO_IDS = [
   'MTKBYTaMHvY', // Germaniyin Senthen Malare
   'vIDl1E26FpU', // Azhagu Aayiram
   '5ATSSUZuZNY', // Paruvame Puthiya Paadal Paadu
+  'syGyHZYsob0', // Best Trance 2026 🚀 | Uplifting, Vocal & Melodic Trance Mix 
   'Dg9ePUDm4Vs', // Positive Energy 2026 🌞 Feel Good Deep House Music for Morni
   'Tg2vlqd47Yo', // Persian & Balkan Fusion Music 4K 🌊 | Relaxing Instrumental 
   'UH3bfZ6Rb9E', // Persian & Spanish Fusion Relaxing Music 4K | Persian Gulf & 
   'GmtTDvNcXcU', // Despacito (Piano Cover) - Peter Bence
   'MhQKe-aERsU', // Ed Sheeran - Shape Of You ( cover by J.Fla )
+  'dtiafgbsQl4', // YouTube Video
   'WcIcVapfqXw', // Rema, Selena Gomez - Calm Down (Official Music Video)
   'oebpYD4cXVA',
   'FBVVUvFgsnE', // Staccato | Unplucked  | Niranjana Ramanan
